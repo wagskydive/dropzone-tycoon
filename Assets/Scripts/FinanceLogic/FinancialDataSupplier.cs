@@ -8,22 +8,34 @@ namespace FinanceLogic
 {
     public static class FinancialDataSupplier
     {
-        internal static int FindAccountIndex(FinancialDataHolder bank, string ID)
+        internal static int FindAccountIndex(Bank bank, string ID)
         {
             return bank.AllAccounts.FindIndex(x => x.accountID == ID);
         }
 
-        public static string AccountsInfo(FinancialDataHolder bank)
+
+
+        public static string[] AccountsIDs(Bank bank)
         {
-            string textString = "Account Display\n\n";
+            
             List<FinancialAccount> allAccounts = bank.AllAccounts;
+            string[] idStrings = new string[allAccounts.Count];
             for (int i = 0; i < allAccounts.Count; i++)
             {
-                textString += $"index: { i } \n";
-                textString += $"ID: { allAccounts[i].accountID } \n";
-                textString += $"Current Amount: { allAccounts[i].currentMoney } \n\n";
+                idStrings[i] = allAccounts[i].accountID;
             }
-            return textString;
+            return idStrings;
         }
+
+        public static int GetBalance(Bank bank, string id)
+        {
+            return bank.AllAccounts[FindAccountIndex(bank, id)].currentMoney;
+        }
+
+        public static List<Transaction> GetTransactionHistory(Bank bank, string id)
+        {
+            return bank.AllAccounts[FindAccountIndex(bank, id)].transactionHistory;
+        }
+
     }       
 }

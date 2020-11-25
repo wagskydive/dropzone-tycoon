@@ -15,9 +15,9 @@ public class SmallTextTMP : MonoBehaviour, IDisplayText
     }
 
 
-    public void SetText(string text)
+    public void Display(string[] text)
     {
-        tMP_Text.text = text;
+        //tMP_Text.text = text;
     }
 
 }

@@ -12,13 +12,13 @@ namespace FinanceLogic
 
         public static event Action<string> OnNewAccountCreated;
 
-        public static void CreateNewAccount(FinancialDataHolder bank,string id, int startMoney = 0)
+        public static void CreateNewAccount(Bank bank,string id, int startMoney = 0)
         {
             bank.AllAccounts.Add(new FinancialAccount(id, startMoney));
             OnNewAccountCreated?.Invoke(bank.AllAccounts[bank.AllAccounts.Count - 1].accountID);
         }
 
-        internal static void AddTransactionToLedger(FinancialDataHolder bank,Transaction transaction)
+        internal static void AddTransactionToLedger(Bank bank,Transaction transaction)
         {
             bank.Ledger.Add(transaction);
             int from = bank.AllAccounts.FindIndex(x => x.accountID == transaction.FromAccount.accountID);
@@ -29,7 +29,7 @@ namespace FinanceLogic
             OnTransactionProcessed?.Invoke(transaction);
         }
 
-        public static bool MakeTransactionFromIdString(FinancialDataHolder bank, int amount, string from, string to)
+        public static bool MakeTransactionFromIdString(Bank bank, int amount, string from, string to)
         {
             int frm = FinancialDataSupplier.FindAccountIndex(bank,from);
             int t = FinancialDataSupplier.FindAccountIndex(bank,to);
@@ -37,9 +37,9 @@ namespace FinanceLogic
             return MakeTransaction(bank, amount, bank.AllAccounts[frm], bank.AllAccounts[t]);
         }
 
-        internal static bool MakeTransaction(FinancialDataHolder bank, int amount, FinancialAccount from, FinancialAccount to)
+        internal static bool MakeTransaction(Bank bank, int amount, FinancialAccount from, FinancialAccount to)
         {
-            if (from.currentMoney < amount)
+            if (from.currentMoney < amount || from == to)
             {
                 return false;
             }

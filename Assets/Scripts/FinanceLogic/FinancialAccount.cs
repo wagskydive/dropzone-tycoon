@@ -10,6 +10,8 @@ namespace FinanceLogic
             
             accountID = ID;
             currentMoney = startMoney;
+
+            transactionHistory = new List<Transaction>();
         }
 
         public string accountID;

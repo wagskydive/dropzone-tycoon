@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinanceLogic
 {
-    public class FinancialDataHolder
+    public class Bank
     {
 
 

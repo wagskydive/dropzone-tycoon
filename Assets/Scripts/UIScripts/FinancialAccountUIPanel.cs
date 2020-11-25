@@ -22,8 +22,8 @@ public class FinancialAccountUIPanel : MonoBehaviour
 
     public void DisplayAccounts()
     {
-        FinanceLogic.FinancialDataHolder bank = FindObjectOfType<AccountTester>().testBank;
-        textDisplayTemplate.GetComponent<IDisplayText>().SetText(FinanceLogic.FinancialDataSupplier.AccountsInfo(bank));
+        FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
+        textDisplayTemplate.GetComponent<IDisplayText>().Display(FinanceLogic.FinancialDataSupplier.AccountsIDs(bank));
     }
 
 
