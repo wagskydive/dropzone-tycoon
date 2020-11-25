@@ -14,16 +14,20 @@ public class FinancialAccountUIPanel : MonoBehaviour
 
     string currentDisplayedAccountID;
 
-
-    void RefreshDisplay()
+    private void Awake()
     {
-
+        FindObjectOfType<ShowAccountsButton>().OnShowAllAccountsButtonClick += DisplayAccounts;
     }
 
-    public void DisplayAccounts()
+    public void DisplayAccounts(bool isVisible)
     {
-        FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
-        textDisplayTemplate.GetComponent<IDisplayText>().Display(FinanceLogic.FinancialDataSupplier.AccountsIDs(bank));
+        if (!isVisible)
+        {
+
+            FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
+            textDisplayTemplate.GetComponent<IDisplayText>().Display(FinanceLogic.FinancialDataSupplier.AccountsIDs(bank));
+        }
+
     }
 
 
