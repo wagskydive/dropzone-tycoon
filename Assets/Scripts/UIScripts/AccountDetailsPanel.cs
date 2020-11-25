@@ -64,11 +64,11 @@ public class AccountDetailsPanel : MonoBehaviour
             {
                 if (transactions[i].FromAccountID == CurrentAccountId)
                 {
-                    historyString += "-" + transactions[i].Amount.ToString() + " sent to: " + transactions[i].ToAccountID + "\n";
+                    historyString += "-" + transactions[i].Amount.ToString() + " sent to: " + transactions[i].ToAccountID;
                 }
                 else if (transactions[i].ToAccountID == CurrentAccountId)
                 {
-                    historyString += transactions[i].Amount.ToString() + " received from: " + transactions[i].FromAccountID + "\n"; ;
+                    historyString += transactions[i].Amount.ToString() + " received from: " + transactions[i].FromAccountID;
 
                 }
                 else
@@ -76,7 +76,7 @@ public class AccountDetailsPanel : MonoBehaviour
                     historyString += "Invalid transaction found: " + transactions[i].Amount.ToString() + "from: " + transactions[i].FromAccountID + " sent to: " + transactions[i].ToAccountID + "\n";
                 }
 
-
+                historyString += " for: " + transactions[i].Description + "\n";
             }
             return "Transaction History: \n" + historyString;
         }

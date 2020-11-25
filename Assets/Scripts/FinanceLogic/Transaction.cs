@@ -6,7 +6,7 @@ namespace FinanceLogic
 {
     public class Transaction
     {
-        internal Transaction(int amount, FinancialAccount from, FinancialAccount to)
+        internal Transaction(int amount, FinancialAccount from, FinancialAccount to, string description = "")
         {
             FromAccount = from;
             FromAccountID = from.accountID;
@@ -14,10 +14,12 @@ namespace FinanceLogic
             ToAccount = to;
             ToAccountID = to.accountID;
 
-            Amount = amount;            
+            Amount = amount;
+
+            Description = description;
         }
 
-        public string transactionID { get; private set; }
+        public string Description { get; private set; }
 
         public string FromAccountID { get; private set; }
 

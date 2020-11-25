@@ -1,3 +1,16 @@
-﻿{
-	"name": "CharacterLogic"
+{
+    "name": "CharacterLogic",
+    "references": [
+        "GUID:4ed6eef85551a7b478d3eff0ce432dbd",
+        "GUID:4e1ae1395984f3a4fbacd5428a773cae"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

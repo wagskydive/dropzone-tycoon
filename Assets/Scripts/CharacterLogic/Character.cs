@@ -1,23 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InventoryLogic;
+using FinanceLogic;
+
+
 
 namespace CharacterLogic
 {
     public class Character
     {
-        public Character(string name, string financialAccountId)
+        public Character(string name)
         {
             CharacterName = name;
-            FinancialAccountID = financialAccountId;
+            inventory = new Inventory();
+            
         }
 
-        
+        public string CreateAccount(Bank bank, int startMoney =0)
+        {
+            FinancialAccountID = FinancialDataCreator.CreateNewAccount(bank, CharacterName, startMoney);
+            return FinancialAccountID;
+        }
 
         public string CharacterName;
         public string FinancialAccountID;
-        public string[] OwnedItems;
 
-        public string[] WishList;
+        public Inventory inventory;
+
     }
 }

@@ -12,10 +12,11 @@ namespace FinanceLogic
 
         public static event Action<string> OnNewAccountCreated;
 
-        public static void CreateNewAccount(Bank bank,string id, int startMoney = 0)
+        public static string CreateNewAccount(Bank bank,string id, int startMoney = 0)
         {            
             bank.AllAccounts.Add(new FinancialAccount(EnsureUnique(bank,id), startMoney));
             OnNewAccountCreated?.Invoke(bank.AllAccounts[bank.AllAccounts.Count - 1].accountID);
+            return bank.AllAccounts[bank.AllAccounts.Count - 1].accountID;
         }
 
         public static bool CheckForIdExists(Bank bank, string idToCheck)
@@ -52,15 +53,15 @@ namespace FinanceLogic
             OnTransactionProcessed?.Invoke(transaction);
         }
 
-        public static bool MakeTransactionFromIdString(Bank bank, int amount, string from, string to)
+        public static bool MakeTransactionFromIdString(Bank bank, int amount, string from, string to, string description = "")
         {
             int frm = FinancialDataSupplier.FindAccountIndex(bank,from);
             int t = FinancialDataSupplier.FindAccountIndex(bank,to);
 
-            return MakeTransaction(bank, amount, bank.AllAccounts[frm], bank.AllAccounts[t]);
+            return MakeTransaction(bank, amount, bank.AllAccounts[frm], bank.AllAccounts[t], description);
         }
 
-        internal static bool MakeTransaction(Bank bank, int amount, FinancialAccount from, FinancialAccount to)
+        internal static bool MakeTransaction(Bank bank, int amount, FinancialAccount from, FinancialAccount to, string description = "")
         {
             if (from.currentMoney < amount || from == to)
             {
@@ -68,7 +69,7 @@ namespace FinanceLogic
             }
             else
             {
-                Transaction transaction = new Transaction(amount, from, to);
+                Transaction transaction = new Transaction(amount, from, to, description);
                 AddTransactionToLedger(bank, transaction);
                 return true;
             }

@@ -116,7 +116,7 @@ public class TransactionCreatorUI : MonoBehaviour
     private void SubmitTransaction(string sendMoneyTo)
     {
         Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
-        FinanceLogic.FinancialDataCreator.MakeTransactionFromIdString(bank, int.Parse(AmountToGive.text), currentAccountId, sendMoneyTo);
+        FinanceLogic.FinancialDataCreator.MakeTransactionFromIdString(bank, int.Parse(AmountToGive.text), currentAccountId, sendMoneyTo, " Transfer trough Transaction UI");
     }
 
 
