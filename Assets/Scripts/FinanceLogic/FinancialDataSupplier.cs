@@ -37,5 +37,10 @@ namespace FinanceLogic
             return bank.AllAccounts[FindAccountIndex(bank, id)].transactionHistory;
         }
 
+        public static int GetTransactionLedgerIndex(Bank bank, Transaction transaction)
+        {
+            return bank.Ledger.FindIndex(x => x == transaction);
+        }
+
     }       
 }

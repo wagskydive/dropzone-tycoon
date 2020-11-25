@@ -8,8 +8,6 @@ namespace FinanceLogic
 {
     public class Bank
     {
-
-
         internal List<FinancialAccount> AllAccounts = new List<FinancialAccount>();
 
         internal List<Transaction> Ledger = new List<Transaction>();

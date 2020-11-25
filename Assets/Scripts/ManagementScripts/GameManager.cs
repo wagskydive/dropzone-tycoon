@@ -10,11 +10,5 @@ namespace ManagementScripts
     public class GameManager : MonoBehaviour
     {
         public FinanceLogic.Bank bank = new FinanceLogic.Bank();
-
-        private void Start()
-        {
-            //bank ;
-        }
-
     }
 }

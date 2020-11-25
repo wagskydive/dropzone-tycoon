@@ -13,9 +13,32 @@ namespace FinanceLogic
         public static event Action<string> OnNewAccountCreated;
 
         public static void CreateNewAccount(Bank bank,string id, int startMoney = 0)
-        {
-            bank.AllAccounts.Add(new FinancialAccount(id, startMoney));
+        {            
+            bank.AllAccounts.Add(new FinancialAccount(EnsureUnique(bank,id), startMoney));
             OnNewAccountCreated?.Invoke(bank.AllAccounts[bank.AllAccounts.Count - 1].accountID);
+        }
+
+        public static bool CheckForIdExists(Bank bank, string idToCheck)
+        {
+            return bank.AllAccounts.Exists(x => x.accountID == idToCheck);
+        }
+
+        public static string EnsureUnique(Bank bank, string id)
+        {
+            int append = 1;
+            while (CheckForIdExists(bank, id))
+            {
+                if (id.EndsWith($"_{ append }"))
+                {
+                    id = id.Remove(id.Length - $"_{ append }".Length, $"_{ append }".Length);                    
+                }
+                
+                append++;
+                id += $"_{ append }";
+
+            }
+            return id;
+ 
         }
 
         internal static void AddTransactionToLedger(Bank bank,Transaction transaction)

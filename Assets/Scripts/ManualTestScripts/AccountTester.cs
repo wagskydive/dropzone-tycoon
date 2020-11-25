@@ -27,7 +27,8 @@ public class AccountTester : MonoBehaviour
         FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
         for (int i = 0; i < accountAmount; i++)
         {
-            FinanceLogic.FinancialDataCreator.CreateNewAccount(bank, UnityEngine.Random.Range(0, 1000000000).ToString(),UnityEngine.Random.Range(balanceRangeMin, balanceRangeMax));
+            //FinanceLogic.FinancialDataCreator.CreateNewAccount(bank, UnityEngine.Random.Range(0, 1000000000).ToString(),UnityEngine.Random.Range(balanceRangeMin, balanceRangeMax));
+            FinanceLogic.FinancialDataCreator.CreateNewAccount(bank,"Builder",100);
         }
     }
 

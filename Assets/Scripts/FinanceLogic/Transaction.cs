@@ -14,9 +14,7 @@ namespace FinanceLogic
             ToAccount = to;
             ToAccountID = to.accountID;
 
-            Amount = amount;
-
-            transactionID = RandomGenerator.RandomString(16);
+            Amount = amount;            
         }
 
         public string transactionID { get; private set; }
