@@ -13,6 +13,11 @@ public class AccountTester : MonoBehaviour
     [SerializeField]
     private int balanceRangeMax;
 
+    [SerializeField]
+    private int characterAmount;
+
+
+    
 
 
     // Start is called before the first frame update
@@ -32,6 +37,9 @@ public class AccountTester : MonoBehaviour
         }
     }
 
-    
+    private void CreateTestCharacters()
+    {
+
+    }
 
 }
