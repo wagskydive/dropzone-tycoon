@@ -14,17 +14,14 @@ namespace ManagementScripts
         [SerializeField]
         private string[] StatTypes;
 
-
         public Bank bank;
 
         public CharacterDataHolder Characters;
-
 
         private void Awake()
         {
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
-
         }
 
     }
