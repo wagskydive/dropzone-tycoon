@@ -4,7 +4,7 @@ using FinanceLogic;
 namespace CharacterLogic
 {
 
-    public static class CharacterGenerator
+    public static class CharacterDataCreator
     {
         public static event Action<Character> OnCharacterCreated;
 
@@ -33,6 +33,7 @@ namespace CharacterLogic
         {
             character.SetFinancialAccountID(FinancialDataCreator.CreateNewAccount(bank, character.CharacterName));
         }
+
 
     }
 }

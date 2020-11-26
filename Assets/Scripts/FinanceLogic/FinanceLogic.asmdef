@@ -1,6 +1,8 @@
 {
     "name": "FinanceLogic",
-    "references": [],
+    "references": [
+        "GUID:63066492b0ab7324ba022504f51b9461"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

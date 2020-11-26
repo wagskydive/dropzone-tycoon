@@ -15,7 +15,7 @@ namespace CharacterLogic
         public CharacterHolder()
         {
             AllCharacters = new List<Character>();
-            CharacterGenerator.OnCharacterCreated += AddCharacter;
+            CharacterDataCreator.OnCharacterCreated += AddCharacter;
         }
 
         

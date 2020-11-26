@@ -14,5 +14,16 @@ namespace CharacterLogic
             return holder.AllCharacters.Find(x => x.FinancialAccountID == id);
         }
 
+        public static string[] AllCharacterNames(CharacterHolder characterHolder)
+        {
+            List<Character> allCharacters = characterHolder.AllCharacters;
+            string[] idStrings = new string[allCharacters.Count];
+            for (int i = 0; i < allCharacters.Count; i++)
+            {
+                idStrings[i] = allCharacters[i].CharacterName;
+            }
+            return idStrings;
+        }
+
     }
 }

@@ -43,6 +43,7 @@ public class AccountDetailsPanel : MonoBehaviour
         List<FinanceLogic.Transaction> transactions = FinanceLogic.FinancialDataSupplier.GetTransactionHistory(bank, id);
 
         TransactionsText.text = ShowTransactionHistory(transactions);
+
     }
 
 

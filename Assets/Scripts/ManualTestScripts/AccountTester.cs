@@ -46,7 +46,7 @@ public class AccountTester : MonoBehaviour
 
         for (int i = 0; i < characterAmount; i++)
         {
-            CharacterGenerator.CreateCharacterAccount(bank, CharacterGenerator.CreateRandomCharacter(Random.Range(0,9999999), Random.Range(0, 9999999)));             
+            CharacterDataCreator.CreateCharacterAccount(bank, CharacterDataCreator.CreateRandomCharacter(Random.Range(0,9999999), Random.Range(0, 9999999)));             
         }
             
     }

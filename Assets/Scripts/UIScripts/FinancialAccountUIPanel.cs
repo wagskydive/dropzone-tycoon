@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using FinanceLogic;
 using UnityEngine.UI;
 
 
@@ -23,9 +24,10 @@ public class FinancialAccountUIPanel : MonoBehaviour
     {
         if (!isVisible)
         {
+            
+            Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
+            textDisplayTemplate.GetComponent<IDisplayAccounts>().Display(FinancialDataSupplier.AccountsIDs(bank));
 
-            FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
-            textDisplayTemplate.GetComponent<IDisplayText>().Display(FinanceLogic.FinancialDataSupplier.AccountsIDs(bank));
         }
 
     }

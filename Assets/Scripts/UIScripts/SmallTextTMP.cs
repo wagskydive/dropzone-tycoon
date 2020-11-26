@@ -5,7 +5,7 @@ using TMPro;
 using System;
 
 [RequireComponent(typeof(TMP_Text))]
-public class SmallTextTMP : MonoBehaviour, IDisplayText
+public class SmallTextTMP : MonoBehaviour, IDisplayAccounts
 {
     TMP_Text tMP_Text;
 

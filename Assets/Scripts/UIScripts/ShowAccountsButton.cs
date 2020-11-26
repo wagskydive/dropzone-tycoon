@@ -20,6 +20,7 @@ public class ShowAccountsButton : MonoBehaviour
         {
             AllAccountsPanel.SetActive(false);
             DetailAccountPanel.SetActive(false);
+            OnShowAllAccountsButtonClick?.Invoke(isVisible);
             GetComponentInChildren<Text>().text = "Show Accounts";
         }
         else
