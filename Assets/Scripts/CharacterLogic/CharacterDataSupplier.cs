@@ -9,12 +9,29 @@ namespace CharacterLogic
 {
     public static class CharacterDataSupplier
     {
-        public static Character GetCharacterFromAccountId(CharacterHolder holder, string id)
+        public static Character GetCharacterFromAccountId(CharacterDataHolder holder, string id)
         {
             return holder.AllCharacters.Find(x => x.FinancialAccountID == id);
         }
 
-        public static string[] AllCharacterNames(CharacterHolder characterHolder)
+        public static Character GetCharacterFromName(CharacterDataHolder holder, string name)
+        {
+            return holder.AllCharacters.Find(x => x.CharacterName == name);
+        }
+
+
+
+        public static Character GetCharacterFromIndex(CharacterDataHolder holder, int index)
+        {
+            return holder.AllCharacters[index];
+        }
+
+        public static int GetIndexFromName(CharacterDataHolder holder, string name)
+        {
+            return holder.AllCharacters.FindIndex(x => x.CharacterName == name);
+        }
+
+        public static string[] AllCharacterNames(CharacterDataHolder characterHolder)
         {
             List<Character> allCharacters = characterHolder.AllCharacters;
             string[] idStrings = new string[allCharacters.Count];

@@ -927,7 +927,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &435328590
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1038,6 +1038,7 @@ GameObject:
   - component: {fileID: 609003319}
   - component: {fileID: 609003318}
   - component: {fileID: 609003317}
+  - component: {fileID: 609003320}
   m_Layer: 5
   m_Name: StatsPanel
   m_TagString: Untagged
@@ -1123,6 +1124,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609003315}
   m_CullTransparentMesh: 0
+--- !u!114 &609003320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609003315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &648658969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1310,6 +1337,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7086b1a4ba24c242bc16e6bc90d0dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StatTypes:
+  - Health
+  - Stamina
+  - ' Food Need'
+  - Excitedness
 --- !u!4 &685592386
 Transform:
   m_ObjectHideFlags: 0
@@ -1613,10 +1645,10 @@ RectTransform:
   m_Father: {fileID: 435328590}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 68, y: -250.04}
-  m_SizeDelta: {x: 100, y: 462.08}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &920996961
 MonoBehaviour:
@@ -3428,6 +3460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1743147122}
   - component: {fileID: 1743147123}
+  - component: {fileID: 1743147124}
   m_Layer: 5
   m_Name: StatsBarCreator
   m_TagString: Untagged
@@ -3435,8 +3468,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1743147122
-Transform:
+--- !u!224 &1743147122
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3449,6 +3482,11 @@ Transform:
   m_Father: {fileID: 609003316}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1743147123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3461,6 +3499,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72c35736ddb2f1d488aeeae83dbd61f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StatsBarPrefab: {fileID: 1359238520497870525, guid: 290e85e15daefa34b9b8860641f96c02, type: 3}
+--- !u!114 &1743147124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743147121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1759218774
 GameObject:
   m_ObjectHideFlags: 0
@@ -4557,7 +4616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2055403139
 RectTransform:
   m_ObjectHideFlags: 0

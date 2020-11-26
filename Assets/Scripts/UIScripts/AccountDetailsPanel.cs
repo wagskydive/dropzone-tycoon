@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class AccountDetailsPanel : MonoBehaviour
 {
+
     public Text TransactionsText;
 
     public Text AccountIDText;

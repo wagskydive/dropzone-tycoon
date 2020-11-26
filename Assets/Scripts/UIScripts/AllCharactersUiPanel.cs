@@ -20,7 +20,7 @@ public class AllAcharactersUiPanel : MonoBehaviour
         {
 
 
-            CharacterHolder characterHolder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
+            CharacterDataHolder characterHolder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
             textDisplayTemplate.GetComponent<IDisplayCharacters>().Display(CharacterDataSupplier.AllCharacterNames(characterHolder));
 
         }

@@ -6,21 +6,29 @@ using System.Threading.Tasks;
 
 namespace CharacterLogic
 {
-    public class CharacterHolder
+    public class CharacterDataHolder
     {
         public static event Action<Character, int> OnCharacterAddedToList;
 
         internal List<Character> AllCharacters { get; private set; }
 
-        public CharacterHolder()
+        internal List<int> ActiveCharacters;
+
+        internal string[] StatNames; 
+
+        public CharacterDataHolder(string[] statNames = null)
         {
+            StatNames = statNames;
             AllCharacters = new List<Character>();
             CharacterDataCreator.OnCharacterCreated += AddCharacter;
         }
 
         
 
-        public void AddCharacter(Character character)
+
+
+
+        internal void AddCharacter(Character character)
         {
             AllCharacters.Add(character);
             OnCharacterAddedToList?.Invoke(character, AllCharacters.Count - 1);

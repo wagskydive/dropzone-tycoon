@@ -11,8 +11,21 @@ namespace ManagementScripts
 {
     public class GameManager : MonoBehaviour
     {
-        public Bank bank = new Bank();
+        [SerializeField]
+        private string[] StatTypes;
 
-        public CharacterHolder Characters = new CharacterHolder();
+
+        public Bank bank;
+
+        public CharacterDataHolder Characters;
+
+
+        private void Awake()
+        {
+            bank = new Bank();
+            Characters = new CharacterDataHolder(StatTypes);
+
+        }
+
     }
 }

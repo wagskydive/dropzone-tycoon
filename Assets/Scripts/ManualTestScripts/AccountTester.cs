@@ -43,10 +43,11 @@ public class AccountTester : MonoBehaviour
     private void CreateTestCharacters()
     {
         Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
+        CharacterDataHolder characterDataHolder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
 
         for (int i = 0; i < characterAmount; i++)
         {
-            CharacterDataCreator.CreateCharacterAccount(bank, CharacterDataCreator.CreateRandomCharacter(Random.Range(0,9999999), Random.Range(0, 9999999)));             
+            CharacterDataCreator.CreateCharacterAccount(bank, CharacterDataCreator.CreateRandomCharacter(characterDataHolder, Random.Range(0,9999999), Random.Range(0, 9999999)));             
         }
             
     }

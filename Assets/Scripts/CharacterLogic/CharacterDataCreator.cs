@@ -8,7 +8,7 @@ namespace CharacterLogic
     {
         public static event Action<Character> OnCharacterCreated;
 
-        public static Character CreateRandomCharacter(int seedFirstName, int seedLastName)
+        public static Character CreateRandomCharacter(CharacterDataHolder characterDataHolder, int seedFirstName, int seedLastName)
         {
             Random firstRandom = new Random(seedFirstName);
             Random lastRandom = new Random(seedLastName);
@@ -21,7 +21,7 @@ namespace CharacterLogic
 
             string nameString = firstNames[firstIndex] + " " + lastNames[lastIndex];
 
-            Character character = new Character(nameString);
+            Character character = new Character(nameString, characterDataHolder.StatNames);
 
 
             OnCharacterCreated?.Invoke(character);
@@ -33,6 +33,7 @@ namespace CharacterLogic
         {
             character.SetFinancialAccountID(FinancialDataCreator.CreateNewAccount(bank, character.CharacterName));
         }
+
 
 
     }

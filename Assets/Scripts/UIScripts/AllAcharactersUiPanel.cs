@@ -20,7 +20,7 @@ public class AllCharactersUiPanel : MonoBehaviour
         if (!isVisible)
         {
 
-            CharacterHolder holder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
+            CharacterDataHolder holder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
             textDisplayTemplate.GetComponent<IDisplayCharacters>().Display(CharacterDataSupplier.AllCharacterNames(holder));
         }
 
