@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FinanceLogic;
 
 namespace CharacterLogic
 {
 
     public static class CharacterGenerator
     {
-        public static Character CreateRandomCharacter()
+        public static event Action<Character> OnCharacterCreated;
+
+        public static Character CreateRandomCharacter(int seedFirstName, int seedLastName)
         {
-            Random firstRandom = new Random();
-            Random lastRandom = new Random();
+            Random firstRandom = new Random(seedFirstName);
+            Random lastRandom = new Random(seedLastName);
 
             string[] firstNames = Enum.GetNames(typeof(FirstNamesDataBase));
             string[] lastNames = Enum.GetNames(typeof(LastNamesDataBase));
@@ -24,7 +23,15 @@ namespace CharacterLogic
 
             Character character = new Character(nameString);
 
+
+            OnCharacterCreated?.Invoke(character);
+
             return character;
+        }
+
+        public static void CreateCharacterAccount(Bank bank, Character character)
+        {
+            character.SetFinancialAccountID(FinancialDataCreator.CreateNewAccount(bank, character.CharacterName));
         }
 
     }

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FinanceLogic;
+using CharacterLogic;
+using InventoryLogic;
 
 public class AccountTester : MonoBehaviour
 {
@@ -23,7 +26,7 @@ public class AccountTester : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        CreateTestCharacters();
         CreateTestAccounts();
     }
 
@@ -39,7 +42,13 @@ public class AccountTester : MonoBehaviour
 
     private void CreateTestCharacters()
     {
+        Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
 
+        for (int i = 0; i < characterAmount; i++)
+        {
+            CharacterGenerator.CreateCharacterAccount(bank, CharacterGenerator.CreateRandomCharacter(Random.Range(0,9999999), Random.Range(0, 9999999)));             
+        }
+            
     }
 
 }

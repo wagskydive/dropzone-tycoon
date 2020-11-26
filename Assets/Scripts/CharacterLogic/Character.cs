@@ -10,23 +10,23 @@ namespace CharacterLogic
 {
     public class Character
     {
+        public string CharacterName { get; private set; }
+        public string FinancialAccountID { get; private set; }
+
         public Character(string name)
         {
             CharacterName = name;
-            inventory = new Inventory();
-            
+            inventory = new Inventory();            
         }
 
-        public string CreateAccount(Bank bank, int startMoney =0)
+
+
+        internal void SetFinancialAccountID(string id)
         {
-            FinancialAccountID = FinancialDataCreator.CreateNewAccount(bank, CharacterName, startMoney);
-            return FinancialAccountID;
+            FinancialAccountID = id;
         }
 
-        public string CharacterName;
-        public string FinancialAccountID;
-
-        public Inventory inventory;
+        internal Inventory inventory;
 
     }
 }
