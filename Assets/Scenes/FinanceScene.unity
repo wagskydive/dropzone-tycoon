@@ -1340,7 +1340,7 @@ MonoBehaviour:
   StatTypes:
   - Health
   - Stamina
-  - ' Food Need'
+  - Food
   - Excitedness
 --- !u!4 &685592386
 Transform:

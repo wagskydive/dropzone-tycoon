@@ -28,7 +28,7 @@ namespace CharacterLogic
         internal Stat(string name)
         {
             Name = name;
-            Value = 0;
+            Value = 1;
             HasThreshhold = false;
         }
 
