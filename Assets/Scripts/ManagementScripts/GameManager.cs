@@ -14,6 +14,9 @@ namespace ManagementScripts
         [SerializeField]
         private string[] StatTypes;
 
+        [SerializeField]
+        private string[] ItemTypes;
+
         public Bank bank;
 
         public CharacterDataHolder Characters;
