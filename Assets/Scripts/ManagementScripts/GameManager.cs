@@ -19,13 +19,40 @@ namespace ManagementScripts
 
         public CharacterDataHolder Characters;
 
+        internal List<int> ActiveCharacters = new List<int>();
 
         private void Awake()
         {
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
-
         }
+
+        private void Update()
+        {
+            if (ActiveCharacters.Count > 0)
+            {
+                CharacterTicker.TickCharacterList(Characters, ActiveCharacters, Time.time);
+            }
+        }
+
+        public void ActivateCharacter(string characterName)
+        {
+            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+            if (!ActiveCharacters.Contains(characterIndex))
+            {
+                ActiveCharacters.Add(characterIndex);
+            }
+        }
+
+        public void DeactivateCharacter(string characterName)
+        {
+            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+            if (ActiveCharacters.Contains(characterIndex))
+            {
+                ActiveCharacters.Remove(characterIndex);
+            }
+        }
+
 
     }
 }

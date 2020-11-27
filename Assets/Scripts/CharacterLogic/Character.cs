@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using InventoryLogic;
 using FinanceLogic;
+using StatsLogic;
 
 
 
@@ -20,20 +21,11 @@ namespace CharacterLogic
         public Character(string name, string[] statNames)
         {
             CharacterName = name;
-            stats = CreateStats(statNames);
+            stats = StatsHandler.CreateStats(statNames);
             inventory = new Inventory();            
         }
 
-        Stat[] CreateStats(string[] statNames)
-        {
-            Stat[] stats = new Stat[statNames.Length];
-            for (int i = 0; i < statNames.Length; i++)
-            {
-                Stat stat = new Stat(statNames[i]);
-                stats[i] = stat;
-            }
-            return stats;
-        }
+
 
         internal void SetFinancialAccountID(string id)
         {
@@ -42,18 +34,17 @@ namespace CharacterLogic
 
         internal void SetStat(int index, float value)
         {
-            stats[index].SetStatValue(value);
+            StatsHandler.SetStatValue(stats[index],value);
         }
 
         internal void TickStats(float currentTime)
         {
             for (int i = 0; i < stats.Length; i++)
             {
-                if(stats[i].ValueChangePerSecond != 0 && stats[i].HasThreshhold)
+                if(stats[i].ValueChangePerSecond != 0)
                 {
-                    stats[i].Tick(currentTime);
-                }
-                
+                    StatsHandler.Tick(stats[i], currentTime);
+                }                
             }
         }
 
