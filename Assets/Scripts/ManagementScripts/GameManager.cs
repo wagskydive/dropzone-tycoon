@@ -52,7 +52,5 @@ namespace ManagementScripts
                 ActiveCharacters.Remove(characterIndex);
             }
         }
-
-
     }
 }
