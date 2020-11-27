@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CharacterLogic;
 using FinanceLogic;
+using ManagementScripts;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,16 +19,20 @@ public class CharacterDetailsPanel : MonoBehaviour
 
     public string CurrentCharacterName;
 
+    private GameManager gameManager;
+
     private void Awake()
     {
         CharacterButton.OnCharacterButtonClick += GetAndShowCharacterDetails;
+        gameManager = FindObjectOfType<ManagementScripts.GameManager>();
     }
 
 
 
     private void GetAndShowCharacterDetails(string characterName)
     {
-        CharacterDataHolder holder = FindObjectOfType<ManagementScripts.GameManager>().Characters;
+        gameManager.ActivateCharacter(characterName);
+        CharacterDataHolder holder = gameManager.Characters;
         CurrentCharacterName = characterName;
         CharacterNameText.text = "Name: " + characterName;
         SetMoneyText(CharacterDataSupplier.GetCharacterFromName(holder, characterName).FinancialAccountID);
