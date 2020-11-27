@@ -53,12 +53,5 @@ public class StatBar : MonoBehaviour
     {
         TreshholdBar.localPosition = new Vector3((rectTransform.sizeDelta.x * factor)- rectTransform.sizeDelta.x*.5f, 0, 0);
     }
-    //private void Update()
-    //{
-    //    if (isChanging)
-    //    {
-    //        SetFiller(StatsHandler.GetAndSetCurrentValue(DisplayedStat, Time.deltaTime));
-    //    }
-    //}
 
 }
