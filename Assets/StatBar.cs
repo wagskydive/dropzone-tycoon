@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using CharacterLogic;
+using StatsLogic;
 
 public class StatBar : MonoBehaviour
 {
@@ -12,6 +12,17 @@ public class StatBar : MonoBehaviour
 
     Stat DisplayedStat;
 
+    bool isChanging;
+
+    public RectTransform TreshholdBar;
+
+    RectTransform rectTransform;
+
+    private void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
+
     public void HookUp(Stat statToDisplay)
     {
         if (DisplayedStat != null)
@@ -19,14 +30,28 @@ public class StatBar : MonoBehaviour
             DisplayedStat.OnValueChanged -= SetFiller;
         }
         DisplayedStat = statToDisplay;
-        SetFiller(DisplayedStat.Value);
+        SetFiller(StatsHandler.Tick(DisplayedStat, Time.deltaTime));
         NameText.text = statToDisplay.Name;
-        DisplayedStat.OnValueChanged += SetFiller;
+        if(statToDisplay.ValueChangePerSecond != 0)
+        {
+            isChanging = true;
+        }
+
+        SetTreshholdPosition(DisplayedStat.Threshhold);
+
+
+        statToDisplay.OnThreshholdSet += SetTreshholdPosition;
+        statToDisplay.OnValueChanged += SetFiller;
     }
 
     void SetFiller(float value)
     {
         BarFiller.fillAmount = value;
+    }
+
+    public void SetTreshholdPosition(float factor)
+    {
+        TreshholdBar.localPosition = new Vector3((rectTransform.sizeDelta.x * factor)- rectTransform.sizeDelta.x*.5f, 0, 0);
     }
 
 }

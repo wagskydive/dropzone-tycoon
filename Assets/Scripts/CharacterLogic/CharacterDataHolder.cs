@@ -12,8 +12,6 @@ namespace CharacterLogic
 
         internal List<Character> AllCharacters { get; private set; }
 
-        internal List<int> ActiveCharacters;
-
         internal string[] StatNames; 
 
         public CharacterDataHolder(string[] statNames = null)
