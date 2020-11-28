@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using FinanceLogic;
 using CharacterLogic;
+using SkillsLogic;
 
 namespace ManagementScripts
 {
@@ -14,6 +15,7 @@ namespace ManagementScripts
         [SerializeField]
         private string[] StatTypes;
 
+        public List<Skill> allSkills;
 
         public Bank bank;
 
@@ -35,22 +37,43 @@ namespace ManagementScripts
             }
         }
 
-        public void ActivateCharacter(string characterName)
+        public bool ActivateCharacterReturnWasActive(string characterName)
         {
             int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
             if (!ActiveCharacters.Contains(characterIndex))
             {
                 ActiveCharacters.Add(characterIndex);
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
-        public void DeactivateCharacter(string characterName)
+        public bool DeactivateCharacterReturnWasAcrive(string characterName)
         {
             int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
             if (ActiveCharacters.Contains(characterIndex))
             {
                 ActiveCharacters.Remove(characterIndex);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
-    }
+
+        public bool CheckIfCharacterIsActive(string characterName)
+        {
+
+            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+            return ActiveCharacters.Contains(characterIndex);
+
+
+        }
+
+
+        }
 }
