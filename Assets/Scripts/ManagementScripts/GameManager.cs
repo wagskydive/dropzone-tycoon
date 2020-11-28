@@ -15,7 +15,7 @@ namespace ManagementScripts
         [SerializeField]
         private string[] StatTypes;
 
-        public List<Skill> allSkills;
+        public List<Skill> allSkills = new List<Skill>();
 
         public Bank bank;
 

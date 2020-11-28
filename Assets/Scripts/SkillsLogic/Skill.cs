@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using StatsLogic;
 
@@ -19,9 +20,14 @@ namespace SkillsLogic
 
         public Skill(string skillName)
         {
+            Name = skillName;
             training = StatsHandler.CreateSingleStat(skillName+"_training");
+            //RequieredSkills = new List<string>();
         }
 
-
+        public void SetRequieredSkills(string[] v)
+        {
+            RequieredSkills = v;
+        }
     }
 }

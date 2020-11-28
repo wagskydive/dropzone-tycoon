@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 public class SkillNode : MonoBehaviour
 {
-    public DropdownHandler dropdownHandler;
-
     public GameObject SelectRequirementPanel;
 
     public GameObject EditDescriptionPanel;
 
     public Text NameText;
+
+    public Text RequirementsText;
 
     List<string> Requirements = new List<string>();
 
@@ -29,19 +29,34 @@ public class SkillNode : MonoBehaviour
     public void SetSkillName(string skillName)
     {
         NameText.text = skillName;
+        gameObject.name = skillName+" Node";
     }
 
     public void ShowSelectRequirementButtonClick()
     {
-        SelectRequirementPanel.SetActive(!SelectRequirementPanel.activeSelf);
-        string[] skills = new string[gameManager.allSkills.Count];
-
-        for (int i = 0; i < gameManager.allSkills.Count; i++)
+        bool panelActive = SelectRequirementPanel.activeSelf;
+        if (!panelActive)
         {
-            skills[i] = gameManager.allSkills[i].Name;
+            SelectRequirementPanel.SetActive(true);
+            SelectRequirementPanel.GetComponent<RequirementSelector>().AssignNode(NameText.text, this);
         }
+        else
+        {
+            SelectRequirementPanel.SetActive(false);
+        }
+               
+    }
 
-        dropdownHandler.PopulateDropDown(skills, NameText.text);
+    void SetRequirementsText()
+    {
+        string requirementsString = "";
+        int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
+
+        for (int i = 0; i < gameManager.allSkills[index].RequieredSkills.Length; i++)
+        {
+            requirementsString += gameManager.allSkills[index].RequieredSkills[i] + "\n";
+        }
+        RequirementsText.text = requirementsString;
     }
 
     public void EditDescriptionButtonClick()
@@ -49,12 +64,15 @@ public class SkillNode : MonoBehaviour
         EditDescriptionPanel.SetActive(!EditDescriptionPanel.activeSelf);
     }
 
-    public void AddRequirement()
+    public void AddRequirement(string reqToAdd)
     {
-        string reqToAdd = dropdownHandler.GetSelected();
+        //string reqToAdd = SelectRequirementPanel.GetComponent<RequirementSelector>().dropdownHandler.GetSelected();
         if (!DataLogic.DataChecks.CheckForIdExists(Requirements.ToArray(), reqToAdd))
         {
             Requirements.Add(reqToAdd);
+            int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
+            gameManager.allSkills[index].SetRequieredSkills(Requirements.ToArray());
+            SetRequirementsText();
         }            
     }
 }

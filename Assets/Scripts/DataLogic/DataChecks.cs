@@ -24,5 +24,11 @@ namespace DataLogic
             }
             return id;
         }
+
+        public static int GetMax(int first, int second)
+        {
+            return first >= second ? first : second;
+        }
+
     }
 }
