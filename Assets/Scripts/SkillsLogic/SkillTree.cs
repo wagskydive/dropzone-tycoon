@@ -11,15 +11,15 @@ public class SkillTree
         int skillIndex = skills.FindIndex(x => x.Name == skillName);
 
         Skill sk = skills[skillIndex];
-        bool hasReq = sk.RequieredSkills.Any();
+        bool hasReq = sk.RequiredSkills.Any();
 
         if (hasReq)
         {
             int highestLevel = 1;
-            for (int i = 0; i < sk.RequieredSkills.Length; i++)
+            for (int i = 0; i < sk.RequiredSkills.Length; i++)
             {
                 
-                string reqSkill = skills[skillIndex].RequieredSkills[i];
+                string reqSkill = skills[skillIndex].RequiredSkills[i];
 
                 highestLevel =  DataChecks.GetMax(GetHiarchyLevelOfSkill(skills,reqSkill) +1, highestLevel);
             }

@@ -12,22 +12,27 @@ namespace SkillsLogic
     {
         public Stat training { get; internal set; }
 
-        public string[] RequieredSkills { get; internal set; }
+        public string[] RequiredSkills { get; internal set; }
 
         public string Name { get; internal set; }
 
-        Dictionary<string, float> Effectors;
+        public Dictionary<string, float> Effectors;
 
         public Skill(string skillName)
         {
             Name = skillName;
             training = StatsHandler.CreateSingleStat(skillName+"_training");
             //RequieredSkills = new List<string>();
+
+            Effectors = new Dictionary<string, float>();
+
+            Effectors.Add("Test effector 1", .1f); 
+            Effectors.Add("Test effector 2", .2f);
         }
 
-        public void SetRequieredSkills(string[] v)
+        public void SetRequieredSkills(string[] skill)
         {
-            RequieredSkills = v;
+            RequiredSkills = skill;
         }
     }
 }

@@ -42,4 +42,16 @@ public class SkillCreatorUI : MonoBehaviour
 
     }
 
+    public void SaveTreeButtonClick()
+    {
+        string path = Application.persistentDataPath + "/SkillTree4.json";
+        Debug.Log(path);
+
+
+
+        FileSaver.SaveSkillTreeToJson(path, gameManager.allSkills.ToArray());
+        //Debug.Log(SaveAndLoad.SaveSkillTree(gameManager.allSkills.ToArray(), path));
+    }
+
+
 }

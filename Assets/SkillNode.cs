@@ -52,9 +52,9 @@ public class SkillNode : MonoBehaviour
         string requirementsString = "";
         int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
 
-        for (int i = 0; i < gameManager.allSkills[index].RequieredSkills.Length; i++)
+        for (int i = 0; i < gameManager.allSkills[index].RequiredSkills.Length; i++)
         {
-            requirementsString += gameManager.allSkills[index].RequieredSkills[i] + "\n";
+            requirementsString += gameManager.allSkills[index].RequiredSkills[i] + "\n";
         }
         RequirementsText.text = requirementsString;
     }
