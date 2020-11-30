@@ -25,20 +25,20 @@ public class SkillSave
 
         string effectorsP = "";
         int i = 0;
-        foreach (KeyValuePair<string, float> entry in skill.Effectors)
-        {
-            string[] keyVal = new string[2];
-            keyVal[0] = entry.Key;
-            keyVal[1] = entry.Value.ToString();
-
-            effectorsP += JsonUtility.ToJson(keyVal);
-
-
-            i++;
-            // do something with entry.Value or entry.Key
-        }
-
-        //JsonUtility.ToJson(skill.Effectors);
+        //foreach (KeyValuePair<string, float> entry in skill.Effectors)
+        //{
+        //    string[] keyVal = new string[2];
+        //    keyVal[0] = entry.Key;
+        //    keyVal[1] = entry.Value.ToString();
+        //
+        //    effectorsP += JsonUtility.ToJson(keyVal);
+        //
+        //
+        //    i++;
+        //    // do something with entry.Value or entry.Key
+        //}
+        //
+        ////JsonUtility.ToJson(skill.Effectors);
         return JsonUtility.ToJson(skill.Effectors);
     }
 }

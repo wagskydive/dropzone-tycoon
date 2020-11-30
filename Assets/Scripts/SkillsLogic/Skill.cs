@@ -16,17 +16,28 @@ namespace SkillsLogic
 
         public string Name { get; internal set; }
 
+        public string Description { get; internal set; }
+
         public Dictionary<string, float> Effectors;
 
-        public Skill(string skillName)
+        public Skill(string skillName, string description = null)
         {
             Name = skillName;
-            training = StatsHandler.CreateSingleStat(skillName+"_training");
+            if(description == null)
+            {
+                Description = "No Description";
+            }
+            else
+            {
+                Description = description;
+            }
+
+            training = StatsHandler.CreateSingleStat(skillName + "_training");
             //RequieredSkills = new List<string>();
 
             Effectors = new Dictionary<string, float>();
 
-            Effectors.Add("Test effector 1", .1f); 
+            Effectors.Add("Test effector 1", .1f);
             Effectors.Add("Test effector 2", .2f);
         }
 
