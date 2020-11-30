@@ -10,7 +10,7 @@ namespace SkillsLogic
 
     public class Skill
     {
-        public Stat training { get; internal set; }
+        public Stat Training { get; internal set; }
 
         public string[] RequiredSkills { get; internal set; }
 
@@ -18,9 +18,9 @@ namespace SkillsLogic
 
         public string Description { get; internal set; }
 
-        public Dictionary<string, float> Effectors;
+        public Dictionary<string, float> Effectors { get; internal set; }
 
-        public Skill(string skillName, string description = null)
+        public Skill(string skillName, string description = null, Dictionary<string, float> effectors= null)
         {
             Name = skillName;
             if(description == null)
@@ -32,18 +32,26 @@ namespace SkillsLogic
                 Description = description;
             }
 
-            training = StatsHandler.CreateSingleStat(skillName + "_training");
-            //RequieredSkills = new List<string>();
+            Training = StatsHandler.CreateSingleStat(skillName + "_training");
 
-            Effectors = new Dictionary<string, float>();
 
-            Effectors.Add("Test effector 1", .1f);
-            Effectors.Add("Test effector 2", .2f);
+            Effectors =effectors;
+
+        }
+
+        public void SetDescription(string description)
+        {
+            Description = description;
         }
 
         public void SetRequieredSkills(string[] skill)
         {
             RequiredSkills = skill;
+        }
+
+        public void SetEffectors(Dictionary<string, float> effectors)
+        {
+            Effectors = effectors;
         }
     }
 }

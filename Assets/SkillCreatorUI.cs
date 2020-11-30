@@ -27,7 +27,14 @@ public class SkillCreatorUI : MonoBehaviour
     public void CreateSkillNode()
     {
         string inputText = DataChecks.EnsureUnique(allSkillNames.ToArray(), NameInput.text);
-        Skill skill = new Skill(inputText);
+
+        Dictionary<string, float> effectors = new Dictionary<string, float>();
+        effectors.Add("Test effector 1", .1f);
+        effectors.Add("Test effector 2", .2f);
+
+        string description = "Test Description";
+
+        Skill skill = new Skill(inputText, description, effectors);
 
         gameManager.allSkills.Add(skill);
 
@@ -49,6 +56,10 @@ public class SkillCreatorUI : MonoBehaviour
 
 
         FileSaver.SkillTreeToJson(path, gameManager.allSkills.ToArray());
+
+        FileSaver.JsonToSkillTree(path);
+
+
         //Debug.Log(SaveAndLoad.SaveSkillTree(gameManager.allSkills.ToArray(), path));
     }
 
