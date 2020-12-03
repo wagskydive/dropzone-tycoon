@@ -4,15 +4,21 @@ namespace DataLogic
 {
     public static class DataChecks
     {
-        public static bool CheckForIdExists(string[] list, string stringToCheck)
+        public static bool CheckForIndexExists(int[] list, int indexToCheck)
+        {
+            return list.Contains(indexToCheck);
+        }
+
+        public static bool CheckForStringExists(string[] list, string stringToCheck)
         {
             return list.Contains(stringToCheck);
         }
 
+
         public static string EnsureUnique(string[] list, string id)
         {
             int append = 1;
-            while (CheckForIdExists(list, id))
+            while (CheckForStringExists(list, id))
             {
                 if (id.EndsWith($"_{ append }"))
                 {

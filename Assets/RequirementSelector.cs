@@ -36,14 +36,17 @@ public class RequirementSelector : MonoBehaviour
 
     private void SetDropDownOptions(List<Skill> allSkills)
     {
-        string[] skills = new string[allSkills.Count];
+        List<string> skills = new List<string>();
 
-        for (int i = 0; i < allSkills.Count; i++)
+        int[] validOptions = SkillTreeDataHandler.ValidRequirememts(allSkills.ToArray(), currentSkill);
+
+        for (int i = 0; i < validOptions.Length; i++)
         {
-            skills[i] = allSkills[i].Name;
+            skills.Add(allSkills[i].Name);
+
         }
 
-        dropdownHandler.PopulateDropDown(skills, currentSkill);
+        dropdownHandler.PopulateDropDown(skills.ToArray(), currentSkill);
     }
 
 }

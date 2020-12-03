@@ -12,7 +12,7 @@ namespace SkillsLogic
     {
         public Stat Training { get; internal set; }
 
-        public string[] RequiredSkills { get; internal set; }
+        public int[] RequiredSkills { get; internal set; }
 
         public string Name { get; internal set; }
 
@@ -44,9 +44,9 @@ namespace SkillsLogic
             Description = description;
         }
 
-        public void SetRequieredSkills(string[] skill)
+        public void SetRequieredSkills(int[] skillIndexes)
         {
-            RequiredSkills = skill;
+            RequiredSkills = skillIndexes;
         }
 
         public void SetEffectors(Dictionary<string, float> effectors)
