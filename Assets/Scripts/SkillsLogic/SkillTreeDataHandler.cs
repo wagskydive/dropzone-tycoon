@@ -3,6 +3,7 @@ using DataLogic;
 using System.Collections.Generic;
 using System.Linq;
 
+
 public static class SkillTreeDataHandler
 {
     public static int GetHiarchyLevelOfSkill(List<Skill> skills, string skillName)
@@ -22,7 +23,6 @@ public static class SkillTreeDataHandler
 
                 int highestLevelOfRequirement =  DataChecks.GetMax(GetHiarchyLevelOfSkill(skills,skills[reqSkill].Name) +1, highestLevel);
                 highestLevel = DataChecks.GetMax(highestLevel, highestLevelOfRequirement);
-
             }
         }
         return level;        
@@ -201,27 +201,32 @@ public static class SkillTreeDataHandler
     //Skills that are requirements of subject recursive
     public static int[] GetAllUpstreamSkills(Skill[] allSkills, int subject)
     {
+        if (allSkills[subject].IsRoot())
+        {
+            return null;
+        }
         int[] subjectRequirements = allSkills[subject].RequiredSkills;
         List<int> upstreamList = new List<int>();
 
-        if (subjectRequirements != null && subjectRequirements.Length > 0)
-        {
 
-            upstreamList.AddRange(subjectRequirements);
-            for (int i = 0; i < subjectRequirements.Length; i++)
+        upstreamList.AddRange(subjectRequirements);
+
+        for (int i = 0; i < subjectRequirements.Length; i++)
+        {
+            if (!allSkills[subjectRequirements[i]].IsRoot())
             {
+
                 int[] upstream = GetAllUpstreamSkills(allSkills, subjectRequirements[i]);
                 if (upstream != null && upstream.Length > 0)
                 {
                     upstreamList.AddRange(upstream);
                 }
             }
+
         }
 
-        if (upstreamList.Count == 0)
-        {
-            return null;
-        }
+
+
 
         return upstreamList.ToArray();
     }

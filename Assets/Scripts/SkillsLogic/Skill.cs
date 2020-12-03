@@ -14,11 +14,35 @@ namespace SkillsLogic
 
         public int[] RequiredSkills { get; internal set; }
 
+        public int[] IsRequirementOf { get; internal set; }
+
         public string Name { get; internal set; }
 
         public string Description { get; internal set; }
 
         public Dictionary<string, float> Effectors { get; internal set; }
+
+        public bool IsRoot()
+        {
+            bool isRoot = true;
+            if(RequiredSkills != null && RequiredSkills.Length > 0)
+            {
+                isRoot = false;
+            }
+            return isRoot;
+        }
+
+        public bool IsLeafm()
+        {
+            bool isLeaf = true;
+            if (IsRequirementOf != null && IsRequirementOf.Length > 0)
+            {
+                isLeaf = false;
+            }
+            return isLeaf;
+        }
+
+
 
         public Skill(string skillName, string description = null, Dictionary<string, float> effectors= null)
         {

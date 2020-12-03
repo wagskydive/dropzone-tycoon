@@ -36,7 +36,7 @@ public class SkillCreatorUI : MonoBehaviour
 
         Skill skill = new Skill(inputText, description, effectors);
 
-        gameManager.allSkills.Add(skill);
+        gameManager.skillTree.AddSkill(skill);
 
         
         GameObject node = Instantiate(SkillNodePrefab, SkillTreeParent);
@@ -55,7 +55,7 @@ public class SkillCreatorUI : MonoBehaviour
         Debug.Log(path);
 
 
-        FileSaver.SkillTreeToJson(path, gameManager.allSkills.ToArray());
+        FileSaver.SkillTreeToJson(path, gameManager.skillTree.tree);
 
         FileSaver.JsonToSkillTree(path);
 

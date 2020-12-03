@@ -15,7 +15,9 @@ namespace ManagementScripts
         [SerializeField]
         private string[] StatTypes;
 
-        public List<Skill> allSkills = new List<Skill>();
+        //public List<Skill> allSkills = new List<Skill>();
+
+        public SkillTree skillTree = new SkillTree();
 
         public Bank bank;
 
@@ -25,6 +27,11 @@ namespace ManagementScripts
 
         private void Awake()
         {
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager != this)
+            {
+                Destroy(this);
+            }
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
         }

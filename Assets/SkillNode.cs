@@ -20,10 +20,28 @@ public class SkillNode : MonoBehaviour
     string description = "";
 
     GameManager gameManager;
+   
+
 
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+        SelectRequirementPanel.GetComponent<RequirementSelector>().OnConfirmButtonClick += ClickDetect;
+
+
+    }
+
+    public void ClickDetect(SkillNode node)
+    {
+        if(node == this)
+        {
+            SetRequirementsText();
+        }
+    }
+
+    public int CurrentIndex()
+    {
+        return gameManager.skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text);
     }
 
     public void SetSkillName(string skillName)
@@ -38,25 +56,59 @@ public class SkillNode : MonoBehaviour
         if (!panelActive)
         {
             SelectRequirementPanel.SetActive(true);
-            SelectRequirementPanel.GetComponent<RequirementSelector>().AssignNode(NameText.text, this);
+            ShowSelectRequirement();
+
         }
         else
         {
-            SelectRequirementPanel.SetActive(false);
+            if(SelectRequirementPanel.GetComponent<RequirementSelector>().currentSkillNode == this)
+            {
+                SelectRequirementPanel.SetActive(false);
+            }
+            else
+            {
+                ShowSelectRequirement();
+            }
+        }               
+    }
+
+
+
+    public void ShowSelectRequirement()
+    {
+        SkillTree skillTree = gameManager.skillTree;
+
+
+        int[] reqs = skillTree.tree[skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text)].RequiredSkills;
+        if(reqs != null)
+        {
+            Requirements = new List<string>();
+            for (int i = 0; i < reqs.Length; i++)
+            {
+                Requirements.Add(skillTree.tree[reqs[i]].Name);
+            }
         }
-               
+
+            
+           
+        SelectRequirementPanel.GetComponent<RequirementSelector>().AssignNode(NameText.text, this);
+        
     }
 
     void SetRequirementsText()
     {
         string requirementsString = "";
-        int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
-
-        for (int i = 0; i < gameManager.allSkills[index].RequiredSkills.Length; i++)
+        int index = CurrentIndex();
+        int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
+        if(requirements != null)
         {
-            requirementsString += gameManager.allSkills[gameManager.allSkills[index].RequiredSkills[i]].Name + "\n";
+            for (int i = 0; i < requirements.Length; i++)
+            {
+                requirementsString += gameManager.skillTree.tree[requirements[i]].Name + "\n";
+            }
+            RequirementsText.text = requirementsString;
         }
-        RequirementsText.text = requirementsString;
+
     }
 
     public void EditDescriptionButtonClick()
@@ -66,41 +118,11 @@ public class SkillNode : MonoBehaviour
 
     public void AddRequirement(string reqToAdd)
     {
-        if(SkillTreeDataHandler.ValidateRequirement(gameManager.allSkills.ToArray(),reqToAdd, NameText.text))
+        SkillTree skillTree = gameManager.skillTree;
+        if(skillTree.ValidateRequirement(reqToAdd, NameText.text))
         {
             Requirements.Add(reqToAdd);
-            int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
-
-
-            if(gameManager.allSkills[index].RequiredSkills != null && gameManager.allSkills[index].RequiredSkills.Length > 0)
-            {
-                int[] reqIndexes = new int[gameManager.allSkills[index].RequiredSkills.Length + 1];
-                for (int i = 0; i < reqIndexes.Length-1; i++)
-                {
-                    reqIndexes[i] = gameManager.allSkills[index].RequiredSkills[i];
-                }
-                reqIndexes[reqIndexes.Length - 1] = gameManager.allSkills.FindIndex(x => x.Name == reqToAdd);
-                gameManager.allSkills[index].SetRequieredSkills(reqIndexes);
-            }
-            else
-            {                
-                int[] reqIndexes = new int[1];
-                reqIndexes[0] = gameManager.allSkills.FindIndex(x => x.Name == reqToAdd);
-
-                gameManager.allSkills[index].SetRequieredSkills(reqIndexes);
-            }
-
             SetRequirementsText();
-        }
-
-
-        //string reqToAdd = SelectRequirementPanel.GetComponent<RequirementSelector>().dropdownHandler.GetSelected();
-        //if (!DataLogic.DataChecks.CheckForStringExists(Requirements.ToArray(), reqToAdd))
-        //{
-        //    Requirements.Add(reqToAdd);
-        //    int index = gameManager.allSkills.FindIndex(x => x.Name == NameText.text);
-        //    gameManager.allSkills[index].SetRequieredSkills(Requirements.ToArray());
-        //    SetRequirementsText();
-        //}            
+        }           
     }
 }
