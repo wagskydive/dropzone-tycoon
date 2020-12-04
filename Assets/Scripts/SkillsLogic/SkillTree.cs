@@ -9,7 +9,17 @@ namespace SkillsLogic
 {
     public class SkillTree
     {
+        public event Action<SkillTree> OnSkillTreeModified;
+
+        public string TreeName;
+
         public Skill[] tree;
+
+        public void ResetTree(Skill[] tr)
+        {
+            tree = tr;
+            OnSkillTreeModified?.Invoke(this);
+        }
 
 
         public void AddSkill(Skill skill)
@@ -36,6 +46,7 @@ namespace SkillsLogic
                 
                 tree = newTree;
             }
+            OnSkillTreeModified?.Invoke(this);
         }
 
         public void AddRequirementToSkill(string req, string skill)
@@ -72,7 +83,8 @@ namespace SkillsLogic
                 }
 
                 tree[skillIndex].SetRequieredSkills(newReqs);
-            }            
+            }
+            OnSkillTreeModified?.Invoke(this);
         }
 
         public int[] GetIndecesFromNames(string[] names)
@@ -85,14 +97,14 @@ namespace SkillsLogic
             return output.ToArray();
         }
 
-        public  int GetHiarchyLevelOfSkill(string skillName)
+        public int GetHiarchyLevelOfSkill(string skillName)
         {
             int level = 0;
             int skillIndex = FindIndexOfSkillByNameInSkillArray(skillName);
 
             Skill skillToCheck = tree[skillIndex];
 
-            if (skillToCheck.RequiredSkills.Any())
+            if (skillToCheck.RequiredSkills != null && skillToCheck.RequiredSkills.Length > 0)
             {
                 int highestLevel = 1;
                 for (int i = 0; i < skillToCheck.RequiredSkills.Length; i++)
@@ -103,8 +115,23 @@ namespace SkillsLogic
                     int highestLevelOfRequirement = DataChecks.GetMax(GetHiarchyLevelOfSkill(tree[reqSkill].Name) + 1, highestLevel);
                     highestLevel = DataChecks.GetMax(highestLevel, highestLevelOfRequirement);
                 }
+                level = DataChecks.GetMax(level, highestLevel);
             }
             return level;
+        }
+
+        public int GetMaxHiarchyLevelOfTree()
+        {
+            int max = 0;
+            for (int i = 0; i < tree.Length; i++)
+            {
+                int hiarchyLevel = GetHiarchyLevelOfSkill(tree[i].Name);
+                if (hiarchyLevel > max)
+                {
+                    max = hiarchyLevel;
+                }               
+            }
+            return max;
         }
 
 

@@ -12,6 +12,9 @@ namespace ManagementScripts
 {
     public class GameManager : MonoBehaviour
     {
+        public event Action<SkillTree> OnOldSkillWillBeDestroyed;
+        public event Action<SkillTree> OnNewSkillCreated;
+
         [SerializeField]
         private string[] StatTypes;
 
@@ -43,6 +46,24 @@ namespace ManagementScripts
                 CharacterTicker.TickCharacterList(Characters, ActiveCharacters, Time.time);
             }
         }
+
+        public void NewTree(string tName)
+        {
+            //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
+            skillTree = new SkillTree();
+            skillTree.TreeName = tName;
+            OnNewSkillCreated?.Invoke(skillTree);
+        }
+
+        public void LoadTree(Skill[] loadedTree, string tName)
+        {
+            //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
+            skillTree = new SkillTree();
+            skillTree.ResetTree(loadedTree);
+            skillTree.TreeName = tName;
+            OnNewSkillCreated?.Invoke(skillTree);
+        }
+
 
         public bool ActivateCharacterReturnWasActive(string characterName)
         {

@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RequirementSelector : MonoBehaviour
+public class RequirementSelector : Editable
 {
     public event Action<SkillNode> OnConfirmButtonClick;
+    public override event Action<string> OnEdited;
 
     public DropdownHandler dropdownHandler;
     public Text requirementSelectorName;
@@ -25,7 +26,7 @@ public class RequirementSelector : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    public void AssignNode(string skillName, SkillNode skillNode)
+    public override void AssignNode(string skillName, SkillNode skillNode)
     {
         currentSkill = skillName;
         currentSkillNode = skillNode;
@@ -42,6 +43,17 @@ public class RequirementSelector : MonoBehaviour
         OnConfirmButtonClick?.Invoke(currentSkillNode);
     }
 
+    public override void EditConfirmed()
+    {
+        DisableEditMode();
+
+        OnEdited?.Invoke(dropdownHandler.GetSelected());
+    }
+
+    public override void SetDisplaytext(string text)
+    {
+        base.SetDisplaytext(text);
+    }
 
     private void SetDropDownOptions(SkillTree skillTree)
     {

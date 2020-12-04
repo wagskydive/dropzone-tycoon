@@ -1,5 +1,6 @@
 ﻿using ManagementScripts;
 using SkillsLogic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,26 +8,32 @@ using UnityEngine.UI;
 
 public class SkillNode : MonoBehaviour
 {
-    public GameObject SelectRequirementPanel;
-
-    public GameObject EditDescriptionPanel;
+    public GameObject EditSkillPanel;
 
     public Text NameText;
 
     public Text RequirementsText;
+
+    public Text DescriptionText;
+
+    public NodeConnectionPathCreator pathCreator;
 
     List<string> Requirements = new List<string>();
 
     string description = "";
 
     GameManager gameManager;
-   
 
+    public RectTransform nodePathLeft;
+    public RectTransform nodePathRight;
+
+    public SkillTreeUI treeUI;
 
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-        SelectRequirementPanel.GetComponent<RequirementSelector>().OnConfirmButtonClick += ClickDetect;
+        EditSkillPanel.GetComponent<SkillDetailsPanel>();
+
 
 
     }
@@ -35,7 +42,7 @@ public class SkillNode : MonoBehaviour
     {
         if(node == this)
         {
-            SetRequirementsText();
+            UpdateNode();
         }
     }
 
@@ -50,57 +57,99 @@ public class SkillNode : MonoBehaviour
         gameObject.name = skillName+" Node";
     }
 
-    public void ShowSelectRequirementButtonClick()
+    public string GetSkillName()
     {
-        bool panelActive = SelectRequirementPanel.activeSelf;
+        return NameText.text;
+    }
+
+    public void ShowEditSkillButtonClick()
+    {
+        bool panelActive = EditSkillPanel.activeSelf;
         if (!panelActive)
         {
-            SelectRequirementPanel.SetActive(true);
-            ShowSelectRequirement();
+            EditSkillPanel.SetActive(true);
+            ShowSkillDetails();
 
         }
         else
         {
-            if(SelectRequirementPanel.GetComponent<RequirementSelector>().currentSkillNode == this)
+            if(EditSkillPanel.GetComponent<RequirementSelector>().currentSkillNode == this)
             {
-                SelectRequirementPanel.SetActive(false);
+                EditSkillPanel.SetActive(false);
             }
             else
             {
-                ShowSelectRequirement();
+                ShowSkillDetails();
             }
         }               
     }
 
 
 
-    public void ShowSelectRequirement()
+    public void ShowSkillDetails()
     {
-        SkillTree skillTree = gameManager.skillTree;
+        //SkillTree skillTree = gameManager.skillTree;
+        //
+        //
+        //int[] reqs = skillTree.tree[skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text)].RequiredSkills;
+        //if(reqs != null)
+        //{
+        //    Requirements = new List<string>();
+        //    for (int i = 0; i < reqs.Length; i++)
+        //    {
+        //        Requirements.Add(skillTree.tree[reqs[i]].Name);
+        //    }
+        //}
 
 
-        int[] reqs = skillTree.tree[skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text)].RequiredSkills;
-        if(reqs != null)
-        {
-            Requirements = new List<string>();
-            for (int i = 0; i < reqs.Length; i++)
-            {
-                Requirements.Add(skillTree.tree[reqs[i]].Name);
-            }
-        }
 
-            
-           
-        SelectRequirementPanel.GetComponent<RequirementSelector>().AssignNode(NameText.text, this);
+        EditSkillPanel.GetComponent<SkillDetailsPanel>().AssignSkillNode(this);
         
     }
 
-    void SetRequirementsText()
+    Vector3 GetPositionTroughRayCast(Vector3 inp)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(inp);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            //draw invisible ray cast/vector
+            Debug.DrawLine(ray.origin, hit.point);
+            //log hit area to the console
+            return hit.point;
+
+        }
+        else
+        {
+            return Vector3.zero;
+        }
+    }
+
+    public void UpdateNode()
+    {
+        int index = CurrentIndex();
+        int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
+        if (requirements != null)
+        {
+            Camera cam = Camera.main;
+            for (int i = 0; i < requirements.Length; i++)
+            {
+                pathCreator.CreateRequirementPath(GetPositionTroughRayCast(nodePathLeft.anchoredPosition), GetPositionTroughRayCast(treeUI.allNodes[requirements[i]].GetComponent<SkillNode>().nodePathRight.anchoredPosition));
+            }
+            UpdateRequirementsTexts();
+        }
+        DescriptionText.text = gameManager.skillTree.tree[index].Description;
+
+    }
+
+    
+
+    private void UpdateRequirementsTexts()
     {
         string requirementsString = "";
         int index = CurrentIndex();
         int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
-        if(requirements != null)
+        if (requirements != null)
         {
             for (int i = 0; i < requirements.Length; i++)
             {
@@ -108,13 +157,9 @@ public class SkillNode : MonoBehaviour
             }
             RequirementsText.text = requirementsString;
         }
-
     }
 
-    public void EditDescriptionButtonClick()
-    {
-        EditDescriptionPanel.SetActive(!EditDescriptionPanel.activeSelf);
-    }
+
 
     public void AddRequirement(string reqToAdd)
     {
@@ -122,7 +167,7 @@ public class SkillNode : MonoBehaviour
         if(skillTree.ValidateRequirement(reqToAdd, NameText.text))
         {
             Requirements.Add(reqToAdd);
-            SetRequirementsText();
+            UpdateNode();
         }           
     }
 }
