@@ -6,19 +6,24 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Dropdown))]
+[RequireComponent(typeof(Dropdown), typeof(HotField))]
 public class DropdownHandler : MonoBehaviour
 {
+    public HotField hotField;
 
-
-    Dropdown dropdown;
+    public Dropdown dropdown;
 
     private void Awake()
     {
-        dropdown = GetComponent<Dropdown>();
+
     }
 
-    public void PopulateDropDown(string[] ids, string exception)
+    public void SetHotField(int v)
+    {
+        hotField.ValueChange(GetSelected());
+    }
+
+    public void PopulateDropDown(string[] ids, string exception = "")
     {
         dropdown.ClearOptions();
 

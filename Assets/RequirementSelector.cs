@@ -11,7 +11,7 @@ public class RequirementSelector : Editable
     public override event Action<string> OnEdited;
 
     public DropdownHandler dropdownHandler;
-    public Text requirementSelectorName;
+    public Text requirementSelectorText;
 
     GameManager gameManager;
 
@@ -19,7 +19,21 @@ public class RequirementSelector : Editable
     public SkillNode currentSkillNode;
     private string currentSkill;
 
+    //public override bool addMode { get; private set; }
 
+    public void AddButtonClick()
+    {
+        SetAddMode(true);
+        SetDropDownOptions(gameManager.skillTree);
+        EnableEditMode();
+    }
+
+    public void RemoveButonClick()
+    {
+        SetAddMode(false);
+        SetDropDownOptions(gameManager.skillTree);
+        EnableEditMode();
+    }
 
     private void Awake()
     {
@@ -30,14 +44,35 @@ public class RequirementSelector : Editable
     {
         currentSkill = skillName;
         currentSkillNode = skillNode;
-        requirementSelectorName.text = skillName;
-        SetDropDownOptions(gameManager.skillTree);
+        requirementSelectorText.text = RequiremetSelectorStringBuilder();
+        
+    }
+
+    string RequiremetSelectorStringBuilder()
+    {
+        if (addMode)
+        {
+            return "Add requirement:";
+        }
+        else
+        {
+            return "Remove requirement:";
+        }
     }
 
 
     public void ClickConfirmButton()
     {
-        gameManager.skillTree.AddRequirementToSkill(dropdownHandler.GetSelected(), currentSkill);
+        if (addMode)
+        {
+            gameManager.skillTree.AddRequirementToSkill(dropdownHandler.GetSelected(), currentSkill);
+
+        }
+        else
+        {
+            gameManager.skillTree.RemoveRequirementFromSkill(dropdownHandler.GetSelected(), currentSkill);
+
+        }
         //currentSkillNode.AddRequirement(dropdownHandler.GetSelected());
         AssignNode(currentSkill, currentSkillNode);
         OnConfirmButtonClick?.Invoke(currentSkillNode);
@@ -57,17 +92,40 @@ public class RequirementSelector : Editable
 
     private void SetDropDownOptions(SkillTree skillTree)
     {
-        List<string> skills = new List<string>();
-
-        int[] validOptions = skillTree.ValidRequirememts(currentSkill);
-
-        for (int i = 0; i < validOptions.Length; i++)
+        if (addMode)
         {
-            skills.Add(skillTree.tree[validOptions[i]].Name);
+            
+
+            int[] validOptions = skillTree.ValidRequirememts(currentSkill);
+            if(validOptions != null)
+            {
+                List<string> skills = new List<string>();
+                for (int i = 0; i < validOptions.Length; i++)
+                {
+                    skills.Add(skillTree.tree[validOptions[i]].Name);
+
+                }
+
+                dropdownHandler.PopulateDropDown(skills.ToArray(), currentSkill);
+            }
+
+
+        }
+        else
+        {
+            int[] reqInts = skillTree.tree[skillTree.FindIndexOfSkillByNameInSkillArray(currentSkill)].RequiredSkills;
+            if(reqInts != null)
+            {
+                string[] requirements = new string[reqInts.Length];
+                for (int i = 0; i < reqInts.Length; i++)
+                {
+                    requirements[i] = skillTree.tree[reqInts[i]].Name;
+                }
+                dropdownHandler.PopulateDropDown(requirements, "");
+            }
 
         }
 
-        dropdownHandler.PopulateDropDown(skills.ToArray(), currentSkill);
     }
 
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
 public class Editable : MonoBehaviour
 {
     public virtual event Action<string> OnEdited;
@@ -12,6 +14,8 @@ public class Editable : MonoBehaviour
 
     public bool editMode = false;
 
+    public virtual bool addMode { get; private set; }
+
     public HotField hotField;
 
     public Text DisplayText;
@@ -19,6 +23,12 @@ public class Editable : MonoBehaviour
     public void EnableEditMode()
     {
         SetEditMode(true);
+
+    }
+
+    public void SetAddMode(bool mode)
+    {
+        addMode = mode;
     }
 
     public void DisableEditMode()
@@ -26,18 +36,36 @@ public class Editable : MonoBehaviour
         SetEditMode(false);
     }
 
+    public void ToggleEditMode()
+    {
+        SetEditMode(!editMode);
+    }
+
     public void SetEditMode(bool editable)
     {
         editMode = editable;
         if (editable)
         {
-            SetObjectsActive(staticUI, false);
-            SetObjectsActive(editUI, true);
+            if(staticUI != null && staticUI.Count > 0)
+            {
+                SetObjectsActive(staticUI, false);
+            }
+            if (editUI != null && editUI.Count > 0)
+            {
+                SetObjectsActive(editUI, true);
+            }
+                
         }
         else
         {
-            SetObjectsActive(editUI, false);
-            SetObjectsActive(staticUI, true);
+            if (staticUI != null && staticUI.Count > 0)
+            {
+                SetObjectsActive(staticUI, true);
+            }
+            if (editUI != null && editUI.Count > 0)
+            {
+                SetObjectsActive(editUI, false);
+            }
         }
     }
 
@@ -57,10 +85,27 @@ public class Editable : MonoBehaviour
     }
     public virtual void SetDisplaytext(string text)
     {
-        DisplayText.text = text;
+        if(DisplayText != null)
+        {
+            DisplayText.text = text;
+        }        
     }
 
     public virtual void AssignNode(string skillName, SkillNode skillNode)
     {
+        Unsubscribe(OnEdited);
     }
+
+
+    void Unsubscribe(Action<string> myDlgHandler)
+    {
+        Delegate[] clientList = myDlgHandler.GetInvocationList();
+        foreach (var d in clientList)
+            myDlgHandler -= (d as Action<string>);
+
+        if (myDlgHandler != null)
+            foreach (var d in myDlgHandler.GetInvocationList())
+                myDlgHandler -= (d as Action<string>);
+    }
+
 }

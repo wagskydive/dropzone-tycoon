@@ -20,7 +20,7 @@ namespace ManagementScripts
 
         //public List<Skill> allSkills = new List<Skill>();
 
-        public SkillTree skillTree = new SkillTree();
+        public SkillTree skillTree;
 
         public Bank bank;
 
@@ -50,7 +50,7 @@ namespace ManagementScripts
         public void NewTree(string tName)
         {
             //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
-            skillTree = new SkillTree();
+            skillTree = new SkillTree(tName);
             skillTree.TreeName = tName;
             OnNewSkillCreated?.Invoke(skillTree);
         }
@@ -58,7 +58,7 @@ namespace ManagementScripts
         public void LoadTree(Skill[] loadedTree, string tName)
         {
             //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
-            skillTree = new SkillTree();
+            skillTree = new SkillTree(tName, false);
             skillTree.ResetTree(loadedTree);
             skillTree.TreeName = tName;
             OnNewSkillCreated?.Invoke(skillTree);

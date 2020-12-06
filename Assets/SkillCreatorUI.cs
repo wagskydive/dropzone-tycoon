@@ -12,8 +12,6 @@ public class SkillCreatorUI : MonoBehaviour
 
     public InputField NameInput;
 
-    List<string> allSkillNames = new List<string>();
-
     GameManager gameManager;
 
     private void Start()
@@ -27,7 +25,7 @@ public class SkillCreatorUI : MonoBehaviour
         {
             return;
         }
-        string inputText = DataChecks.EnsureUnique(allSkillNames.ToArray(), NameInput.text);
+        string inputText = DataChecks.EnsureUnique(gameManager.skillTree.GetAllSkillNames(), NameInput.text);
 
         Dictionary<string, float> effectors = new Dictionary<string, float>();
         effectors.Add("Test effector 1", .1f);

@@ -8,6 +8,12 @@ using UnityEngine.UI;
 
 public class SkillNode : MonoBehaviour
 {
+    public static event Action<SkillNode> OnNodeHoverEnter;
+
+    public static event Action<SkillNode> OnNodeHoverExit;
+
+    public static event Action<SkillNode> OnNodeClicked;
+
     public GameObject EditSkillPanel;
 
     public Text NameText;
@@ -29,13 +35,38 @@ public class SkillNode : MonoBehaviour
 
     public SkillTreeUI treeUI;
 
+
+    Image background;
+
+    HoverButton hoverDetect;
+
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
         EditSkillPanel.GetComponent<SkillDetailsPanel>();
+        hoverDetect = GetComponent<HoverButton>();
+        hoverDetect.OnPointerEnterDetected += HoverNodeEnter;
+        hoverDetect.OnPointerExitDetected += HoverNodeExit;
 
 
 
+        background = GetComponent<Image>();
+
+    }
+
+    public void HoverNodeEnter()
+    {
+        OnNodeHoverEnter?.Invoke(this);
+    }
+
+    public void HoverNodeExit()
+    {
+        OnNodeHoverExit?.Invoke(this);
+    }
+
+    public void NodeClick()
+    {
+        OnNodeClicked?.Invoke(this);
     }
 
     public void ClickDetect(SkillNode node)
@@ -44,6 +75,12 @@ public class SkillNode : MonoBehaviour
         {
             UpdateNode();
         }
+    }
+
+
+    public void SkillNodeClick(SkillNode node)
+    {
+
     }
 
     public int CurrentIndex()
@@ -88,21 +125,6 @@ public class SkillNode : MonoBehaviour
 
     public void ShowSkillDetails()
     {
-        //SkillTree skillTree = gameManager.skillTree;
-        //
-        //
-        //int[] reqs = skillTree.tree[skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text)].RequiredSkills;
-        //if(reqs != null)
-        //{
-        //    Requirements = new List<string>();
-        //    for (int i = 0; i < reqs.Length; i++)
-        //    {
-        //        Requirements.Add(skillTree.tree[reqs[i]].Name);
-        //    }
-        //}
-
-
-
         EditSkillPanel.GetComponent<SkillDetailsPanel>().AssignSkillNode(this);
         
     }
@@ -131,18 +153,21 @@ public class SkillNode : MonoBehaviour
         int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
         if (requirements != null)
         {
-            Camera cam = Camera.main;
-            for (int i = 0; i < requirements.Length; i++)
-            {
-                pathCreator.CreateRequirementPath(GetPositionTroughRayCast(nodePathLeft.anchoredPosition), GetPositionTroughRayCast(treeUI.allNodes[requirements[i]].GetComponent<SkillNode>().nodePathRight.anchoredPosition));
-            }
+            //Camera cam = Camera.main;
+            //for (int i = 0; i < requirements.Length; i++)
+            //{
+            //    pathCreator.CreateRequirementPath(GetPositionTroughRayCast(nodePathLeft.anchoredPosition), GetPositionTroughRayCast(treeUI.allNodes[requirements[i]].GetComponent<SkillNode>().nodePathRight.anchoredPosition));
+            //}
             UpdateRequirementsTexts();
         }
         DescriptionText.text = gameManager.skillTree.tree[index].Description;
-
+        background.color = background.color + Color.white*1/(gameManager.skillTree.GetHiarchyLevelOfSkill(index)+1)+new Color(0,0,0,1);
     }
 
-    
+    public void SetBaseColor(Color color)
+    {
+        background.color = color;
+    }
 
     private void UpdateRequirementsTexts()
     {
@@ -155,8 +180,13 @@ public class SkillNode : MonoBehaviour
             {
                 requirementsString += gameManager.skillTree.tree[requirements[i]].Name + "\n";
             }
-            RequirementsText.text = requirementsString;
+            
         }
+        else
+        {
+            requirementsString = "Root Skill";
+        }
+        RequirementsText.text = requirementsString;
     }
 
 
@@ -166,8 +196,17 @@ public class SkillNode : MonoBehaviour
         SkillTree skillTree = gameManager.skillTree;
         if(skillTree.ValidateRequirement(reqToAdd, NameText.text))
         {
-            Requirements.Add(reqToAdd);
+            skillTree.AddRequirementToSkill(reqToAdd, NameText.text);
             UpdateNode();
         }           
     }
+
+
+    public void RemoveRequirement(string reqToRemove)
+    {
+        SkillTree skillTree = gameManager.skillTree;
+        skillTree.RemoveRequirementFromSkill(reqToRemove, NameText.text);
+        UpdateNode();
+    }
+
 }

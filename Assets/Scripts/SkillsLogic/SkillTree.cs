@@ -15,6 +15,16 @@ namespace SkillsLogic
 
         public Skill[] tree;
 
+        public SkillTree(string rootName, bool isNew = true)
+        {
+            if (isNew)
+            {
+                Skill rootSkill = new Skill(rootName+" Root");
+                AddSkill(rootSkill);
+            }
+
+        }
+
         public void ResetTree(Skill[] tr)
         {
             tree = tr;
@@ -47,6 +57,16 @@ namespace SkillsLogic
                 tree = newTree;
             }
             OnSkillTreeModified?.Invoke(this);
+        }
+
+        public string[] GetAllSkillNames()
+        {
+            string[] names = new string[tree.Length];
+            for (int i = 0; i < tree.Length; i++)
+            {
+                names[i] = tree[i].Name;
+            }
+            return names;
         }
 
         public void AddRequirementToSkill(string req, string skill)
@@ -84,7 +104,83 @@ namespace SkillsLogic
 
                 tree[skillIndex].SetRequieredSkills(newReqs);
             }
+
+            DeleteInvalidRequirements();
             OnSkillTreeModified?.Invoke(this);
+        }
+
+        void DeleteInvalidRequirements()
+        {
+            for (int i = 0; i < tree.Length; i++)
+            {
+                if (tree[i].Name == "Carpentry")
+                {
+
+                }
+                int[] reqs = tree[i].RequiredSkills;
+                List<int> invalidReqs = new List<int>();
+                if (reqs != null && reqs.Length > 1)
+                {
+                    for (int j = 0; j < reqs.Length; j++)
+                    {
+                        //if (ValidateRequirement(reqs[j], i))
+                        //{
+                        //    invalidReqs.Add(reqs[j]);
+                        //}
+
+                        for (int k = 0; k < reqs.Length; k++)
+                        {
+                            if(k != j)
+                            {
+                                int[] upstream = GetAllUpstreamSkills(reqs[j]);
+                                if (upstream != null)
+                                {
+                                    if (upstream.Contains(reqs[k]))
+                                    {
+                                        invalidReqs.Add(reqs[k]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (invalidReqs.Any())
+                {
+                    for (int j = 0; j < invalidReqs.Count; j++)
+                    {
+                        RemoveRequirementFromSkill(invalidReqs[j], i);
+                    }
+                }
+
+
+            }
+        }
+
+        public void RemoveRequirementFromSkill(string req, string skill)
+        {
+            int reqIndex = FindIndexOfSkillByNameInSkillArray(req);
+            int skillIndex = FindIndexOfSkillByNameInSkillArray(skill);
+            RemoveRequirementFromSkill(reqIndex, skillIndex);
+        }
+
+        public void RemoveRequirementFromSkill(int reqIndex, int skillIndex)
+        {
+
+
+            List<int> currentReqs = tree[skillIndex].RequiredSkills.ToList();
+
+            currentReqs.Remove(reqIndex);
+            if (!currentReqs.Any())
+            {
+                tree[skillIndex].SetRequieredSkills(null);
+            }
+            else
+            {
+                tree[skillIndex].SetRequieredSkills(currentReqs.ToArray());
+            }
+            
+
         }
 
         public int[] GetIndecesFromNames(string[] names)
@@ -97,10 +193,17 @@ namespace SkillsLogic
             return output.ToArray();
         }
 
+
         public int GetHiarchyLevelOfSkill(string skillName)
         {
-            int level = 0;
             int skillIndex = FindIndexOfSkillByNameInSkillArray(skillName);
+            return GetHiarchyLevelOfSkill(skillIndex);
+        }
+
+        public int GetHiarchyLevelOfSkill(int skillIndex)
+        {
+            int level = 0;
+            
 
             Skill skillToCheck = tree[skillIndex];
 
@@ -162,7 +265,17 @@ namespace SkillsLogic
             return false;
         }
 
-        public  bool ValidateRequirement(string requiredSkillToCheck, string subjectSkill)
+
+        public bool ValidateRequirement(string requiredSkillToCheck, string subjectSkill)
+        {
+            int reqIndex = FindIndexOfSkillByNameInSkillArray(requiredSkillToCheck);
+            int subjectIndex = FindIndexOfSkillByNameInSkillArray(subjectSkill);
+            return ValidateRequirement(reqIndex, subjectIndex);
+        }
+        
+        
+
+        public  bool ValidateRequirement(int requiredSkillToCheck, int subjectSkill)
         {
             int[] invalidReqs = InValidRequirememts(subjectSkill);
             if (invalidReqs == null || invalidReqs.Length == 0)
@@ -171,7 +284,7 @@ namespace SkillsLogic
             }
 
 
-            if (invalidReqs.Contains(FindIndexOfSkillByNameInSkillArray(requiredSkillToCheck)))
+            if (invalidReqs.Contains(requiredSkillToCheck))
             {
                 return false;
             }
@@ -209,16 +322,21 @@ namespace SkillsLogic
             return output.ToArray();
         }
 
-        public  int[] InValidRequirememts(string subject)
+        public  int[] InValidRequirememts(int subject)
         {
-            int[] downstream = GetAllDownstreamSkills(FindIndexOfSkillByNameInSkillArray(subject));
-            int[] upstream = GetAllUpstreamSkills(FindIndexOfSkillByNameInSkillArray(subject));
+            int[] downstream = GetAllDownstreamSkills(subject);
+            int[] upstream = GetAllUpstreamSkills(subject);
 
             return ConcatIntArrays(downstream, upstream);
         }
 
 
-        public  int[] ValidRequirememts(string subject)
+        public int[] ValidRequirememts(string subject)
+        {
+            return ValidRequirememts(FindIndexOfSkillByNameInSkillArray(subject));
+        }
+
+        public  int[] ValidRequirememts(int subject)
         {
             List<int> validReqs = new List<int>();
 
