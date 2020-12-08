@@ -23,8 +23,10 @@ public class SkillDetailsPanel : MonoBehaviour
         SkillN = skill;
 
         Name.SetDisplaytext(skill.NameText.text);
+        Name.OnEdited += HandleNameEdit;
 
         Description.SetDisplaytext(skill.DescriptionText.text);
+        Description.OnEdited += HandleDescriptionEdit;
 
 
         Requirements.SetDisplaytext(skill.RequirementsText.text);
@@ -37,6 +39,18 @@ public class SkillDetailsPanel : MonoBehaviour
         //Effectors.SetDisplaytext(skill.Effe)
 
 
+    }
+
+    void HandleNameEdit(string edit)
+    {
+        SkillN.UpdateSkillName(edit);
+        //AssignSkillNode(SkillN);
+    }
+
+    void HandleDescriptionEdit(string edit)
+    {
+        SkillN.UpdateSkillDescription(edit);
+        //AssignSkillNode(SkillN);
     }
 
     void HandleRequirementEdit(string edit)

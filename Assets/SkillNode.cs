@@ -28,7 +28,9 @@ public class SkillNode : MonoBehaviour
 
     string description = "";
 
-    GameManager gameManager;
+    SkillTree skillTree;
+
+    public int index { get; private set; }
 
     public RectTransform nodePathLeft;
     public RectTransform nodePathRight;
@@ -42,16 +44,54 @@ public class SkillNode : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
+
         EditSkillPanel.GetComponent<SkillDetailsPanel>();
         hoverDetect = GetComponent<HoverButton>();
         hoverDetect.OnPointerEnterDetected += HoverNodeEnter;
         hoverDetect.OnPointerExitDetected += HoverNodeExit;
 
-
+       
 
         background = GetComponent<Image>();
 
+    }
+
+    public void SetSkillTreeAndIndex(SkillTree tree,int ind)
+    {
+        skillTree = tree;
+        index = ind;
+        skillTree.OnSkillTreeModified += ResetTree;
+        skillTree.OnSkillNameModified += SkillRenameDetected;
+        //UpdateNode(index);
+    }
+
+    private void SkillRenameDetected(int renamedSkillIndex)
+    {
+        int[] reqs = skillTree.tree[index].RequiredSkills;
+        if(reqs != null && reqs.Length > 0)
+        {
+            for (int i = 0; i < reqs.Length; i++)
+            {
+                if (reqs[i] == renamedSkillIndex)
+                {
+                    UpdateNode(index);
+                    
+                    return;
+                }
+            }
+        }
+    }
+
+    void ResetTree(SkillTree tree)
+    {
+        skillTree = tree;
+        UpdateNode(index);
+    }
+
+    internal void UpdateSkillDescription(string edit)
+    {
+
+        throw new NotImplementedException();
     }
 
     public void HoverNodeEnter()
@@ -73,7 +113,7 @@ public class SkillNode : MonoBehaviour
     {
         if(node == this)
         {
-            UpdateNode();
+            UpdateNode(index);
         }
     }
 
@@ -83,20 +123,24 @@ public class SkillNode : MonoBehaviour
 
     }
 
-    public int CurrentIndex()
-    {
-        return gameManager.skillTree.FindIndexOfSkillByNameInSkillArray(NameText.text);
-    }
 
-    public void SetSkillName(string skillName)
+
+    public void SetSkillNameText(string skillName)
     {
+
+
         NameText.text = skillName;
         gameObject.name = skillName+" Node";
     }
 
+    public void UpdateSkillName(string name)
+    {
+        skillTree.RenameSkill(skillTree.tree[index].Name, name);
+    }
+
     public string GetSkillName()
     {
-        return NameText.text;
+        return skillTree.tree[index].Name;
     }
 
     public void ShowEditSkillButtonClick()
@@ -147,21 +191,13 @@ public class SkillNode : MonoBehaviour
         }
     }
 
-    public void UpdateNode()
+    public void UpdateNode(int index)
     {
-        int index = CurrentIndex();
-        int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
-        if (requirements != null)
-        {
-            //Camera cam = Camera.main;
-            //for (int i = 0; i < requirements.Length; i++)
-            //{
-            //    pathCreator.CreateRequirementPath(GetPositionTroughRayCast(nodePathLeft.anchoredPosition), GetPositionTroughRayCast(treeUI.allNodes[requirements[i]].GetComponent<SkillNode>().nodePathRight.anchoredPosition));
-            //}
-            UpdateRequirementsTexts();
-        }
-        DescriptionText.text = gameManager.skillTree.tree[index].Description;
-        background.color = background.color + Color.white*1/(gameManager.skillTree.GetHiarchyLevelOfSkill(index)+1)+new Color(0,0,0,1);
+        SetSkillNameText(skillTree.tree[index].Name);
+        UpdateRequirementsTexts();
+
+        DescriptionText.text = skillTree.tree[index].Description;
+        background.color = background.color + Color.white*1/(skillTree.GetHiarchyLevelOfSkill(index)+1)+new Color(0,0,0,1);
     }
 
     public void SetBaseColor(Color color)
@@ -172,13 +208,13 @@ public class SkillNode : MonoBehaviour
     private void UpdateRequirementsTexts()
     {
         string requirementsString = "";
-        int index = CurrentIndex();
-        int[] requirements = gameManager.skillTree.tree[index].RequiredSkills;
+
+        int[] requirements = skillTree.tree[index].RequiredSkills;
         if (requirements != null)
         {
             for (int i = 0; i < requirements.Length; i++)
             {
-                requirementsString += gameManager.skillTree.tree[requirements[i]].Name + "\n";
+                requirementsString += skillTree.tree[requirements[i]].Name + "\n";
             }
             
         }
@@ -193,20 +229,20 @@ public class SkillNode : MonoBehaviour
 
     public void AddRequirement(string reqToAdd)
     {
-        SkillTree skillTree = gameManager.skillTree;
-        if(skillTree.ValidateRequirement(reqToAdd, NameText.text))
+
+        if(skillTree.ValidateRequirement(reqToAdd, skillTree.tree[index].Name))
         {
-            skillTree.AddRequirementToSkill(reqToAdd, NameText.text);
-            UpdateNode();
+            skillTree.AddRequirementToSkill(reqToAdd, skillTree.tree[index].Name);
+            UpdateNode(index);
         }           
     }
 
 
     public void RemoveRequirement(string reqToRemove)
     {
-        SkillTree skillTree = gameManager.skillTree;
-        skillTree.RemoveRequirementFromSkill(reqToRemove, NameText.text);
-        UpdateNode();
+
+        skillTree.RemoveRequirementFromSkill(reqToRemove, skillTree.tree[index].Name);
+        UpdateNode(index);
     }
 
 }

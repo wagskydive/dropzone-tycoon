@@ -32,7 +32,7 @@ namespace SkillsLogic
             return isRoot;
         }
 
-        public bool IsLeafm()
+        public bool IsLeaf()
         {
             bool isLeaf = true;
             if (IsRequirementOf != null && IsRequirementOf.Length > 0)
@@ -63,6 +63,13 @@ namespace SkillsLogic
 
         }
 
+        public void SetName(string newName)
+        {
+            Name = newName;        
+        }
+
+
+
         public void SetDescription(string description)
         {
             Description = description;
@@ -72,6 +79,7 @@ namespace SkillsLogic
         {
             RequiredSkills = skillIndexes;
         }
+
 
         public void SetEffectors(Dictionary<string, float> effectors)
         {

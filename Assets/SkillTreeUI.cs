@@ -27,8 +27,9 @@ public class SkillTreeUI : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         //gameManager.OnOldSkillWillBeDestroyed += UnSubscribeToNewTree;
-        gameManager.OnNewSkillCreated += SubscribeToNewTree;
+        gameManager.OnNewSkillTreeCreated += SubscribeToNewTree;
 
+        
         SkillNode.OnNodeHoverEnter += SelectNode;
         SkillNode.OnNodeHoverExit += DeselectNode;
 
@@ -132,14 +133,11 @@ public class SkillTreeUI : MonoBehaviour
             {
                 allNodes[i] = InstantiateNodeObject(tree[i].Name);
             }
-            else if(allNodes[i].GetComponent<SkillNode>().GetSkillName() != tree[i].Name)
-            {
-                allNodes[i].GetComponent<SkillNode>().SetSkillName(tree[i].Name);
-                
-            }
+ 
             allNodes[i].SetActive(true);
             SkillNode skillNode = allNodes[i].GetComponent<SkillNode>();
-            skillNode.UpdateNode();
+            skillNode.SetSkillTreeAndIndex(skillTree, i);
+            skillNode.UpdateNode(i);
             
             allNodes[i].transform.SetParent(allColumns[skillTree.GetHiarchyLevelOfSkill(tree[i].Name)].transform);
 
@@ -157,7 +155,7 @@ public class SkillTreeUI : MonoBehaviour
         SkillTree skillTree = gameManager.skillTree;
 
         selectedNode = node;
-        int skillIndex = skillTree.FindIndexOfSkillByNameInSkillArray(node.GetSkillName());
+        int skillIndex = node.index;
 
         int[] upStream = skillTree.GetAllUpstreamSkills(skillIndex);
         if(upStream != null)
@@ -202,7 +200,7 @@ public class SkillTreeUI : MonoBehaviour
 
         node.SetActive(true);
 
-        node.GetComponent<SkillNode>().SetSkillName(inputText);
+        node.GetComponent<SkillNode>().SetSkillNameText(inputText);
 
 
         return node;

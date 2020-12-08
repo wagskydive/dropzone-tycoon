@@ -10,6 +10,7 @@ namespace SkillsLogic
     public class SkillTree
     {
         public event Action<SkillTree> OnSkillTreeModified;
+        public event Action<int> OnSkillNameModified;
 
         public string TreeName;
 
@@ -107,6 +108,13 @@ namespace SkillsLogic
 
             DeleteInvalidRequirements();
             OnSkillTreeModified?.Invoke(this);
+        }
+
+        public void RenameSkill(string oldName, string newName)
+        {
+            int skillIndex = FindIndexOfSkillByNameInSkillArray(oldName);
+            tree[skillIndex].SetName(newName);
+            OnSkillNameModified?.Invoke(skillIndex);
         }
 
         void DeleteInvalidRequirements()

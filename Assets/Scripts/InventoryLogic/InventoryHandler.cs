@@ -12,7 +12,7 @@ namespace InventoryLogic
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if (inventory.inventoryList[i].item.itemType == itemAmount.item.itemType)
+                if (inventory.inventoryList[i].itemType.typeName == itemAmount.itemType.typeName)
                 {
                     inventory.inventoryList[i].amount += itemAmount.amount;
                     return;
@@ -23,7 +23,7 @@ namespace InventoryLogic
 
         public static bool RemoveFromInventory(Inventory inventory, ItemAmount itemAmount)
         {
-            int index = IndexOfItemInInventory(inventory, itemAmount.item);
+            int index = IndexOfItemInInventory(inventory, itemAmount.itemType);
             if(index != 0 && inventory.inventoryList[index].amount >= itemAmount.amount)
             {
                 inventory.inventoryList[index].amount -= itemAmount.amount;
@@ -48,11 +48,11 @@ namespace InventoryLogic
             }
         }
 
-        public static ItemAmount ItemsInInventory(Inventory inventory, Item item)
+        public static ItemAmount ItemsInInventory(Inventory inventory, ItemType item)
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if(inventory.inventoryList[i].item.itemType == item.itemType)
+                if(inventory.inventoryList[i].itemType.typeName == item.typeName)
                 {
                     return inventory.inventoryList[i];
                 }
@@ -60,11 +60,11 @@ namespace InventoryLogic
             return null;
         }
 
-        public static int IndexOfItemInInventory(Inventory inventory, Item item)
+        public static int IndexOfItemInInventory(Inventory inventory, ItemType item)
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if (inventory.inventoryList[i].item.itemType == item.itemType)
+                if (inventory.inventoryList[i].itemType.typeName == item.typeName)
                 {
                     return i;
                 }

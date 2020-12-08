@@ -13,7 +13,7 @@ namespace ManagementScripts
     public class GameManager : MonoBehaviour
     {
         public event Action<SkillTree> OnOldSkillWillBeDestroyed;
-        public event Action<SkillTree> OnNewSkillCreated;
+        public event Action<SkillTree> OnNewSkillTreeCreated;
 
         [SerializeField]
         private string[] StatTypes;
@@ -52,7 +52,7 @@ namespace ManagementScripts
             //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
             skillTree = new SkillTree(tName);
             skillTree.TreeName = tName;
-            OnNewSkillCreated?.Invoke(skillTree);
+            OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
         public void LoadTree(Skill[] loadedTree, string tName)
@@ -61,7 +61,7 @@ namespace ManagementScripts
             skillTree = new SkillTree(tName, false);
             skillTree.ResetTree(loadedTree);
             skillTree.TreeName = tName;
-            OnNewSkillCreated?.Invoke(skillTree);
+            OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
 
