@@ -1,6 +1,8 @@
-﻿namespace InventoryLogic
+﻿using System;
+
+namespace InventoryLogic
 {
-   public class CrafterType : ItemType
+   public class CrafterType : ItemType, ItemSuppier
     {
         public float CraftingSpeed;
 
@@ -8,6 +10,14 @@
 
         internal CrafterType(string name) : base(name)
         {
+
+        }
+
+        public event Action<ItemType> OnItemSupplied;
+
+        public ItemType SupplyItem()
+        {
+            OnItemSupplied?.Invoke()
         }
     }
 }
