@@ -2,7 +2,7 @@
 
 namespace InventoryLogic
 {
-   public class CrafterType : ItemType, ItemSuppier
+   public class CrafterType : ItemType, ItemSupplier
     {
         public float CraftingSpeed;
 
@@ -17,7 +17,7 @@ namespace InventoryLogic
 
         public ItemType SupplyItem()
         {
-            OnItemSupplied?.Invoke()
+            return null;
         }
     }
 }
