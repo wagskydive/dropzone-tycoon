@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 using FinanceLogic;
 using CharacterLogic;
+using SkillsLogic;
 
 namespace ManagementScripts
 {
     public class GameManager : MonoBehaviour
     {
+        public event Action<SkillTree> OnOldSkillWillBeDestroyed;
+        public event Action<SkillTree> OnNewSkillTreeCreated;
+
         [SerializeField]
         private string[] StatTypes;
 
+        //public List<Skill> allSkills = new List<Skill>();
+
+        public SkillTree skillTree;
 
         public Bank bank;
 
@@ -23,6 +30,11 @@ namespace ManagementScripts
 
         private void Awake()
         {
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager != this)
+            {
+                Destroy(this);
+            }
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
         }
@@ -35,22 +47,61 @@ namespace ManagementScripts
             }
         }
 
-        public void ActivateCharacter(string characterName)
+        public void NewTree(string tName)
+        {
+            //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
+            skillTree = new SkillTree(tName);
+            skillTree.TreeName = tName;
+            OnNewSkillTreeCreated?.Invoke(skillTree);
+        }
+
+        public void LoadTree(Skill[] loadedTree, string tName)
+        {
+            //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
+            skillTree = new SkillTree(tName, false);
+            skillTree.ResetTree(loadedTree);
+            skillTree.TreeName = tName;
+            OnNewSkillTreeCreated?.Invoke(skillTree);
+        }
+
+
+        public bool ActivateCharacterReturnWasActive(string characterName)
         {
             int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
             if (!ActiveCharacters.Contains(characterIndex))
             {
                 ActiveCharacters.Add(characterIndex);
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
-        public void DeactivateCharacter(string characterName)
+        public bool DeactivateCharacterReturnWasAcrive(string characterName)
         {
             int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
             if (ActiveCharacters.Contains(characterIndex))
             {
                 ActiveCharacters.Remove(characterIndex);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
-    }
+
+        public bool CheckIfCharacterIsActive(string characterName)
+        {
+
+            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+            return ActiveCharacters.Contains(characterIndex);
+
+
+        }
+
+
+        }
 }

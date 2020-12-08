@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AccountDetailsPanel))]
 public class TransactionCreatorUI : MonoBehaviour
 {
+    //FIXME: Make this into dropdownhandler instead
     public Dropdown GiveMoneyTo;
 
     public InputField AmountToGive;
@@ -52,8 +53,10 @@ public class TransactionCreatorUI : MonoBehaviour
         SetActiveBoolOnGoArray(ReceiverPart, true);
 
         FinanceLogic.Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
- 
-        PopulateDropDown(bank);
+
+
+        //FIXME: use dropdownhandler instead
+        GiveMoneyTo.gameObject.GetComponent<DropdownHandler>().PopulateDropDown(FinancialDataSupplier.AccountsIDs(bank),currentAccountId);
 
         GiveMoneyTo.onValueChanged.AddListener(DropdownListener);
 
@@ -117,26 +120,6 @@ public class TransactionCreatorUI : MonoBehaviour
     {
         Bank bank = FindObjectOfType<ManagementScripts.GameManager>().bank;
         FinanceLogic.FinancialDataCreator.MakeTransactionFromIdString(bank, int.Parse(AmountToGive.text), currentAccountId, sendMoneyTo, " Transfer trough Transaction UI");
-    }
-
-
-
-    private void PopulateDropDown(Bank bank)
-    {
-
-        GiveMoneyTo.ClearOptions();
-        string[] ids = FinanceLogic.FinancialDataSupplier.AccountsIDs(bank);
-        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-
-        for (int i = 0; i < ids.Length; i++)
-        {
-            if (ids[i] != currentAccountId)
-            {
-                Dropdown.OptionData data = new Dropdown.OptionData(ids[i]);
-                options.Add(data);
-            }
-        }
-        GiveMoneyTo.AddOptions(options);
     }
 
 }

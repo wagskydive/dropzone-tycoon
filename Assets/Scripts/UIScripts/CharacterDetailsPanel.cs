@@ -31,7 +31,7 @@ public class CharacterDetailsPanel : MonoBehaviour
 
     private void GetAndShowCharacterDetails(string characterName)
     {
-        gameManager.ActivateCharacter(characterName);
+        gameManager.ActivateCharacterReturnWasActive(characterName);
         CharacterDataHolder holder = gameManager.Characters;
         CurrentCharacterName = characterName;
         CharacterNameText.text = "Name: " + characterName;

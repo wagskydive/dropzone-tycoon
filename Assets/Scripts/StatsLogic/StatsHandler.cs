@@ -12,13 +12,18 @@ namespace StatsLogic
             Stat[] stats = new Stat[statNames.Length];
             for (int i = 0; i < statNames.Length; i++)
             {
-                Stat stat = new Stat(statNames[i]);
-                stats[i] = stat;
+                stats[i] = CreateSingleStat(statNames[i]);
             }
             return stats;
         }
 
+        public static Stat CreateSingleStat(string statName)
+        {
+            Stat stat = new Stat(statName);
 
+
+            return stat;
+        }
 
         public static void SetStatValue(Stat stat, float newValue, float timeStamp = 0)
         {

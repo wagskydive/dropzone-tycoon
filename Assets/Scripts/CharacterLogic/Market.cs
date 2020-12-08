@@ -12,10 +12,10 @@ namespace CharacterLogic
     {
         public static bool ProcessOrder(Bank bank, Character buyer, Character seller, ItemAmount items, int pricePerItem)
         {
-            ItemAmount sellerStock = InventoryHandler.ItemsInInventory(seller.inventory, items.item);
+            ItemAmount sellerStock = InventoryHandler.ItemsInInventory(seller.inventory, items.itemType);
             if(sellerStock.amount >= items.amount)
             {
-                if(FinancialDataCreator.MakeTransactionFromIdString(bank, items.amount * pricePerItem, buyer.FinancialAccountID, seller.FinancialAccountID, $"{items.amount} {items.item.itemType}"))
+                if(FinancialDataCreator.MakeTransactionFromIdString(bank, items.amount * pricePerItem, buyer.FinancialAccountID, seller.FinancialAccountID, $"{items.amount} {items.itemType.typeName}"))
                 {
                     return true;
                 }

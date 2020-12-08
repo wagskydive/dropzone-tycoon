@@ -29,10 +29,10 @@ namespace StatsLogic
 
         internal bool biggerThan;
 
-        internal Stat(string name)
+        public Stat(string name, float val = 0)
         {
             Name = name;
-            Value = 0.5f;
+            Value = val;
             HasThreshhold = false;
         }
 
