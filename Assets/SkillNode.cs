@@ -91,7 +91,8 @@ public class SkillNode : MonoBehaviour
     internal void UpdateSkillDescription(string edit)
     {
 
-        throw new NotImplementedException();
+        skillTree.ModifyDescription(index, edit);
+        DescriptionText.text = edit;
     }
 
     public void HoverNodeEnter()

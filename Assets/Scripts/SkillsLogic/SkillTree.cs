@@ -110,6 +110,12 @@ namespace SkillsLogic
             OnSkillTreeModified?.Invoke(this);
         }
 
+        public void ModifyDescription(int index, string edit)
+        {
+            tree[index].SetDescription(edit);
+ 
+        }
+
         public void RenameSkill(string oldName, string newName)
         {
             int skillIndex = FindIndexOfSkillByNameInSkillArray(oldName);

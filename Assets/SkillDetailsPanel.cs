@@ -44,13 +44,13 @@ public class SkillDetailsPanel : MonoBehaviour
     void HandleNameEdit(string edit)
     {
         SkillN.UpdateSkillName(edit);
-        //AssignSkillNode(SkillN);
+        AssignSkillNode(SkillN);
     }
 
     void HandleDescriptionEdit(string edit)
     {
         SkillN.UpdateSkillDescription(edit);
-        //AssignSkillNode(SkillN);
+        AssignSkillNode(SkillN);
     }
 
     void HandleRequirementEdit(string edit)
