@@ -45,7 +45,7 @@ public class SkillNode : MonoBehaviour
     private void Awake()
     {
 
-        EditSkillPanel.GetComponent<SkillDetailsPanel>();
+        //EditSkillPanel.GetComponent<SkillDetailsPanel>();
         hoverDetect = GetComponent<HoverButton>();
         hoverDetect.OnPointerEnterDetected += HoverNodeEnter;
         hoverDetect.OnPointerExitDetected += HoverNodeExit;

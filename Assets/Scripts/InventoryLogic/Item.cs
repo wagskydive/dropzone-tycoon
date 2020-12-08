@@ -2,10 +2,10 @@
 {
     public class Item
     {
-        public Item(string typeName)
+        public ItemType itemType;
+        public Item(ItemType type)
         {
-            itemType=typeName;
+            itemType=type;
         }
-        public string itemType { get; private set; }
     }
 }

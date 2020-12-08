@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace InventoryLogic
 {
-    internal class Recipe
+    public class Recipe
     {
-        internal ItemAmount[] Materials;
-        internal CrafterType CraftingItem;
-        internal string[] SkillsRequired;
+        public ItemAmount[] Ingredients { get; private set; }
+        public CrafterType CraftingItem { get; private set; }
+        public string[] SkillsRequired { get; private set; }
 
         internal void Add(ItemAmount itemAmount)
         {
-            if(Materials == null)
+            if (Ingredients == null)
             {
-                Materials = new ItemAmount[1];
-                Materials[0] = itemAmount;
+                Ingredients = new ItemAmount[1];
+                Ingredients[0] = itemAmount;
             }
             else
             {
-                for (int i = 0; i < Materials.Length; i++)
+                for (int i = 0; i < Ingredients.Length; i++)
                 {
-                    if(Materials[i].itemType.typeName == itemAmount.itemType.typeName)
+                    if (Ingredients[i].itemType.TypeName == itemAmount.itemType.TypeName)
                     {
-                        Materials[i].AddAmount(itemAmount.amount);
+                        Ingredients[i].AddAmount(itemAmount.amount);
                     }
                 }
             }
@@ -33,9 +33,9 @@ namespace InventoryLogic
 
         internal bool HasItemType(ItemType type)
         {
-            for (int i = 0; i < Materials.Length; i++)
+            for (int i = 0; i < Ingredients.Length; i++)
             {
-                if(Materials[i].itemType.typeName== type.typeName)
+                if (Ingredients[i].itemType.TypeName == type.TypeName)
                 {
                     return true;
                 }
