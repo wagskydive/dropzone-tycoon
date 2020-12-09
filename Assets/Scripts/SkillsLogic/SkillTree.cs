@@ -32,7 +32,6 @@ namespace SkillsLogic
             OnSkillTreeModified?.Invoke(this);
         }
 
-
         public void AddSkill(Skill skill)
         {
             if(tree == null)
@@ -127,10 +126,6 @@ namespace SkillsLogic
         {
             for (int i = 0; i < tree.Length; i++)
             {
-                if (tree[i].Name == "Carpentry")
-                {
-
-                }
                 int[] reqs = tree[i].RequiredSkills;
                 List<int> invalidReqs = new List<int>();
                 if (reqs != null && reqs.Length > 1)
@@ -207,7 +202,6 @@ namespace SkillsLogic
             return output.ToArray();
         }
 
-
         public int GetHiarchyLevelOfSkill(string skillName)
         {
             int skillIndex = FindIndexOfSkillByNameInSkillArray(skillName);
@@ -251,6 +245,33 @@ namespace SkillsLogic
             return max;
         }
 
+        public int GetMaxRelatedHiarchyLevelOfSkill(int subject)
+        {
+            int max = 0;
+
+            int[] Related = ConcatIntArrays(GetAllDownstreamSkills(subject), GetAllUpstreamSkills(subject));
+            if(Related != null)
+            {
+                for (int i = 0; i < Related.Length; i++)
+                {
+                    int[] relatedWithReqs = GetAllSkillsThatHaveRequirement(Related[i]);
+                    if(relatedWithReqs != null)
+                    {
+                        int relatedMaxAsReq = relatedWithReqs.Length;
+                        max = DataChecks.GetMax(relatedMaxAsReq, max);
+                    }
+
+
+                }
+            }
+
+            return max;
+
+
+        }
+
+
+
 
          bool StringArrayHasString(string[] array, string subject)
         {
@@ -265,7 +286,6 @@ namespace SkillsLogic
             return false;
         }
 
-
          bool IntArrayHasInt(int[] array, int subject)
         {
             for (int i = 0; i < array.Length; i++)
@@ -279,16 +299,13 @@ namespace SkillsLogic
             return false;
         }
 
-
         public bool ValidateRequirement(string requiredSkillToCheck, string subjectSkill)
         {
             int reqIndex = FindIndexOfSkillByNameInSkillArray(requiredSkillToCheck);
             int subjectIndex = FindIndexOfSkillByNameInSkillArray(subjectSkill);
             return ValidateRequirement(reqIndex, subjectIndex);
-        }
-        
-        
-
+        }        
+       
         public  bool ValidateRequirement(int requiredSkillToCheck, int subjectSkill)
         {
             int[] invalidReqs = InValidRequirememts(subjectSkill);
@@ -307,10 +324,6 @@ namespace SkillsLogic
                 return true;
             }
         }
-
-
-
-
 
         public  int[] GetAllSkillsThatHaveRequirement(int requirement)
         {
@@ -343,7 +356,6 @@ namespace SkillsLogic
 
             return ConcatIntArrays(downstream, upstream);
         }
-
 
         public int[] ValidRequirememts(string subject)
         {
@@ -382,7 +394,6 @@ namespace SkillsLogic
 
         }
 
-
         public  int[] ConcatIntArrays(int[] first, int[] second)
         {
             if (first == null)
@@ -411,7 +422,6 @@ namespace SkillsLogic
             return -1;
         }
 
-
         public int[] GetAllDownstreamSkills(int subject)
         {
             int[] skillsWithMeAsReq = GetAllSkillsThatHaveRequirement(subject);
@@ -437,7 +447,6 @@ namespace SkillsLogic
 
         }
 
-        //Skills that are requirements of subject recursive
         public  int[] GetAllUpstreamSkills(int subject)
         {
             if (tree[subject].IsRoot())
@@ -462,7 +471,6 @@ namespace SkillsLogic
 
             return upstreamList.ToArray();
         }
-
 
         public int[] ReqsOfReqs(Skill skill)
         {

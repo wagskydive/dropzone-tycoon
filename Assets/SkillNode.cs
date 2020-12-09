@@ -16,6 +16,8 @@ public class SkillNode : MonoBehaviour
 
     public GameObject EditSkillPanel;
 
+    public List<GameObject> activeDummies;
+
     public Text NameText;
 
     public Text RequirementsText;
@@ -38,21 +40,22 @@ public class SkillNode : MonoBehaviour
     public SkillTreeUI treeUI;
 
 
-    Image background;
 
-    HoverButton hoverDetect;
+    public Image Background;
+
+    public HoverButton HoverDetect;
 
     private void Awake()
     {
 
         //EditSkillPanel.GetComponent<SkillDetailsPanel>();
-        hoverDetect = GetComponent<HoverButton>();
-        hoverDetect.OnPointerEnterDetected += HoverNodeEnter;
-        hoverDetect.OnPointerExitDetected += HoverNodeExit;
+        //HoverDetect = GetComponent<HoverButton>();
+        HoverDetect.OnPointerEnterDetected += HoverNodeEnter;
+        HoverDetect.OnPointerExitDetected += HoverNodeExit;
 
        
 
-        background = GetComponent<Image>();
+        //Background = GetComponent<Image>();
 
     }
 
@@ -198,12 +201,16 @@ public class SkillNode : MonoBehaviour
         UpdateRequirementsTexts();
 
         DescriptionText.text = skillTree.tree[index].Description;
-        background.color = background.color + Color.white*1/(skillTree.GetHiarchyLevelOfSkill(index)+1)+new Color(0,0,0,1);
+        Background.color = Background.color + Color.white*1/(skillTree.GetHiarchyLevelOfSkill(index)+1)+new Color(0,0,0,1);
+        if (transform.localScale != Vector3.one)
+        {
+            transform.localScale = Vector3.one;
+        }
     }
 
     public void SetBaseColor(Color color)
     {
-        background.color = color;
+        Background.color = color;
     }
 
     private void UpdateRequirementsTexts()
