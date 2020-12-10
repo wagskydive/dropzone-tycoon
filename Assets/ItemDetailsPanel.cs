@@ -79,7 +79,7 @@ public class ItemDetailsPanel : MonoBehaviour
         {
             //node.RemoveRequirement(edit);
         }
-        //AssignSkillNode(node);
+        AssignItemNode(node);
 
     }
 

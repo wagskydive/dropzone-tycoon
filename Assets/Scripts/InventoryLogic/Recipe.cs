@@ -26,8 +26,23 @@ namespace InventoryLogic
                     if (Ingredients[i].itemType.TypeName == itemAmount.itemType.TypeName)
                     {
                         Ingredients[i].AddAmount(itemAmount.amount);
+                        return;
                     }
                 }
+                ItemAmount[] newIngredients = new ItemAmount[Ingredients.Length + 1];
+                for (int i = 0; i < newIngredients.Length; i++)
+                {
+                    if(i == newIngredients.Length - 1)
+                    {
+                        newIngredients[i] = itemAmount;
+                    }
+                    else
+                    {
+                        newIngredients[i] = Ingredients[i];
+                    }
+                    
+                }
+                Ingredients = newIngredients;
             }
         }
 

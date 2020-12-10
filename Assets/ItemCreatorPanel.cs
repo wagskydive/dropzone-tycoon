@@ -30,7 +30,7 @@ public class ItemCreatorPanel : MonoBehaviour
     public void CreateItemButtonClick()
     {
 
-        library.AddNewItemType(NameInput.text);
+        //library.AddNewItemType(NameInput.text);
 
 
 
@@ -38,11 +38,8 @@ public class ItemCreatorPanel : MonoBehaviour
         {
             return;
         }
-        string inputText = DataChecks.EnsureUnique(gameManager.Library.allItemTypeNames(), NameInput.text);
+        string inputText = NameInput.text;// DataChecks.EnsureUnique(gameManager.Library.allItemTypeNames(), NameInput.text);
 
-        Dictionary<string, float> effectors = new Dictionary<string, float>();
-        effectors.Add("Test effector 1", .1f);
-        effectors.Add("Test effector 2", .2f);
 
         string description = "No Description";
 

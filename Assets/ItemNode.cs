@@ -121,14 +121,7 @@ public class ItemNode : MonoBehaviour
         }
         else
         {
-            if (EditItemPanel.GetComponent<RequirementSelector>().currentSkillNode == this)
-            {
-                EditItemPanel.SetActive(false);
-            }
-            else
-            {
-                ShowItemDetails();
-            }
+            EditItemPanel.SetActive(false);
         }
     }
 
@@ -137,7 +130,7 @@ public class ItemNode : MonoBehaviour
     public void ShowItemDetails()
     {
         EditItemPanel.GetComponent<ItemDetailsPanel>().AssignItemNode(this);
-
+        EditItemPanel.SetActive(true);
     }
 
 
@@ -159,14 +152,19 @@ public class ItemNode : MonoBehaviour
     {
         string recipeString = "";
 
-        ItemAmount[] ingedients = library.allItems[index].recipe.Ingredients;
-        if (ingedients != null)
+        if (library.allItems[index].recipe != null)
         {
-            for (int i = 0; i < ingedients.Length; i++)
-            {
-                recipeString += ingedients[i].amount +": "+ ingedients[i].itemType.TypeName + "\n";
-            }
 
+
+            ItemAmount[] ingedients = library.allItems[index].recipe.Ingredients;
+            if (ingedients != null)
+            {
+                for (int i = 0; i < ingedients.Length; i++)
+                {
+                    recipeString += ingedients[i].amount + ": " + ingedients[i].itemType.TypeName + "\n";
+                }
+
+            }
         }
         else
         {

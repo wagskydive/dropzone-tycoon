@@ -31,7 +31,7 @@ public class CraftingTreeUI : MonoBehaviour
         //gameManager.OnOldSkillWillBeDestroyed += UnSubscribeToNewTree;
         gameManager.OnNewLibraryCreated += SubscribeToNewTree;
 
-
+        gameManager.Library.OnLibraryModified += RefreshTree;
         ItemNode.OnNodeHoverEnter += SelectNode;
         ItemNode.OnNodeHoverExit += DeselectNode;
 
@@ -160,7 +160,7 @@ public class CraftingTreeUI : MonoBehaviour
         {
             for (int i = 0; i < upStream.Length; i++)
             {
-                allNodes[upStream[i]].GetComponent<SkillNode>().SetBaseColor(UpstreamColor);
+                allNodes[upStream[i]].GetComponent<ItemNode>().SetBaseColor(UpstreamColor);
             }
         }
 
@@ -170,7 +170,7 @@ public class CraftingTreeUI : MonoBehaviour
         {
             for (int i = 0; i < downStream.Length; i++)
             {
-                allNodes[downStream[i]].GetComponent<SkillNode>().SetBaseColor(DownstreamColor);
+                allNodes[downStream[i]].GetComponent<ItemNode>().SetBaseColor(DownstreamColor);
             }
         }
 
@@ -180,7 +180,7 @@ public class CraftingTreeUI : MonoBehaviour
     {
         for (int i = 0; i < allNodes.Count; i++)
         {
-            allNodes[i].GetComponent<SkillNode>().SetBaseColor(NormalColor);
+            allNodes[i].GetComponent<ItemNode>().SetBaseColor(NormalColor);
         }
     }
 
@@ -198,7 +198,7 @@ public class CraftingTreeUI : MonoBehaviour
 
         node.SetActive(true);
 
-        node.GetComponent<SkillNode>().SetSkillNameText(inputText);
+        node.GetComponent<ItemNode>().SetItemNameText(inputText);
 
 
         return node;
