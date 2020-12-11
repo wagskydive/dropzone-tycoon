@@ -18,7 +18,6 @@ namespace InventoryLogic
 
         public void AddNewItemType(string typeName)
         {
-
             if (allItems.Count > 0)
             {
                 typeName = DataChecks.EnsureUnique(allItemTypeNames(), typeName);
@@ -26,6 +25,23 @@ namespace InventoryLogic
 
             ItemType itemType = new ItemType(typeName);
             allItems.Add(itemType);
+            OnLibraryModified?.Invoke(this);
+        }
+
+        public void AddItemsFromStringArray(string[] names)
+        {
+            for (int i = 0; i < names.Length; i++)
+            {
+
+                if (allItems.Count > 0)
+                {
+                    names[i] = DataChecks.EnsureUnique(allItemTypeNames(), names[i]);
+                }
+
+                ItemType itemType = new ItemType(names[i]);
+                allItems.Add(itemType);
+                
+            }
             OnLibraryModified?.Invoke(this);
         }
 
@@ -46,14 +62,11 @@ namespace InventoryLogic
             allItems[index] = crafterType;
         }
 
-
         public void AddItemsToRecipe(ItemAmount itemAmount, int itemIndex)
         {
-            
-            allItems[itemIndex].AddToRecipe(itemAmount);
+                        allItems[itemIndex].AddToRecipe(itemAmount);
             OnLibraryModified?.Invoke(this);
         }
-
 
         public int IndexFromTypeName(string typeName)
         {
@@ -100,6 +113,7 @@ namespace InventoryLogic
         {
             return allItems[IndexFromTypeName(typeName)].recipe;
         }
+
         public int[] ItemTypesInRecipe(string typeName)
         {
             return ItemTypesInRecipe(RecipeFromItemTypeName(typeName));
@@ -124,8 +138,7 @@ namespace InventoryLogic
         }
 
         public int[] ValidIngredients(int index)
-        {
-            
+        {            
             List<int> validIngedients = new List<int>();
             int[] downstream = GetAllDownstreamItems(index);
             if (downstream == null)
@@ -139,10 +152,7 @@ namespace InventoryLogic
                 }
             }
             else
-            {
-
-            
-
+            {           
                 for (int i = 0; i < allItems.Count; i++)
                 {
                     if (!downstream.Contains(i)&& i != index)
@@ -163,8 +173,6 @@ namespace InventoryLogic
         public int GetHiarchyLevelOfItem(int itemIndex)
         {
             int level = 0;
-
-
             ItemType itemToCheck = allItems[itemIndex];
 
             if (itemToCheck.recipe != null && itemToCheck.recipe.Ingredients.Length > 0)
@@ -182,7 +190,6 @@ namespace InventoryLogic
             }
             return level;
         }
-
 
         public int[] GetAllDownstreamItems(int subject)
         {
@@ -217,8 +224,6 @@ namespace InventoryLogic
             {
                 if (allItems[i].recipe != null && allItems[i].recipe.Ingredients != null)
                 {
-
-
                     for (int j = 0; j < allItems[i].recipe.Ingredients.Length; j++)
                     {
                         if (allItems[i].recipe.Ingredients[j].itemType.TypeName == itemType.TypeName)
@@ -242,18 +247,12 @@ namespace InventoryLogic
             List<int> upstreamList = new List<int>();
             if (allItems[subject].recipe != null && allItems[subject].recipe.Ingredients != null)
             {
-
-
                 ItemAmount[] subjectIngedients = allItems[subject].recipe.Ingredients;
                 
-
-
                 for (int i = 0; i < subjectIngedients.Length; i++)
                 {
                     upstreamList.Add(IndexFromTypeName(subjectIngedients[i].itemType.TypeName));
                 }
-
-
 
                 if (ReqsOfReqs(allItems[subject]) != null)
                 {
@@ -269,17 +268,12 @@ namespace InventoryLogic
             return upstreamList.ToArray();
         }
 
-
         public int[] ReqsOfReqs(ItemType item)
         {
             List<int> reqList = new List<int>();
             if (item.recipe != null && item.recipe.Ingredients != null)
             {
-
-
                 ItemAmount[] ingedients = item.recipe.Ingredients;
-
-
 
                 if (ingedients != null)
                 {
@@ -287,8 +281,6 @@ namespace InventoryLogic
                     {
                         if (ingedients[i].itemType.recipe != null && ingedients[i].itemType.recipe.Ingredients != null)
                         {
-
-
                             ItemAmount[] recipeRecipe = ingedients[i].itemType.recipe.Ingredients;
                             if (recipeRecipe != null)
                             {
@@ -311,8 +303,6 @@ namespace InventoryLogic
             }
 
         }
-
-
 
     }
 }

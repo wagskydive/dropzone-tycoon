@@ -9,8 +9,21 @@ namespace InventoryLogic
     public class Recipe
     {
         public ItemAmount[] Ingredients { get; private set; }
+
+        public int OutputAmount { get; private set; }
         public CrafterType CraftingItem { get; private set; }
         public string[] SkillsRequired { get; private set; }
+
+
+        internal Recipe(int outputAmount = 1)
+        {
+            OutputAmount = outputAmount;
+        }
+
+        internal void SetOutPutAmount(int amount)
+        {
+            OutputAmount = amount;
+        }
 
         internal void Add(ItemAmount itemAmount)
         {

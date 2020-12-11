@@ -60,7 +60,7 @@ namespace ManagementScripts
             OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
-        public void LoadTree(Skill[] loadedTree, string tName)
+        public void LoadSkillTree(Skill[] loadedTree, string tName)
         {
             //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
             skillTree = new SkillTree(tName, false);
@@ -69,6 +69,10 @@ namespace ManagementScripts
             OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
+        public void LoadItemLibrary(ItemType[] items, string libName)
+        {
+
+        }
 
         public bool ActivateCharacterReturnWasActive(string characterName)
         {

@@ -4,13 +4,15 @@ namespace InventoryLogic
 {
     public class ItemType
     {
-        internal ItemType(string name, string description = null, CrafterType crafterType = null)
+        internal ItemType(string name, string catagory = null, string description = null, CrafterType crafterType = null)
         {
             TypeName = name;
+            Catagory = catagory;
             Description = description;
             SetCrafterType(crafterType);
         }
         public string TypeName { get; internal set; }
+        public string Catagory { get; internal set; }
         public string Description { get; internal set; }
         public Recipe recipe { get; internal set; }
 
@@ -35,6 +37,11 @@ namespace InventoryLogic
                 recipe = new Recipe();
             }
             recipe.Add(itemAmount);
+        }
+
+        public void SetOutputAmountOnRecipe(int amount)
+        {
+            recipe.SetOutPutAmount(amount);
         }
 
         public void SetDescription(string edit)
