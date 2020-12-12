@@ -80,7 +80,7 @@ public class ImageSaver : MonoBehaviour
 
         string extension = Path.GetExtension(itemPath);
 
-        string pngPath = itemPath.Substring(0, itemPath.Length - extension.Length);
+        string pngPath = itemPath.Substring(0, itemPath.Length - extension.Length)+"_Icon";
 
 
         if (!File.Exists(pngPath + ".png"))
@@ -127,7 +127,7 @@ public class ImageSaver : MonoBehaviour
     }
     RenderTexture originalRenderTexture;
 
-    public void SaveImage(string itemName, int sqr = 512)
+    public void SaveImage(string itemName, int sqr =128)
     {
         originalRenderTexture = cam.targetTexture;
         cam = GetComponent<Camera>();
