@@ -69,49 +69,47 @@ public class FileSaver
     {
         JSONObject treeObject = new JSONObject();
 
+        
+
+        for (int i = 0; i < allItems.Count; i++)
+        {
+            JSONObject itemObject = ItemTypeToJson(allItems[i]);
+
+            treeObject.Add(allItems[i].TypeName, itemObject);
+        }
 
 
-        //for (int i = 0; i < tree.Length; i++)
-        //{
-        //    JSONObject skillObject = new JSONObject();
-        //    skillObject.Add("Name", tree[i].Name);
-        //    skillObject.Add("Description", tree[i].Description);
-        //
-        //
-        //    if (tree[i].RequiredSkills != null)
-        //    {
-        //        JSONArray requirementsArray = new JSONArray();
-        //
-        //        for (int j = 0; j < tree[i].RequiredSkills.Length; j++)
-        //        {
-        //            requirementsArray.Add("Req " + j.ToString(), new JSONString(tree[tree[i].RequiredSkills[j]].Name));
-        //        }
-        //        Debug.Log(requirementsArray.ToString());
-        //
-        //        skillObject.Add("Requirements", requirementsArray);
-        //    }
-        //
-        //
-        //    if (tree[i].Effectors != null)
-        //    {
-        //        JSONObject effectors = new JSONObject();
-        //
-        //        foreach (KeyValuePair<string, float> effector in tree[i].Effectors)
-        //        {
-        //            effectors.Add(effector.Key, System.Math.Round(effector.Value, 3));
-        //
-        //
-        //        }
-        //        skillObject.Add("Effectors", effectors);
-        //    }
-        //
-        //    treeObject.Add(tree[i].Name, skillObject);
-        //}
-        //
-        //
-        //Debug.Log(treeObject.ToString());
-        //File.WriteAllText(path, treeObject.ToString());
+        Debug.Log(treeObject.ToString());
+        File.WriteAllText(path, treeObject.ToString());
         return treeObject.ToString();
+    }
+
+    public static JSONObject ItemTypeToJson(ItemType itemType)
+    {
+        JSONObject itemObject = new JSONObject();
+        itemObject.Add("Name", itemType.TypeName);
+        itemObject.Add("Catagory", itemType.Catagory);
+
+        itemObject.Add("Description", itemType.Description);
+
+
+        if (!itemType.IsRoot())
+        {
+            JSONArray ingredientsArray = new JSONArray();
+            ItemAmount[] ingredients = itemType.recipe.Ingredients;
+
+
+            for (int j = 0; j < ingredients.Length; j++)
+            {
+                ingredientsArray.Add(new JSONString(ingredients[j].itemType.TypeName), new JSONNumber(ingredients[j].amount));
+            }
+            Debug.Log(ingredientsArray.ToString());
+
+            itemObject.Add("Ingredients", ingredientsArray);
+            itemObject.Add("OutputAmount", new JSONNumber(itemType.recipe.OutputAmount));
+        }
+
+        return itemObject;
     }
 
     internal static ItemType[] JsonToItemLibrary(string path)

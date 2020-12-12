@@ -32,6 +32,8 @@ public class ItemNode : MonoBehaviour
 
     Image background;
 
+    public Image icon;
+
     HoverButton hoverDetect;
 
     private void Awake()
@@ -140,6 +142,7 @@ public class ItemNode : MonoBehaviour
         UpdateRecipeTexts();
 
         DescriptionText.text = library.allItems[index].Description;
+
         //background.color = background.color + Color.white * 1 / (skillTree.GetHiarchyLevelOfSkill(index) + 1) + new Color(0, 0, 0, 1);
     }
 

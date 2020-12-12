@@ -7,7 +7,7 @@ using ManagementScripts;
 using InventoryLogic;
 using System;
 
-public class CraftingTreeUI : MonoBehaviour
+public class CraftingTreeUI : MonoBehaviour, ITreeBrowser
 {
     public GameObject columnPrefab;
     List<GameObject> allColumns = new List<GameObject>();
@@ -192,7 +192,7 @@ public class CraftingTreeUI : MonoBehaviour
     }
 
 
-    private GameObject InstantiateNodeObject(string inputText)
+    public GameObject InstantiateNodeObject(string inputText)
     {
         GameObject node = Instantiate(ItemNodePrefab);
 

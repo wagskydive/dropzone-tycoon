@@ -51,9 +51,14 @@ public class ItemLoader : MonoBehaviour
         ItemCreator.SetActive(true);
     }
 
+    public void CreateItemTypesFromStringArray(string[] inputStrings)
+    {
+        gameManager.Library.AddItemsFromStringArray(inputStrings);
+    }
+
     public void SaveLibraryButtonClick()
     {
-        string path = pathRoot + gameManager.skillTree.TreeName + ".itemlibrary";
+        string path = Application.dataPath + "/Resources/Items/" + gameManager.skillTree.TreeName + ".itemlibrary";
         Debug.Log(path);
         FileSaver.LibraryToJson(path, gameManager.Library.allItems);
     }
@@ -64,7 +69,10 @@ public class ItemLoader : MonoBehaviour
     }
 
 
-
+    //public Sprite IconSpriteFromName(string itemTypeName)
+    //{
+    //
+    //}
 
     public void LoadModel(string resourcePath)
     {
@@ -79,7 +87,7 @@ public class ItemLoader : MonoBehaviour
         Debug.Log(resourcePath);
         //loadedObject = new GameObject();
         
-        iconObject.GetComponent<IconObject>().SetNewObject(go, itemName); 
+        iconObject.GetComponent<IconObject>().SetNewObject(go); 
     }
 
     public void UnLoadModel()

@@ -5,10 +5,21 @@ using UnityEngine;
 public class IconObject : MonoBehaviour
 {
     public CinemachineTargetHandler cinemachineTargetHandler;
-    public ShadowCatcher ShadowCatcher;
+    public ShadowCatcher shadowCatcher;
+    public ThumbnailFrom3dModel thumbnailFrom3DModel;
 
 
-    public void SetNewObject(GameObject go, string itemName)
+    private void Start()
+    {
+        thumbnailFrom3DModel.OnThumbnailDrag += RotateFromMouseDrag;
+    }
+
+    void RotateFromMouseDrag(Vector3 movement)
+    {
+        transform.Rotate(new Vector3(0,movement.x,0));
+    }
+
+    public void SetNewObject(GameObject go)
     {
         if (transform.childCount > 1)
         {
@@ -25,6 +36,7 @@ public class IconObject : MonoBehaviour
             {
                 go.transform.Translate(-renderer.bounds.center);
             }
+            shadowCatcher.SetPositionToBottomOfBounds(bounds);
         }
    }
 

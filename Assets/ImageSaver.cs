@@ -12,6 +12,8 @@ public class ImageSaver : MonoBehaviour
     Camera cam;
     public CinemachineTargetHandler targetHandler;
     public ItemLoader itemLoader;
+
+    public GameObject iconObject;
     private void Start()
     {
 
@@ -22,32 +24,51 @@ public class ImageSaver : MonoBehaviour
 
     public void SaveAll()
     {
+
         allItems = ItemLoader.AllItemsFromFBXFiles();
+        itemLoader.CreateItemTypesFromStringArray(allItems);
         isSaving = true;
     }
     string[] allItems = new string[0];
     bool isSaving;
     int allSaveInt = 0;
 
-    int restFrames = 4;
+    int restFrames = 5;
 
     int restFrameCount = 0;
-    private void Update()
+    private void LateUpdate()
     {
         if (isSaving && allSaveInt < allItems.Length)
         {
-            if(restFrameCount > restFrames)
+            if (restFrameCount == 1)
             {
+                //iconObject.SetActive(true);
                 itemLoader.LoadModel(allItems[allSaveInt]);
+
+
+                //itemLoader.UnLoadModel();
+            }
+            else if (restFrameCount == 2)
+            {
                 SaveItemImage(allItems[allSaveInt]);
                 allSaveInt++;
+            }
+            else if (restFrameCount == 3)
+            {
+            }
+            else if (restFrameCount == 4)
+            {
+                
+               
+            }
+            else if (restFrameCount == 5)
+            {
                 restFrameCount = 0;
-                //itemLoader.UnLoadModel();
             }
             restFrameCount++;
 
         }
-        if(isSaving && allSaveInt >= allItems.Length)
+        if (isSaving && allSaveInt >= allItems.Length)
         {
             isSaving = false;
         }
@@ -55,18 +76,24 @@ public class ImageSaver : MonoBehaviour
 
     private void SaveItemImage(string itemPath, bool overwrite = true)
     {
-        
+
 
         string extension = Path.GetExtension(itemPath);
 
-        string pngPath = itemPath.Substring(0, itemPath.Length - extension.Length) + ".png";
+        string pngPath = itemPath.Substring(0, itemPath.Length - extension.Length);
 
 
-
-        if (!File.Exists(pngPath) || overwrite)
+        if (!File.Exists(pngPath + ".png"))
         {
             SaveImage(pngPath);
         }
+        else if (overwrite)
+        {
+            //File.Delete(pngPath);
+            //SaveImage(pngPath);
+        }
+
+
     }
 
 
@@ -98,14 +125,15 @@ public class ImageSaver : MonoBehaviour
         return virtualPhoto;
 
     }
+    RenderTexture originalRenderTexture;
 
-    public void SaveImage(string itemName)
+    public void SaveImage(string itemName, int sqr = 512)
     {
-
+        originalRenderTexture = cam.targetTexture;
         cam = GetComponent<Camera>();
         // capture the virtuCam and save it as a square PNG.
 
-        int sqr = 512;
+        
 
         cam.aspect = 1.0f;
         // recall that the height is now the "actual" size from now on
@@ -116,6 +144,7 @@ public class ImageSaver : MonoBehaviour
         // RenderTextureFormat.Default, ARGB32 etc.
 
         cam.targetTexture = tempRT;
+        
         cam.Render();
 
         RenderTexture.active = tempRT;
@@ -124,15 +153,30 @@ public class ImageSaver : MonoBehaviour
         // false, meaning no need for mipmaps
         virtualPhoto.ReadPixels(new Rect(0, 0, sqr, sqr), 0, 0);
 
-        RenderTexture.active = null; //can help avoid errors 
-        cam.targetTexture = null;
+        RenderTexture.active = originalRenderTexture; //can help avoid errors 
+        //cam.Render();
+        cam.targetTexture = originalRenderTexture;
+        cam.Render();
         Destroy(tempRT);
-
+        Texture2D resized = virtualPhoto;
         byte[] bytes;
         bytes = virtualPhoto.EncodeToPNG();
 
-        System.IO.File.WriteAllBytes(
-            OurTempSquareImageLocation(itemName), bytes);
+        string path = OurTempSquareImageLocation(itemName);
+
+        File.WriteAllBytes(path, bytes);
+
+
+
+        //byte[] bytes128;
+        //
+        //resized.Resize(128, 128);
+        //bytes128 = resized.EncodeToPNG();
+        //
+        //string path128 = OurTempSquareImageLocation(itemName+"_128px");
+        //File.WriteAllBytes(path128, bytes128);
+
+
         // virtualCam.SetActive(false); ... no great need for this.
 
         // now use the image, 
@@ -142,16 +186,16 @@ public class ImageSaver : MonoBehaviour
 
     private string OurTempSquareImageLocation(string path, string itemName)
     {
-        string r = Application.persistentDataPath+path + itemName+".png";
+        string r = Application.dataPath+ path + itemName + ".png";
         return r;
     }
 
     private string OurTempSquareImageLocation(string itemName)
     {
-        string r = Application.dataPath + "/Resources/" + itemName;
+        string r = Application.dataPath + "/Resources/" + itemName + ".png";
         return r;
     }
 
-    
+
 }
 

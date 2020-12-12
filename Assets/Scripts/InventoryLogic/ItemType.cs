@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace InventoryLogic
 {
@@ -49,7 +50,7 @@ namespace InventoryLogic
             Description = edit;
         }
 
-        internal bool IsRoot()
+        public bool IsRoot()
         {
             if (recipe == null || recipe.Ingredients == null || recipe.Ingredients.Length == 0)
             {

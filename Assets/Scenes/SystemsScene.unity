@@ -2480,7 +2480,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cinemachineTargetHandler: {fileID: 1570341380}
-  ShadowCatcher: {fileID: 475412699}
+  shadowCatcher: {fileID: 475412699}
+  thumbnailFrom3DModel: {fileID: 1053077477}
 --- !u!4 &199504280
 Transform:
   m_ObjectHideFlags: 0
@@ -2830,6 +2831,7 @@ MonoBehaviour:
   DescriptionText: {fileID: 874606342}
   nodePathLeft: {fileID: 319794575}
   nodePathRight: {fileID: 942930239}
+  icon: {fileID: 0}
 --- !u!114 &213309636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12636,7 +12638,7 @@ GameObject:
   - component: {fileID: 1053077477}
   - component: {fileID: 1053077478}
   m_Layer: 5
-  m_Name: ThumbNail
+  m_Name: ThumbnailFrom3d
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12658,8 +12660,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 244.7, y: -79.3}
-  m_SizeDelta: {x: 128, y: 128}
+  m_AnchoredPosition: {x: 374, y: -307}
+  m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1053077474
 MonoBehaviour:
@@ -12774,19 +12776,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1053077475}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1684605008}
-        m_TargetAssemblyTypeName: ImageSaver, Assembly-CSharp
-        m_MethodName: SaveImage
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: TestWasherIcon
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1057212817
 GameObject:
   m_ObjectHideFlags: 0
@@ -20838,7 +20828,6 @@ GameObject:
   - component: {fileID: 1684605007}
   - component: {fileID: 1684605006}
   - component: {fileID: 1684605008}
-  - component: {fileID: 1684605005}
   - component: {fileID: 1684605010}
   m_Layer: 0
   m_Name: IconCamera
@@ -20847,19 +20836,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1684605005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684605004}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84371346c2a0e6e4a8b7c5cb041d2d4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetHandler: {fileID: 0}
 --- !u!20 &1684605006
 Camera:
   m_ObjectHideFlags: 0
@@ -20931,6 +20907,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetHandler: {fileID: 1570341380}
   itemLoader: {fileID: 1006839171}
+  iconObject: {fileID: 199504278}
 --- !u!114 &1684605010
 MonoBehaviour:
   m_ObjectHideFlags: 0
