@@ -1,9 +1,6 @@
 {
-    "name": "InventoryLogic",
-    "references": [
-        "GUID:63066492b0ab7324ba022504f51b9461",
-        "GUID:ec7d4ba67fdd5fd489b541599964eef7"
-    ],
+    "name": "SpawnLogic",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

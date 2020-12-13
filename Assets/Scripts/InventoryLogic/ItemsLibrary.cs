@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace InventoryLogic
 {
 
-    public class AllItemsLibrary
+    public class ItemsLibrary
     {
         public List<ItemType> allItems = new List<ItemType>();
 
@@ -22,9 +22,10 @@ namespace InventoryLogic
             }
             
             ItemType itemType = new ItemType(typeName);
+            allItems.Add(itemType);
         }
 
-        void AddItemsToRecipe(ItemAmount itemAmount, int itemIndex)
+        public void AddItemsToRecipe(ItemAmount itemAmount, int itemIndex)
         {
             ItemType itemType = allItems[itemIndex];
             itemType.recipe.Add(itemAmount);
