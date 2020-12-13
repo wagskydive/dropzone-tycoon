@@ -4,15 +4,18 @@ namespace InventoryLogic
 {
     public class Item : ISpawnable
     {
-        public Item(string typeName)
+        public ItemType itemType;
+        public Item(ItemType type)
         {
-            itemType=typeName;
+            itemType=type;
         }
+
         public string itemType { get; private set; }
 
         public string ResourcePath()
         {
             return itemType;
         }
+
     }
 }

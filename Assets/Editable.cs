@@ -91,7 +91,12 @@ public class Editable : MonoBehaviour
         }        
     }
 
-    public virtual void AssignNode(string skillName, SkillNode skillNode)
+    public virtual void AssignSkillNode(string skillName, SkillNode skillNode)
+    {
+        Unsubscribe(OnEdited);
+    }
+
+    public virtual void AssignItemNode(string itemName, ItemNode itemNode)
     {
         Unsubscribe(OnEdited);
     }

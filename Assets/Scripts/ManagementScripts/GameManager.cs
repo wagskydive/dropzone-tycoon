@@ -7,6 +7,7 @@ using UnityEngine;
 using FinanceLogic;
 using CharacterLogic;
 using SkillsLogic;
+using InventoryLogic;
 
 namespace ManagementScripts
 {
@@ -14,6 +15,8 @@ namespace ManagementScripts
     {
         public event Action<SkillTree> OnOldSkillWillBeDestroyed;
         public event Action<SkillTree> OnNewSkillTreeCreated;
+
+        public event Action<ItemsLibrary> OnNewLibraryCreated;
 
         [SerializeField]
         private string[] StatTypes;
@@ -27,6 +30,7 @@ namespace ManagementScripts
         public CharacterDataHolder Characters;
 
         internal List<int> ActiveCharacters = new List<int>();
+        internal ItemsLibrary Library;
 
         private void Awake()
         {
@@ -37,6 +41,7 @@ namespace ManagementScripts
             }
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
+            Library = new ItemsLibrary();
         }
 
         private void Update()
@@ -55,7 +60,7 @@ namespace ManagementScripts
             OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
-        public void LoadTree(Skill[] loadedTree, string tName)
+        public void LoadSkillTree(Skill[] loadedTree, string tName)
         {
             //OnOldSkillWillBeDestroyed?.Invoke(skillTree);
             skillTree = new SkillTree(tName, false);
@@ -64,6 +69,10 @@ namespace ManagementScripts
             OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
+        public void LoadItemLibrary(ItemType[] items, string libName)
+        {
+
+        }
 
         public bool ActivateCharacterReturnWasActive(string characterName)
         {

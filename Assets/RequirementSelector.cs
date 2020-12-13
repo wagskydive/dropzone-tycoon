@@ -40,15 +40,15 @@ public class RequirementSelector : Editable
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    public override void AssignNode(string skillName, SkillNode skillNode)
+    public override void AssignSkillNode(string skillName, SkillNode skillNode)
     {
         currentSkill = skillName;
         currentSkillNode = skillNode;
-        requirementSelectorText.text = RequiremetSelectorStringBuilder();
+        requirementSelectorText.text = RequirementSelectorStringBuilder();
         
     }
 
-    string RequiremetSelectorStringBuilder()
+    string RequirementSelectorStringBuilder()
     {
         if (addMode)
         {
@@ -74,7 +74,7 @@ public class RequirementSelector : Editable
 
         }
         //currentSkillNode.AddRequirement(dropdownHandler.GetSelected());
-        AssignNode(currentSkill, currentSkillNode);
+        AssignSkillNode(currentSkill, currentSkillNode);
         OnConfirmButtonClick?.Invoke(currentSkillNode);
     }
 

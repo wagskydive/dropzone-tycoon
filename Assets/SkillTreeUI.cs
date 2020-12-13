@@ -10,6 +10,8 @@ public class SkillTreeUI : MonoBehaviour
     public GameObject columnPrefab;
     List<GameObject> allColumns = new List<GameObject>();
 
+    public GameObject branchPrefab;
+
     public GameObject SkillNodePrefab;
     public List<GameObject> allNodes = new List<GameObject>();
 
@@ -23,18 +25,22 @@ public class SkillTreeUI : MonoBehaviour
 
     public Color DownstreamColor;
 
+    public GameObject dummy;
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         //gameManager.OnOldSkillWillBeDestroyed += UnSubscribeToNewTree;
         gameManager.OnNewSkillTreeCreated += SubscribeToNewTree;
 
-        
+
         SkillNode.OnNodeHoverEnter += SelectNode;
         SkillNode.OnNodeHoverExit += DeselectNode;
 
         SkillNode.OnNodeClicked += NodeClicked;
 
+        dummy = new GameObject("dummy");
+        dummy.AddComponent<RectTransform>().sizeDelta = SkillNodePrefab.GetComponent<RectTransform>().sizeDelta;
     }
 
     void UnSubscribeToNewTree(SkillTree skillTree)
@@ -86,14 +92,14 @@ public class SkillTreeUI : MonoBehaviour
             {
                 previousMousePosition = newPosition;
             }
-            transform.Translate((previousMousePosition - newPosition)*-1);
+            transform.Translate((previousMousePosition - newPosition) * -1);
             previousMousePosition = newPosition;
-        }      
+        }
         scalingDelta = Input.mouseScrollDelta.y / 5;
 
 
         Vector3 newScale = transform.localScale + new Vector3(scalingDelta, scalingDelta, 1);
-        if(newScale.x > .1f && newScale.x < 2f)
+        if (newScale.x > .1f && newScale.x < 2f)
         {
             transform.localScale = newScale;
         }
@@ -107,47 +113,179 @@ public class SkillTreeUI : MonoBehaviour
     {
         Skill[] tree = skillTree.tree;
 
-        int maxLevel = skillTree.GetMaxHiarchyLevelOfTree();
-
-        for (int j = 0; j < maxLevel+1; j++)
-        {
-            if (j + 1 > allColumns.Count)
-            {
-                GameObject col = Instantiate(columnPrefab, transform);
-                col.SetActive(true);
-                allColumns.Add(col);
-                
-            }
-        }
+        //int maxLevel = skillTree.GetMaxHiarchyLevelOfTree();
+        //
+        //for (int j = 0; j < maxLevel + 1; j++)
+        //{
+        //    if (j + 1 > allColumns.Count)
+        //    {
+        //        GameObject col = Instantiate(columnPrefab, transform);
+        //        col.SetActive(true);
+        //        allColumns.Add(col);
+        //
+        //    }
+        //}
 
 
 
         if (tree.Length > allNodes.Count)
         {
-            allNodes.AddRange(new GameObject[tree.Length- allNodes.Count]);
+            allNodes.AddRange(new GameObject[tree.Length - allNodes.Count]);
         }
+
+
+
+
+
+        MakeBranches(skillTree, 0).transform.SetParent(transform);
 
         for (int i = 0; i < tree.Length; i++)
         {
             if(allNodes[i] == null)
             {
-                allNodes[i] = InstantiateNodeObject(tree[i].Name);
+                MakeBranches(skillTree, i).transform.SetParent(transform);
+                //MakeBranches(skillTree, i);
             }
- 
-            allNodes[i].SetActive(true);
-            SkillNode skillNode = allNodes[i].GetComponent<SkillNode>();
-            skillNode.SetSkillTreeAndIndex(skillTree, i);
-            skillNode.UpdateNode(i);
-            
-            allNodes[i].transform.SetParent(allColumns[skillTree.GetHiarchyLevelOfSkill(tree[i].Name)].transform);
 
+            //allNodes[i].transform.SetParent(transform);
+            //allNodes[i].transform.SetParent(allColumns[skillTree.GetHiarchyLevelOfSkill(tree[i].Name)].transform);
+        
+        }
+        //AddDummies(skillTree);
+
+    }
+
+    private void CrateOrAdjustNode(SkillTree skillTree, int i)
+    {
+        Skill[] tree = skillTree.tree;
+        if (allNodes[i] == null)
+        {
+            allNodes[i] = InstantiateNodeObject(tree[i].Name);
         }
 
+        allNodes[i].SetActive(true);
+        SkillNode skillNode = allNodes[i].GetComponent<SkillNode>();
+        skillNode.SetSkillTreeAndIndex(skillTree, i);
+        skillNode.UpdateNode(i);
+    }
+
+    private GameObject MakeBranches(SkillTree skillTree, int rootSkill)
+    {
+
+        Skill[] tree = skillTree.tree;
+        if (allNodes[rootSkill] == null)
+        {
+            allNodes[rootSkill] = InstantiateNodeObject(tree[rootSkill].Name);
+        }
+
+
+
+        int[] mReqs = skillTree.GetAllSkillsThatHaveRequirement(rootSkill);
+
+        GameObject branch = Instantiate(branchPrefab);
+        GameObject[] subBranches = null;
+        if (mReqs != null && mReqs.Length > 0)
+        {
+
+            subBranches = new GameObject[mReqs.Length];
+            for (int i = 0; i < mReqs.Length; i++)
+            {
+
+                CrateOrAdjustNode(skillTree, mReqs[i]);
+
+
+                allNodes[mReqs[i]].transform.SetParent(branch.transform);
+
+                branch.transform.SetParent(allNodes[rootSkill].transform.parent);
+
+
+                subBranches[i] = MakeBranches(skillTree, mReqs[i]);
+            }
+
+
+        }
+        branch.GetComponent<BranchUI>().SetupBranch(allNodes[rootSkill], subBranches);
+        return branch;
+    }
+
+    void AddDummies(SkillTree skillTree)
+    {
+        for (int i = 0; i < allColumns.Count; i++)
+        {
+
+            SkillNode[] skillNodes = GetComponentsInChildren<SkillNode>();
+
+            for (int j = 0; j < skillNodes.Length; j++)
+            {
+
+
+                for (int l = 0; l < skillNodes.Length; l++)
+                {
+                    if (j > l)
+                    {
+                        int[] lReqs = skillTree.tree[skillNodes[l].index].RequiredSkills;
+                        int[] jReqs = skillTree.tree[skillNodes[j].index].RequiredSkills;
+                        if (lReqs != null && jReqs != null)
+                        {
+                            for (int m = 0; m < lReqs.Length; m++)
+                            {
+                                for (int n = 0; n < jReqs.Length; n++)
+                                {
+                                    if (lReqs[m] == jReqs[n])
+                                    {
+                                        return;
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+                int skillsAsReq = skillTree.GetMaxRelatedHiarchyLevelOfSkill(skillNodes[j].index);
+
+                if (skillsAsReq - 1 > skillNodes[j].activeDummies.Count)
+                {
+                    //float spacing = columnPrefab.GetComponent<VerticalLayoutGroup>().spacing;
+                    //Vector2 newSizeDelta = (rectTransform.sizeDelta * new Vector2(1, skillsAsReq.Length));
+                    //
+                    //float totalSpacing = spacing * skillsAsReq.Length - 2;
+                    //if(totalSpacing > 0)
+                    //{
+                    //    newSizeDelta += new Vector2(0, totalSpacing);
+                    //}
+                    //
+                    //
+                    //rectTransform.sizeDelta = newSizeDelta;
+
+                    for (int k = 0; k < skillsAsReq - 1; k++)
+                    {
+                        SkillNode NodeWithRef = skillNodes[j];
+                        Transform par = skillNodes[j].transform.parent;
+                        int siblingIndex = skillNodes[j].transform.GetSiblingIndex() + 1;
+
+                        AddDummy(NodeWithRef, par, siblingIndex);
+                    }
+
+                }
+
+
+            }
+
+        }
+    }
+
+    private void AddDummy(SkillNode NodeWithRef, Transform par, int siblingIndex)
+    {
+        GameObject SkillDummy = Instantiate(dummy, par);
+        SkillDummy.transform.SetSiblingIndex(siblingIndex);
+        NodeWithRef.activeDummies.Add(SkillDummy);
     }
 
     public void SelectNode(SkillNode node)
     {
-        if(selectedNode != null)
+        if (selectedNode != null)
         {
             DeselectNode(selectedNode);
         }
@@ -158,7 +296,7 @@ public class SkillTreeUI : MonoBehaviour
         int skillIndex = node.index;
 
         int[] upStream = skillTree.GetAllUpstreamSkills(skillIndex);
-        if(upStream != null)
+        if (upStream != null)
         {
             for (int i = 0; i < upStream.Length; i++)
             {
@@ -188,7 +326,7 @@ public class SkillTreeUI : MonoBehaviour
 
     public void DeselectNode(SkillNode skillNode)
     {
-        
+
         ResetAllColors();
         selectedNode = null;
     }

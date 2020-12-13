@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace InventoryLogic
 {
-   public class CrafterType : ItemType, ItemSupplier
+    public class CrafterType : ItemType
     {
         public float CraftingSpeed;
 
@@ -13,11 +14,18 @@ namespace InventoryLogic
 
         }
 
-        public event Action<ItemType> OnItemSupplied;
-
-        public ItemType SupplyItem()
+        public List<CrafterType> GetCraftingTypesRecursive()
         {
-            return null;
+            List<CrafterType> output = new List<CrafterType>();
+            output.Add(this);
+            if (CanAlsoCraftLikeThis != null)
+            {
+               for (int i = 0; i < CanAlsoCraftLikeThis.Length; i++)
+                {
+                    output.AddRange(CanAlsoCraftLikeThis[i].GetCraftingTypesRecursive());
+                }
+            }
+            return output;
         }
     }
 }

@@ -31,7 +31,7 @@ public class SkillTreeCreatorPanel : MonoBehaviour
 
     void LoadNodes(Skill[] skills, string nameP)
     {
-        gameManager.LoadTree(skills, nameP);
+        gameManager.LoadSkillTree(skills, nameP);
         gameObject.SetActive(false);
         SkillCreator.SetActive(true);
     }

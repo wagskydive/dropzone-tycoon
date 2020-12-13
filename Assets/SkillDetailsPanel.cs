@@ -30,7 +30,7 @@ public class SkillDetailsPanel : MonoBehaviour
 
 
         Requirements.SetDisplaytext(skill.RequirementsText.text);
-        Requirements.AssignNode(skill.NameText.text, skill);
+        Requirements.AssignSkillNode(skill.NameText.text, skill);
 
         Requirements.OnEdited += HandleRequirementEdit;
 

@@ -12,7 +12,7 @@ namespace InventoryLogic
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if (inventory.inventoryList[i].itemType.typeName == itemAmount.itemType.typeName)
+                if (inventory.inventoryList[i].itemType.TypeName == itemAmount.itemType.TypeName)
                 {
                     inventory.inventoryList[i].amount += itemAmount.amount;
                     return;
@@ -52,7 +52,7 @@ namespace InventoryLogic
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if(inventory.inventoryList[i].itemType.typeName == item.typeName)
+                if(inventory.inventoryList[i].itemType.TypeName == item.TypeName)
                 {
                     return inventory.inventoryList[i];
                 }
@@ -64,7 +64,7 @@ namespace InventoryLogic
         {
             for (int i = 0; i < inventory.inventoryList.Count; i++)
             {
-                if (inventory.inventoryList[i].itemType.typeName == item.typeName)
+                if (inventory.inventoryList[i].itemType.TypeName == item.TypeName)
                 {
                     return i;
                 }

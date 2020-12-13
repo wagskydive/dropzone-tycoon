@@ -8,9 +8,10 @@ namespace InventoryLogic
 {    
     public interface ItemSupplier
     {
-        event Action<ItemType> OnItemSupplied;
-
-
-        ItemType SupplyItem();
+        //event Action<ItemType> OnItemSupplied;
+        //
+        //ItemType currentlySuppling;
+        //
+        //ItemType SupplyItem(ItemType itemType);
     }
 }
