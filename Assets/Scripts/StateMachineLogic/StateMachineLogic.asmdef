@@ -1,10 +1,7 @@
 {
-    "name": "InventoryLogic",
+    "name": "StateMachineLogic",
     "references": [
-        "GUID:63066492b0ab7324ba022504f51b9461",
-
-        "GUID:ec7d4ba67fdd5fd489b541599964eef7"
-
+        "GUID:1ccc976c4109bfc44b8ef39fb1553d4d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

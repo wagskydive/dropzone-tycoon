@@ -4,12 +4,12 @@ using UnityEngine;
 using InventoryLogic;
 using FinanceLogic;
 using StatsLogic;
-
+using SpawnLogic;
 
 
 namespace CharacterLogic
 {
-    public class Character
+    public class Character : ISpawnable
     {
         public string CharacterName { get; private set; }
         public string FinancialAccountID { get; private set; }
@@ -48,5 +48,9 @@ namespace CharacterLogic
             }
         }
 
+        public string ResourcePath()
+        {
+            return "Characters/DefaultCharacter";
+        }
     }
 }
