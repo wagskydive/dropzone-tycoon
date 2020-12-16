@@ -10,11 +10,11 @@ namespace InventoryLogic
             itemType=type;
         }
 
-        public string itemType { get; private set; }
+
 
         public string ResourcePath()
         {
-            return itemType;
+            return itemType.ResourcePath;
         }
 
     }

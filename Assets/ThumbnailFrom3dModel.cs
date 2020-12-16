@@ -2,65 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using InventoryLogic;
 
-[RequireComponent(typeof(Image))]
-public class ThumbnailFrom3dModel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerExitHandler, IPointerUpHandler
+
+public class ThumbnailFrom3dModel : MonoBehaviour
 {
-    public event Action<Vector3> OnThumbnailDrag;
-    Image image;
 
-    public ImageSaver imageSaver;
 
-    Texture2D currentImage;
 
-    bool isInside;
-    bool isClicking;
 
-    bool dragStarted;
-    Vector3 lastMousePosition;
+    [SerializeField]
+    private Icon3dHandler icon3dHandler;
+
+    [SerializeField]
+    public ItemDetailsDisplayer itemDetailsDisplayer;
+
+    [SerializeField]
+    public IconObject iconObject;
 
     private void Start()
     {
-        image = GetComponent<Image>();
+
+        itemDetailsDisplayer.OnNewItemTypeDetailsDisplayed += SetItem;
 
     }
 
-    private void Update()
+    void SetItem(ItemType itemType)
     {
-        if (isClicking)
-        {
-            if (!dragStarted)
-            {
-                lastMousePosition = Input.mousePosition;
-                dragStarted = true;
-            }
-            OnThumbnailDrag?.Invoke(Input.mousePosition - lastMousePosition);
-
-            lastMousePosition = Input.mousePosition;
-        }
+        iconObject.SetItem(itemType);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
 
-        isInside = true;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        isClicking = true;
-
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        isInside = false;
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        dragStarted = false;
-        isClicking = false;
-    }
 }

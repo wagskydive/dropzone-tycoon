@@ -16,11 +16,11 @@ public static class DummyObjects
 
     public static ItemType ProvideDummeyItemType(string name = "")
     {
-        ItemsLibrary library = new ItemsLibrary();
+        ItemsLibrary library = new ItemsLibrary("DummyLibrary");
 
-        library.AddNewItemType("DummyItemType" + name);
-        library.AddNewItemType("Dummy Resource One");
-        library.AddNewItemType("Dummy Resource Two");
+        library.AddNewItemType(name, "Items/");
+        library.AddNewItemType("Dummy Resource One", "Items/");
+        library.AddNewItemType("Dummy Resource Two", "Items/");
 
         ItemAmount resourceOne = new ItemAmount(library.allItems[1], 10);
         library.AddItemsToRecipe(resourceOne, 0);
@@ -36,8 +36,8 @@ public static class DummyObjects
 
     public static Item ProvideDummyItem()
     {
-        ItemType itemType = ProvideDummeyItemType();
-        Item item = new Item("/Items/DummyItem");
+        ItemType itemType = ProvideDummeyItemType("DummyItem");
+        Item item = new Item(itemType);
         return item;
     }
 }

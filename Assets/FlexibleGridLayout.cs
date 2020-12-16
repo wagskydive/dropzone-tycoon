@@ -11,7 +11,8 @@ public class FlexibleGridLayout : LayoutGroup
         Width,
         Height,
         FixedRows,
-        FixedColumns
+        FixedColumns,
+        
     }
 
     public FitType fitType;

@@ -14,13 +14,22 @@ namespace InventoryLogic
         public CrafterType CraftingItem { get; private set; }
         public string[] SkillsRequired { get; private set; }
 
+        public string[] RecipeStrings()
+        {
+            string[] output = new string[Ingredients.Length];
+            for (int i = 0; i < Ingredients.Length; i++)
+            {
+                output[i] = Ingredients[i].Amount.ToString()+" "+ Ingredients[i].itemType.TypeName;
+            }
+            return output;
+        }
 
         internal Recipe(int outputAmount = 1)
         {
             OutputAmount = outputAmount;
         }
 
-        internal void SetOutPutAmount(int amount)
+        internal void SetOutputAmount(int amount)
         {
             OutputAmount = amount;
         }
@@ -38,7 +47,7 @@ namespace InventoryLogic
                 {
                     if (Ingredients[i].itemType.TypeName == itemAmount.itemType.TypeName)
                     {
-                        Ingredients[i].AddAmount(itemAmount.amount);
+                        Ingredients[i].AddAmount(itemAmount.Amount);
                         return;
                     }
                 }

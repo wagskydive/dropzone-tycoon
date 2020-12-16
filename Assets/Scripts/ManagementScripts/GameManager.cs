@@ -35,13 +35,22 @@ namespace ManagementScripts
         private void Awake()
         {
             GameManager gameManager = FindObjectOfType<GameManager>();
-            if (gameManager != this)
+            if (gameManager == null)
             {
-                Destroy(this);
+                gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            }
+            if (gameManager != null && gameManager != this)
+            {
+                Destroy(gameObject);
+                return;
             }
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
-            Library = new ItemsLibrary();
+
+            gameObject.AddComponent<ItemLibraryLoader>().LoadLibraryFromJsonButtonPress(this, Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary");
+
+            //ItemsLibrary lib = 
+            //LoadNewItemLibrary(FileSaver.JsonToItemLibrary(Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary"));
         }
 
         private void Update()
@@ -69,9 +78,10 @@ namespace ManagementScripts
             OnNewSkillTreeCreated?.Invoke(skillTree);
         }
 
-        public void LoadItemLibrary(ItemType[] items, string libName)
+        public void LoadNewItemLibrary(ItemsLibrary newLibrary)
         {
-
+            Library = newLibrary;
+            OnNewLibraryCreated?.Invoke(Library);
         }
 
         public bool ActivateCharacterReturnWasActive(string characterName)
@@ -112,5 +122,5 @@ namespace ManagementScripts
         }
 
 
-        }
+    }
 }

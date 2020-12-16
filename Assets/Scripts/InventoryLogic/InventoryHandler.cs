@@ -10,23 +10,23 @@ namespace InventoryLogic
     {
         public static void AddToInventory(Inventory inventory, ItemAmount itemAmount)
         {
-            for (int i = 0; i < inventory.inventoryList.Count; i++)
+            for (int i = 0; i < inventory.items.Count; i++)
             {
-                if (inventory.inventoryList[i].itemType.TypeName == itemAmount.itemType.TypeName)
+                if (inventory.items[i].itemType.TypeName == itemAmount.itemType.TypeName)
                 {
-                    inventory.inventoryList[i].amount += itemAmount.amount;
+                    inventory.items[i].Amount += itemAmount.Amount;
                     return;
                 }
             }
-            inventory.inventoryList.Add(itemAmount);            
+            inventory.items.Add(itemAmount);            
         }
 
         public static bool RemoveFromInventory(Inventory inventory, ItemAmount itemAmount)
         {
             int index = IndexOfItemInInventory(inventory, itemAmount.itemType);
-            if(index != 0 && inventory.inventoryList[index].amount >= itemAmount.amount)
+            if(index != 0 && inventory.items[index].Amount >= itemAmount.Amount)
             {
-                inventory.inventoryList[index].amount -= itemAmount.amount;
+                inventory.items[index].Amount -= itemAmount.Amount;
                 return true;
             }
             else
@@ -50,11 +50,11 @@ namespace InventoryLogic
 
         public static ItemAmount ItemsInInventory(Inventory inventory, ItemType item)
         {
-            for (int i = 0; i < inventory.inventoryList.Count; i++)
+            for (int i = 0; i < inventory.items.Count; i++)
             {
-                if(inventory.inventoryList[i].itemType.TypeName == item.TypeName)
+                if(inventory.items[i].itemType.TypeName == item.TypeName)
                 {
-                    return inventory.inventoryList[i];
+                    return inventory.items[i];
                 }
             }
             return null;
@@ -62,9 +62,9 @@ namespace InventoryLogic
 
         public static int IndexOfItemInInventory(Inventory inventory, ItemType item)
         {
-            for (int i = 0; i < inventory.inventoryList.Count; i++)
+            for (int i = 0; i < inventory.items.Count; i++)
             {
-                if (inventory.inventoryList[i].itemType.TypeName == item.TypeName)
+                if (inventory.items[i].itemType.TypeName == item.TypeName)
                 {
                     return i;
                 }

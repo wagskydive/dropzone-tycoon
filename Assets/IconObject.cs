@@ -1,22 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using InventoryLogic;
 
 public class IconObject : MonoBehaviour
 {
+    public static event Action OnObjectSet;
+
     public CinemachineTargetHandler cinemachineTargetHandler;
     public ShadowCatcher shadowCatcher;
-    public ThumbnailFrom3dModel thumbnailFrom3DModel;
 
 
-    private void Start()
+    [SerializeField]
+    private float rotateSpeed;
+
+    private void Update()
     {
-        thumbnailFrom3DModel.OnThumbnailDrag += RotateFromMouseDrag;
+        transform.Rotate(new Vector3(0, rotateSpeed/10, 0));
     }
 
-    void RotateFromMouseDrag(Vector3 movement)
+    public void RotateFromMouseDrag(Vector3 movement)
     {
-        transform.Rotate(new Vector3(0,movement.x,0));
+        rotateSpeed = movement.x;
+    }
+
+    public void SetItem(ItemType itemType)
+    {
+        GameObject go = Instantiate(Resources.Load(itemType.ResourcePath)) as GameObject;
+        SetNewObject(go);
+
     }
 
     public void SetNewObject(GameObject go)
@@ -26,18 +38,24 @@ public class IconObject : MonoBehaviour
             Destroy(transform.GetChild(1).gameObject);
         }
         go.transform.SetParent(transform);
-        go.transform.localRotation = Quaternion.identity;
+        //go.transform.localRotation = Quaternion.identity;
+        
         Renderer renderer = go.GetComponent<Renderer>();
+        Vector3 diff = Vector3.zero;
         if (renderer != null)
         {
             Bounds bounds = cinemachineTargetHandler.CreateBoundsFromTransform(go.transform);
             cinemachineTargetHandler.SetTargetGroupTargetsAndRadius(bounds);
             if (renderer.bounds.center != Vector3.zero)
             {
-                go.transform.Translate(-renderer.bounds.center);
+                diff = -renderer.bounds.center;
             }
             shadowCatcher.SetPositionToBottomOfBounds(bounds);
         }
+
+        go.transform.localPosition = Vector3.zero + diff;
+        OnObjectSet?.Invoke();
+        
    }
 
 

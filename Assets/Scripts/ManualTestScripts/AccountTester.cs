@@ -26,7 +26,12 @@ public class AccountTester : MonoBehaviour
 
     private void Awake()
     {
+
         gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
     }
 
     // Start is called before the first frame update

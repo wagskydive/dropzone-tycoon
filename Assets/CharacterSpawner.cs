@@ -12,9 +12,9 @@ public class CharacterSpawner : Spawner
         LastSpawn.AddComponent<CharacterObject>().character = character;
     }
 
-    public override void Spawn(ISpawnable spawnable, Vector3 position)
+    public override void Spawn(ISpawnable spawnable, Vector3 position, Transform parent)
     {
-        base.Spawn(spawnable, position);
+        base.Spawn(spawnable, position, parent);
         SpawnCharacter((Character)spawnable, position);
     }
 }

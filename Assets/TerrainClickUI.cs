@@ -4,6 +4,8 @@ using UnityEngine;
 using CharacterLogic;
 using InventoryLogic;
 using SpawnLogic;
+using ManagementScripts;
+using UnityEngine.EventSystems;
 
 public class TerrainClickUI : MonoBehaviour
 {
@@ -17,16 +19,22 @@ public class TerrainClickUI : MonoBehaviour
     public Spawner itemSpawner;
     public Spawner characterSpawner;
 
+    GameManager gameManager;
+
     void Start()
     {
-        TerrainClickDetect.OnTerrainClickDetected += ShowUi;
+        TerrainMouseDetect.OnTerrainClickDetected += ShowUi;
 
         itemSpawnRequester = gameObject.AddComponent<SpawnRequester>();
         itemSpawner.AddSpawnRequester(itemSpawnRequester);
 
         characterSpawnRequester = gameObject.AddComponent<SpawnRequester>();
         characterSpawner.AddSpawnRequester(characterSpawnRequester);
-
+        gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
     }
 
     void SetVisable(bool vis)
@@ -39,28 +47,44 @@ public class TerrainClickUI : MonoBehaviour
     }
 
 
-    void ShowUi(Vector3 position)
+    void ShowUi(Vector3 position, PointerEventData.InputButton button)
     {
         if (!isVisable)
         {
             SetVisable(true);
             transform.position = position;
-            TerrainClickDetect.OnTerrainClickDetected -= ShowUi;
+            TerrainMouseDetect.OnTerrainClickDetected -= ShowUi;
 
         }
         else
         {
             SetVisable(false);
-            TerrainClickDetect.OnTerrainClickDetected += ShowUi;
+            TerrainMouseDetect.OnTerrainClickDetected += ShowUi;
         }
 
     }
 
 
+
+
     public void ItemButtonClick()
     {
-        itemSpawnRequester.SpawnRequest(DummyObjects.ProvideDummyItem(), transform.position);
+        if(gameManager != null && gameManager.Library != null)
+        {
+            int allItemsCount = gameManager.Library.allItems.Count;
+            int random = UnityEngine.Random.Range(0, allItemsCount);
+            ItemType type = gameManager.Library.allItems[random];
+            Item item = new Item(type);
+            itemSpawnRequester.SpawnRequest(item, transform.position);
+
+        }
+        else
+        {
+            itemSpawnRequester.SpawnRequest(DummyObjects.ProvideDummyItem(), transform.position);
+        }
+
         SetVisable(false);
+        TerrainMouseDetect.OnTerrainClickDetected += ShowUi;
     }
 
     public void CharacterButtonClick()
@@ -68,6 +92,7 @@ public class TerrainClickUI : MonoBehaviour
         characterSpawnRequester.SpawnRequest(DummyObjects.ProvideDummyCharacter(), transform.position);
 
         SetVisable(false);
+        TerrainMouseDetect.OnTerrainClickDetected += ShowUi;
     }
 
 }

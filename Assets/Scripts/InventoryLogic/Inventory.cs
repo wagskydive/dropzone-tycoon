@@ -8,12 +8,12 @@ namespace InventoryLogic
     {
         public Inventory()
         {
-            inventoryList = new List<ItemAmount>();
+            items = new List<ItemAmount>();
             //ItemAmount nullItem = new ItemAmount(new Item("nullItem"), 1);
             //inventoryList.Add(nullItem);
         }
 
-        internal List<ItemAmount> inventoryList;
+        public List<ItemAmount> items { get; internal set; }
 
 
     }

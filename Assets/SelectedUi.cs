@@ -24,10 +24,11 @@ public class SelectedUi : MonoBehaviour
     private void Awake()
     {
 
-        SelectableObject.OnObjectSelected += SelectObject;
+        SelectableObject.OnMouseEnterDetected += HoverEnter;
+        SelectableObject.OnMouseExitDetected += HoverExit;
     }
 
-    void SelectObject(SelectableObject selectableObject)
+    void HoverEnter(SelectableObject selectableObject)
     {
         transform.position = selectableObject.transform.position + Vector3.up;
         if (selectableObject.GetType() == typeof(ItemObject))
@@ -38,11 +39,16 @@ public class SelectedUi : MonoBehaviour
         {
             SelectCharacterObject((CharacterObject)selectableObject);
         }
+        selected = selectableObject;
     }
-    void DeselectObject()
+    void HoverExit(SelectableObject selectableObject)
     {
-
+        itemParent.gameObject.SetActive(false);
+        characterParent.gameObject.SetActive(false);
+        selected = null;
     }
+
+
 
 
     void SelectItemObject(ItemObject itemObject)
@@ -55,7 +61,7 @@ public class SelectedUi : MonoBehaviour
         {
             characterParent.gameObject.SetActive(false);
         }
-        itemInfo.text = itemObject.item.itemType;
+        itemInfo.text = itemObject.item.itemType.TypeName;
     }
 
     void SelectCharacterObject(CharacterObject characterObject)

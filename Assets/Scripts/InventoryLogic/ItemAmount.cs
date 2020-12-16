@@ -6,29 +6,33 @@ namespace InventoryLogic
     {
         public event Action OnAmountZero;
 
-        public ItemAmount(ItemType i, int a)
-        {
-            itemType = i;
-            amount = a;
-        }
-        public int amount;
+        public int Amount;
         public ItemType itemType;
 
-        internal void AddAmount(int am)
+
+        public ItemAmount(ItemType itemType, int amount)
         {
-            amount += am;
+            this.itemType = itemType;
+            Amount = amount;
         }
-        internal int RemoveAmount(int am)
+
+        internal void AddAmount(int amountToAdd)
         {
-            if (amount > am)
+            Amount += amountToAdd;
+        }
+
+        //Tries to remove set amount, returns remaining if requested amount is to much;
+        internal int RemoveAmount(int amountToRemove)
+        {
+            if (Amount > amountToRemove)
             {
-                amount -= am;
+                Amount -= amountToRemove;
                 return 0;
             }
             else
             {
-                int rest = am - amount;
-                amount = 0;
+                int rest = amountToRemove - Amount;
+                Amount = 0;
                 OnAmountZero?.Invoke();
                 return rest;
             }

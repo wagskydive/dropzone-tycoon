@@ -28,10 +28,15 @@ public class CraftingTreeUI : MonoBehaviour, ITreeBrowser
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+
+        if(gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
         //gameManager.OnOldSkillWillBeDestroyed += UnSubscribeToNewTree;
         gameManager.OnNewLibraryCreated += SubscribeToNewTree;
 
-        gameManager.Library.OnLibraryModified += RefreshTree;
+        
         ItemNode.OnNodeHoverEnter += SelectNode;
         ItemNode.OnNodeHoverExit += DeselectNode;
 

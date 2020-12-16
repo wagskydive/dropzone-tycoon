@@ -36,10 +36,12 @@ public class ItemNode : MonoBehaviour
 
     HoverButton hoverDetect;
 
+    public ItemType currentType { get; private set; }
+
     private void Awake()
     {
 
-        EditItemPanel.GetComponent<ItemDetailsPanel>();
+        EditItemPanel.GetComponent<ItemDetailsModifierPanel>();
         hoverDetect = GetComponent<HoverButton>();
         hoverDetect.OnPointerEnterDetected += HoverNodeEnter;
         hoverDetect.OnPointerExitDetected += HoverNodeExit;
@@ -54,7 +56,7 @@ public class ItemNode : MonoBehaviour
     {
         library = lib;
         index = ind;
-
+        currentType = lib.allItems[ind];
     }
 
 
@@ -131,7 +133,7 @@ public class ItemNode : MonoBehaviour
 
     public void ShowItemDetails()
     {
-        EditItemPanel.GetComponent<ItemDetailsPanel>().AssignItemNode(this);
+        EditItemPanel.GetComponent<ItemDetailsModifierPanel>().AssignItemNode(this);
         EditItemPanel.SetActive(true);
     }
 
@@ -164,7 +166,7 @@ public class ItemNode : MonoBehaviour
             {
                 for (int i = 0; i < ingedients.Length; i++)
                 {
-                    recipeString += ingedients[i].amount + ": " + ingedients[i].itemType.TypeName + "\n";
+                    recipeString += ingedients[i].Amount + ": " + ingedients[i].itemType.TypeName + "\n";
                 }
 
             }

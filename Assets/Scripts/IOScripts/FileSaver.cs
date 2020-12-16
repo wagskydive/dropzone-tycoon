@@ -65,11 +65,12 @@ public class FileSaver
 
     }
 
-    internal static string LibraryToJson(string path, List<ItemType> allItems)
+    internal static string WriteLibraryToJson(string path, ItemsLibrary library)
     {
+        List<ItemType> allItems = library.allItems;
         JSONObject treeObject = new JSONObject();
 
-        
+
 
         for (int i = 0; i < allItems.Count; i++)
         {
@@ -88,6 +89,7 @@ public class FileSaver
     {
         JSONObject itemObject = new JSONObject();
         itemObject.Add("Name", itemType.TypeName);
+        itemObject.Add("ResourcePath", itemType.ResourcePath);
         itemObject.Add("Catagory", itemType.Catagory);
 
         itemObject.Add("Description", itemType.Description);
@@ -95,72 +97,92 @@ public class FileSaver
 
         if (!itemType.IsRoot())
         {
-            JSONArray ingredientsArray = new JSONArray();
+            JSONObject ingredientsObject = new JSONObject();
             ItemAmount[] ingredients = itemType.recipe.Ingredients;
 
 
             for (int j = 0; j < ingredients.Length; j++)
             {
-                ingredientsArray.Add(new JSONString(ingredients[j].itemType.TypeName), new JSONNumber(ingredients[j].amount));
+                JSONObject ingredient = new JSONObject();
+                ingredient.Add(ingredients[j].itemType.TypeName, ingredients[j].Amount);
+                ingredientsObject.Add(ingredient);
             }
-            Debug.Log(ingredientsArray.ToString());
+            Debug.Log(ingredientsObject.ToString());
 
-            itemObject.Add("Ingredients", ingredientsArray);
+            itemObject.Add("Ingredients", ingredientsObject);
             itemObject.Add("OutputAmount", new JSONNumber(itemType.recipe.OutputAmount));
         }
 
         return itemObject;
     }
 
-    internal static ItemType[] JsonToItemLibrary(string path)
+    internal static ItemType JsonToItemTypeNoIngredients(JSONObject jsonObject)
     {
+        JSONNode node = new JSONObject();
+        //node = 
+        string nameString = jsonObject[0].Value;
+        string resourcePath = jsonObject[1].Value;
+        string catagoryString = jsonObject[2].Value;
+        string descriptionString = jsonObject[3].Value;
+
+
+
+        ItemType itemType = new ItemType(nameString, resourcePath,catagoryString,descriptionString);
+
+        return itemType;
+    }
+
+
+
+    internal static ItemsLibrary JsonToItemLibrary(string path, string libraryName)
+    {
+        ItemsLibrary library = new ItemsLibrary(libraryName);
+
         JSONObject itemsRead = JSONNode.Parse(File.ReadAllText(path)).AsObject;
 
 
-        ItemType[] items = new ItemType[itemsRead.Count];
-        // Initialize skill tree
-        //for (int i = 0; i < itemsRead.Count; i++)
-        //{
-        //    JSONObject skillObject = itemsRead[i].AsObject;
-        //
-        //    Skill skill = new Skill(skillObject.GetValueOrDefault("Name", skillObject));
-        //    skill.SetDescription(skillObject.GetValueOrDefault("Description", skillObject));
-        //
-        //
-        //
-        //    JSONObject effectors = skillObject.GetValueOrDefault("Effectors", skillObject).AsObject;
-        //    if (effectors != null)
-        //    {
-        //        Dictionary<string, float> Eff = new Dictionary<string, float>();
-        //
-        //        foreach (KeyValuePair<string, JSONNode> eff in effectors)
-        //        {
-        //            Eff.Add(eff.Key, eff.Value);
-        //        }
-        //        skill.SetEffectors(Eff);
-        //    }
-        //
-        //    items[i] = skill;
-        //    Debug.Log("Found object: " + itemsRead.Keys.Current + " " + skillObject.ToString());
-        //}
-        //
-        //// Set Requirements
-        //for (int i = 0; i < itemsRead.Count; i++)
-        //{
-        //    JSONArray req = itemsRead[i].AsObject.GetValueOrDefault("Requirements", itemsRead[i].AsObject).AsArray;
-        //    if (req != null)
-        //    {
-        //        int[] reqString = new int[req.Count];
-        //        for (int j = 0; j < req.Count; j++)
-        //        {
-        //            reqString[j] = SkillTreeDataHandler.FindIndexOfSkillByNameInSkillArray(items, req[j].Value);
-        //        }
-        //        items[i].SetRequieredSkills(reqString);
-        //    }
-        //
-        //}
-        return items;
+
+        //Create ItemTypes
+        for (int i = 0; i < itemsRead.Count; i++)
+        {
+            JSONObject itemObject = itemsRead[i].AsObject;
+            ItemType type = JsonToItemTypeNoIngredients(itemObject);
+
+            library.AddNewItemType(type);
+        }
+        
+        //Set Recipe References
+        for (int i = 0; i < itemsRead.Count; i++)
+        {
+            AddRecipeReference(library, itemsRead, i);
+        }
+
+
+        return library;
     }
+
+    private static void AddRecipeReference(ItemsLibrary library, JSONObject itemsRead, int i)
+    {
+        JSONObject itemObject = itemsRead[i].AsObject;
+        if (itemObject.HasKey("Ingredients"))
+        {
+            JSONObject ingredientObject = itemObject.GetValueOrDefault("Ingredients", itemObject).AsObject;
+            for (int j = 0; j < ingredientObject.Count; j++)
+            {
+                int cur = library.IndexFromTypeName(ingredientObject[j].Keys.Current);
+                int amount = ingredientObject[j].GetValueOrDefault(ingredientObject[j].Keys.Current, ingredientObject[j]).AsInt;
+
+                ItemAmount itemAmount = new ItemAmount(library.allItems[cur], amount);
+                library.AddItemsToRecipe(itemAmount, i);
+
+                //ItemAmount itemAmount = new ItemAmount()
+            }
+            int outputAmount = itemObject.GetValueOrDefault("OutputAmount", itemObject).AsInt;
+
+            library.SetOutputAmount(outputAmount, i);
+        }
+    }
+
 
     public static Skill[] JsonToSkillTree(string path)
     {
@@ -229,14 +251,14 @@ public class FileSaver
     {
         string str = string.Concat(name.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
 
-        
+
 
         if (str.Length == 0)
             return "Empty String";
         else if (str.Length == 1)
             return str.ToUpper();
         else
-            return char.ToUpper(str[0]) + str.Substring(1);       
+            return char.ToUpper(str[0]) + str.Substring(1);
     }
 
     public static void RenameFormatted(string original)
@@ -255,7 +277,7 @@ public class FileSaver
             if (extentionFound == "." + extention)
             {
                 string newName = FormatName(fileInfos[i].Name);
-                RenameFile(path + fileInfos[i].Name, path +"Renamed/" +newName);
+                RenameFile(path + fileInfos[i].Name, path + "Renamed/" + newName);
                 //string result = fileInfos[i].Name.Substring(0, fileInfos[i].Name.Length - extentionFound.Length);
                 //files.Add(result);
             }

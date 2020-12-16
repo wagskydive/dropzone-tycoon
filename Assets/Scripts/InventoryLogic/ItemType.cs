@@ -5,9 +5,29 @@ namespace InventoryLogic
 {
     public class ItemType
     {
-        internal ItemType(string name, string catagory = null, string description = null, CrafterType crafterType = null)
+        public ItemType(string name, string resourcePath = "", string catagory = null, string description = null, CrafterType crafterType = null)
         {
+            if (name.EndsWith(".fbx"))
+            {
+                name = name.Substring(0, name.Length - 4);          
+            }
             TypeName = name;
+            if(resourcePath == "")
+            {
+                ResourcePath = "Items/" + name;
+            }
+            else
+            {
+                if (resourcePath.EndsWith(".fbx"))
+                {
+                    resourcePath = resourcePath.Substring(0, resourcePath.Length - 4);                    
+                }
+                if (!resourcePath.EndsWith(name))
+                {
+                    resourcePath += name;
+                }
+                ResourcePath = "Items/" + resourcePath;
+            }
             Catagory = catagory;
             Description = description;
             SetCrafterType(crafterType);
@@ -15,6 +35,7 @@ namespace InventoryLogic
         public string TypeName { get; internal set; }
         public string Catagory { get; internal set; }
         public string Description { get; internal set; }
+        public string ResourcePath { get; internal set; }
         public Recipe recipe { get; internal set; }
 
         internal string[] skillsRelated;
@@ -42,7 +63,7 @@ namespace InventoryLogic
 
         public void SetOutputAmountOnRecipe(int amount)
         {
-            recipe.SetOutPutAmount(amount);
+            recipe.SetOutputAmount(amount);
         }
 
         public void SetDescription(string edit)

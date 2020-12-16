@@ -38,15 +38,19 @@ public class ItemLoader : MonoBehaviour
 
     private void Start()
     {
-        pathRoot = Application.persistentDataPath + "/";
+        pathRoot = Application.dataPath + "/Resources/Items/";
         gameManager = FindObjectOfType<GameManager>();
-        Loader.OnEdited += LoadTree;
-        ModelLoader.OnEdited += LoadModel;
+        if (gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
+        Loader.OnEdited += LoadTreeFromJson;
+        ModelLoader.OnEdited += LoadIconModel;
     }
 
-    void LoadNodes(ItemType[] items, string nameP)
+    void LoadNodesFromLibrary(ItemsLibrary library)
     {
-        gameManager.LoadItemLibrary(items, nameP);
+        gameManager.LoadNewItemLibrary(library);
         gameObject.SetActive(false);
         ItemCreator.SetActive(true);
     }
@@ -58,14 +62,14 @@ public class ItemLoader : MonoBehaviour
 
     public void SaveLibraryButtonClick()
     {
-        string path = Application.dataPath + "/Resources/Items/" + gameManager.skillTree.TreeName + ".itemlibrary";
+        string path = pathRoot + gameManager.Library.LibraryName + ".json";
         Debug.Log(path);
-        FileSaver.LibraryToJson(path, gameManager.Library.allItems);
+        FileSaver.WriteLibraryToJson(path, gameManager.Library);
     }
 
     public void RenameFilesInFolderClick()
     {
-        FileSaver.RenameFilesWithExtentionInFolder(pathRoot+FolderPathField.text, ExtentionField.text);
+        FileSaver.RenameFilesWithExtentionInFolder(pathRoot + FolderPathField.text, ExtentionField.text);
     }
 
 
@@ -74,7 +78,7 @@ public class ItemLoader : MonoBehaviour
     //
     //}
 
-    public void LoadModel(string resourcePath)
+    public void LoadIconModel(string resourcePath)
     {
         string extension = Path.GetExtension(resourcePath);
         string itemName = Path.GetFileName(resourcePath);
@@ -86,8 +90,8 @@ public class ItemLoader : MonoBehaviour
 
         Debug.Log(resourcePath);
         //loadedObject = new GameObject();
-        
-        iconObject.GetComponent<IconObject>().SetNewObject(go); 
+
+        iconObject.GetComponent<IconObject>().SetNewObject(go);
     }
 
     public void UnLoadModel()
@@ -97,12 +101,14 @@ public class ItemLoader : MonoBehaviour
 
     public void LoadModelButtonClick()
     {
-        string[] names = AllItemsFromFBXFiles();
-        AllItemsDropdown.PopulateDropDown(names);
+
+        //string[] names = AllNewItemsFromFBXFiles();
+        //AllItemsDropdown.PopulateDropDown(names);
     }
 
-    public static string[] AllItemsFromFBXFiles()
+    public static ItemType[] AllNewItemsFromFBXFiles(ItemsLibrary library = null)
     {
+        List<ItemType> itemTypes = new List<ItemType>();
         DirectoryInfo levelDirectoryPath = new DirectoryInfo(Application.dataPath + "/Resources/Items/");
 
         DirectoryInfo[] directoryInfos = levelDirectoryPath.GetDirectories();
@@ -122,17 +128,28 @@ public class ItemLoader : MonoBehaviour
                 string extension = Path.GetExtension(fileInfos[i].Name);
                 if (extension == ".fbx")
                 {
-                    names.Add("Items/" + directoryInfos[j].Name + "/" + fileInfos[i].Name);
-                    fullNames.Add(fileInfos[i].FullName);
+
+                    if (library == null || !library.HasItemWithName(fileInfos[i].Name))
+                    {
+
+                        ItemType itemType = new ItemType(fileInfos[i].Name, directoryInfos[j].Name + "/", fileInfos[i].Directory.Name);
+
+                        itemTypes.Add(itemType);
+                    }
+
+
+
+                    //names.Add(directoryInfos[j].Name + "/" + fileInfos[i].Name);
+                    //fullNames.Add(fileInfos[i].FullName);
                 }
 
             }
         }
 
-        return names.ToArray();
+        return itemTypes.ToArray();
     }
 
-    public void LoadLibraryFromJsonButtonPress()
+    public void LoadLibraryFromJsonButtonPress(string fileName = "DefaultItemsLibrary")
     {
 
         var info = new DirectoryInfo(pathRoot);
@@ -141,7 +158,7 @@ public class ItemLoader : MonoBehaviour
         for (int i = 0; i < fileInfos.Length; i++)
         {
             string extension = Path.GetExtension(fileInfos[i].Name);
-            if (extension == ".itemlibrary")
+            if (extension == ".json")
             {
                 string result = fileInfos[i].Name.Substring(0, fileInfos[i].Name.Length - extension.Length);
                 files.Add(result);
@@ -150,9 +167,18 @@ public class ItemLoader : MonoBehaviour
 
         }
 
-        FilesDropdown.PopulateDropDown(files.ToArray());
+        for (int i = 0; i < files.Count; i++)
+        {
+            if (files[i] == fileName)
+            {
+                gameManager.LoadNewItemLibrary(FileSaver.JsonToItemLibrary(pathRoot + fileName + ".json", fileName));
+                return;
+            }
+        }
 
-        Loader.EnableEditMode();
+        //FilesDropdown.PopulateDropDown(files.ToArray());
+        //
+        //Loader.EnableEditMode();
     }
 
 
@@ -160,12 +186,18 @@ public class ItemLoader : MonoBehaviour
 
     public void ConfirmPathForFBXLoading()
     {
-        gameManager.Library.AddItemsFromStringArray(CreateStringsFromFBXinFolder(FBXfolderPathInput.text));
+        if(gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
+        gameManager.Library.AddItemsFromItemTypeArray(AllNewItemsFromFBXFiles());
+        gameManager.Library.ChangeLibraryName("DefaultItemsLibrary");
+
     }
 
     public string[] CreateStringsFromFBXinFolder(string path)
     {
-        var info = new DirectoryInfo(pathRoot+path);
+        var info = new DirectoryInfo(pathRoot + path);
         FileInfo[] fileInfos = info.GetFiles();
         if (fileInfos != null)
         {
@@ -190,12 +222,12 @@ public class ItemLoader : MonoBehaviour
         return null;
     }
 
-    void LoadTree(string namePath)
+    void LoadTreeFromJson(string namePath)
     {
 
 
-        string path = pathRoot + namePath + ".itemlibrary";
-        LoadNodes(FileSaver.JsonToItemLibrary(path), namePath);
+
+        LoadNodesFromLibrary(FileSaver.JsonToItemLibrary(pathRoot, namePath));
     }
 
 

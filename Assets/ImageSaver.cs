@@ -25,9 +25,9 @@ public class ImageSaver : MonoBehaviour
     public void SaveAll()
     {
 
-        allItems = ItemLoader.AllItemsFromFBXFiles();
-        itemLoader.CreateItemTypesFromStringArray(allItems);
-        isSaving = true;
+        //allItems = ItemLoader.AllNewItemsFromFBXFiles();
+        //itemLoader.CreateItemTypesFromStringArray(allItems);
+        //isSaving = true;
     }
     string[] allItems = new string[0];
     bool isSaving;
@@ -43,7 +43,7 @@ public class ImageSaver : MonoBehaviour
             if (restFrameCount == 1)
             {
                 //iconObject.SetActive(true);
-                itemLoader.LoadModel(allItems[allSaveInt]);
+                itemLoader.LoadIconModel(allItems[allSaveInt]);
 
 
                 //itemLoader.UnLoadModel();

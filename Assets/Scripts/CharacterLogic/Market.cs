@@ -13,9 +13,9 @@ namespace CharacterLogic
         public static bool ProcessOrder(Bank bank, Character buyer, Character seller, ItemAmount items, int pricePerItem)
         {
             ItemAmount sellerStock = InventoryHandler.ItemsInInventory(seller.inventory, items.itemType);
-            if(sellerStock.amount >= items.amount)
+            if(sellerStock.Amount >= items.Amount)
             {
-                if(FinancialDataCreator.MakeTransactionFromIdString(bank, items.amount * pricePerItem, buyer.FinancialAccountID, seller.FinancialAccountID, $"{items.amount} {items.itemType.TypeName}"))
+                if(FinancialDataCreator.MakeTransactionFromIdString(bank, items.Amount * pricePerItem, buyer.FinancialAccountID, seller.FinancialAccountID, $"{items.Amount} {items.itemType.TypeName}"))
                 {
                     return true;
                 }
