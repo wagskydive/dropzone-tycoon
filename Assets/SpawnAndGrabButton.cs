@@ -21,7 +21,7 @@ public class SpawnAndGrabButton : MonoBehaviour
 
     public void OnButtonPress()
     {
-        mouseGrabber.AddObjectToGrabber(currentSpawnable);
+        mouseGrabber.AddObjectItemPlacer(currentSpawnable);
 
     }
 }

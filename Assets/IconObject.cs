@@ -44,7 +44,7 @@ public class IconObject : MonoBehaviour
         Vector3 diff = Vector3.zero;
         if (renderer != null)
         {
-            Bounds bounds = cinemachineTargetHandler.CreateBoundsFromTransform(go.transform);
+            Bounds bounds = BoundsMagic.CreateBoundsFromGameObject(go);
             cinemachineTargetHandler.SetTargetGroupTargetsAndRadius(bounds);
             if (renderer.bounds.center != Vector3.zero)
             {

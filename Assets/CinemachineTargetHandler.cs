@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+
 [RequireComponent(typeof(CinemachineTargetGroup))]
 public class CinemachineTargetHandler : MonoBehaviour
 {
@@ -13,24 +14,6 @@ public class CinemachineTargetHandler : MonoBehaviour
         targetGroup = GetComponent<CinemachineTargetGroup>();
     }
 
-    public Bounds CreateBoundsFromTransform(Transform childTransform)
-    {
-        Bounds bounds = new Bounds();
-        bounds.Encapsulate(childTransform.GetComponent<Renderer>().bounds);
-
-        Renderer[] childRenderers = childTransform.GetComponentsInChildren<Renderer>();
-        if (childRenderers != null)
-        {
-
-            for (int i = 0; i < childRenderers.Length; i++)
-            {
-                bounds.Encapsulate(childRenderers[i].bounds);
-            }
-
-        }
-        return bounds;
-        
-    }
 
     public void SetTargetGroupTargetsAndRadius(Bounds bounds)
     {

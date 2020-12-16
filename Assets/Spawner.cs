@@ -20,14 +20,17 @@ public abstract class Spawner : MonoBehaviour
     public virtual void Spawn(ISpawnable spawnable, Vector3 position, Transform parent = null)
     {
         string resourcePath = spawnable.ResourcePath();
-        GameObject go = Instantiate(Resources.Load(resourcePath)) as GameObject;
-        if(parent != null)
-        {
-            go.transform.SetParent(parent);
-        }
+        GameObject SpawnParent = new GameObject();
         
-        go.transform.position = position;
-        LastSpawn = go;
+
+        GameObject go = Instantiate(Resources.Load(resourcePath), SpawnParent.transform) as GameObject;
+        if (parent != null)
+        {
+            SpawnParent.transform.SetParent(parent);
+        }
+
+        SpawnParent.transform.position = position;
+        LastSpawn = SpawnParent;
         OnSpawned?.Invoke(go.GetComponent<ISpawnable>());
     }
 }

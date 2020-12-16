@@ -10,7 +10,7 @@ public class ItemSpawner : Spawner
     public void SpawnItem(Item item, Vector3 position)
     {
         LastSpawn.AddComponent<ItemObject>().item = new Item(item.itemType);
-        LastSpawn.AddComponent<ItemCollider>();
+        
         lastSpawnedItem = item;
     }
 

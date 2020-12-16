@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(TerrainCollider))]
 public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public static event Action<Vector3, PointerEventData.InputButton> OnTerrainClickDetected;
+    public static event Action<Vector3, Transform> OnTerrainLeftClickDetected;
     public static event Action<Vector3> OnTerrainOverDetected;
 
 
@@ -96,7 +96,11 @@ public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEn
         
         if (mouseIsOver)
         {
-            OnTerrainClickDetected?.Invoke(TerrainHit(), eventData.button);
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                OnTerrainLeftClickDetected?.Invoke(TerrainHit(), transform);
+            }
+
         }
     }
 

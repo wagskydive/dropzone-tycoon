@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SpawnLogic;
-using System;
+using InventoryLogic;
 
-public class MouseGrabber : MonoBehaviour
+public class MouseGrabber : ItemHandler
 {
-    public event Action<Type> SpawnOrder;
     public TerrainMouseDetect terrainMouseDetect;
+
 
 
     private void Awake()
@@ -15,18 +15,29 @@ public class MouseGrabber : MonoBehaviour
         TerrainMouseDetect.OnTerrainOverDetected += SetPositionOverTerrainFromMouse;
     }
 
-    public void AddObjectToGrabber(ISpawnable objectToAdd )
+    public void AddObjectItemPlacer(ISpawnable objectToAdd)
     {
-        GameObject go = Instantiate(Resources.Load(objectToAdd.ResourcePath())) as GameObject;
 
-        go.transform.SetParent(gameObject.transform);
-        go.transform.localPosition = Vector3.zero;
-        go.AddComponent<ItemPlacer>().SetCurrentSpawnable(objectToAdd);
+
+        //go.AddComponent<ItemPlacer>().SetCurrentSpawnable(objectToAdd);
+        //go.GetComponent<ItemPlacer>().OnItemPlaced += DisableGrabbedItem;
+        PassItem(objectToAdd);
+
+    }
+
+    void DisableGrabbedItem()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
     }
 
     void SetPositionOverTerrainFromMouse(Vector3 position)
     {
         transform.position = position;
     }
+
 
 }

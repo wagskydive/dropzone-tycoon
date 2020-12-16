@@ -9,6 +9,23 @@ public class ItemObject : SelectableObject
 
     public Item item;
 
+    private void Awake()
+    {
+        AddSnapCollider();
+    }
+
+    private void AddSnapCollider()
+    {
+        BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+
+       
+        Bounds bounds =  ColliderAdder.AddMeshCollidersInChildren(gameObject);
+        boxCollider.size = bounds.size;
+        
+        transform.GetChild(0).Translate(-bounds.min);
+        boxCollider.center = bounds.center - bounds.min;
+    }
+
     public override void SelectObject()
     {
         base.SelectObject();
@@ -18,5 +35,6 @@ public class ItemObject : SelectableObject
     {
         OnItemObjectDestroy?.Invoke(this);
     }
+
 }
 
