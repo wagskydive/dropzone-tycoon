@@ -3,11 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-[RequireComponent(typeof(TerrainCollider))]
-public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
+[RequireComponent(typeof(Collider))]
+public class MouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public static event Action<Vector3, Transform> OnTerrainLeftClickDetected;
-    public static event Action<Vector3> OnTerrainOverDetected;
+    public static event Action<Vector3, Transform> OnLeftClickDetected;
+    public static event Action<Vector3> OnOverDetected;
 
 
     Camera camera;
@@ -72,7 +72,7 @@ public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEn
             Vector3 hit = TerrainHit();
             if(hit != Vector3.zero)
             {
-                OnTerrainOverDetected?.Invoke(hit);
+                OnOverDetected?.Invoke(hit);
             }
 
         }
@@ -81,7 +81,7 @@ public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEn
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray);
-            OnTerrainOverDetected?.Invoke(ray.origin+ray.direction*25);
+            OnOverDetected?.Invoke(ray.origin+ray.direction*25);
         }
     }
 
@@ -98,7 +98,7 @@ public class TerrainMouseDetect : MonoBehaviour, IPointerDownHandler, IPointerEn
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                OnTerrainLeftClickDetected?.Invoke(TerrainHit(), transform);
+                OnLeftClickDetected?.Invoke(TerrainHit(), transform);
             }
 
         }

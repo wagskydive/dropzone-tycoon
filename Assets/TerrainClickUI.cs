@@ -23,7 +23,7 @@ public class TerrainClickUI : MonoBehaviour
 
     void Start()
     {
-        TerrainMouseDetect.OnTerrainLeftClickDetected += ShowUi;
+        MouseDetect.OnLeftClickDetected += ShowUi;
 
         itemSpawnRequester = gameObject.AddComponent<SpawnRequester>();
         itemSpawner.AddSpawnRequester(itemSpawnRequester);
@@ -53,13 +53,13 @@ public class TerrainClickUI : MonoBehaviour
         {
             SetVisable(true);
             transform.position = position;
-            TerrainMouseDetect.OnTerrainLeftClickDetected -= ShowUi;
+            MouseDetect.OnLeftClickDetected -= ShowUi;
 
         }
         else
         {
             SetVisable(false);
-            TerrainMouseDetect.OnTerrainLeftClickDetected += ShowUi;
+            MouseDetect.OnLeftClickDetected += ShowUi;
         }
 
     }
@@ -84,7 +84,7 @@ public class TerrainClickUI : MonoBehaviour
         }
 
         SetVisable(false);
-        TerrainMouseDetect.OnTerrainLeftClickDetected += ShowUi;
+        MouseDetect.OnLeftClickDetected += ShowUi;
     }
 
     public void CharacterButtonClick()
@@ -92,7 +92,7 @@ public class TerrainClickUI : MonoBehaviour
         characterSpawnRequester.SpawnRequest(DummyObjects.ProvideDummyCharacter(), transform.position);
 
         SetVisable(false);
-        TerrainMouseDetect.OnTerrainLeftClickDetected += ShowUi;
+        MouseDetect.OnLeftClickDetected += ShowUi;
     }
 
 }

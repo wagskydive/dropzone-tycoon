@@ -200,6 +200,20 @@ namespace InventoryLogic
             }
         }
 
+        public ItemType[] SearchForItemsWithStringInName(string search)
+        {
+            List<ItemType> results = new List<ItemType>();
+            for (int i = 0; i < allItems.Count; i++)
+            {
+                if (allItems[i].TypeName.Contains(search))
+                {
+                    results.Add(allItems[i]);
+                }
+            }
+            return results.ToArray();
+        }
+
+
         public int IndexFromTypeName(string typeName)
         {
 

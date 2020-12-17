@@ -27,6 +27,7 @@ public class IconObject : MonoBehaviour
     public void SetItem(ItemType itemType)
     {
         GameObject go = Instantiate(Resources.Load(itemType.ResourcePath)) as GameObject;
+        go.layer = gameObject.layer;
         SetNewObject(go);
 
     }

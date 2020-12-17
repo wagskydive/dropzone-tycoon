@@ -15,13 +15,31 @@ public class ItemBrowserUi : MonoBehaviour, IHoverUi
 
     public event Action<bool> OnHover;
 
+    [SerializeField]
+    private InventorySearch inventorySearch;
+    [SerializeField]
+    private InventoryParent searchParent;
+
+    ItemsLibrary lib;
 
 
     void Start()
     {
-        ItemsLibrary lib = GameObject.Find("GameManager").GetComponent<ManagementScripts.GameManager>().Library;
+        lib = GameObject.Find("GameManager").GetComponent<ManagementScripts.GameManager>().Library;
         CreateCatagories(lib);
+        inventorySearch.OnSearchRequest += Searchlibrary;
+       searchParent.OnSlotClicked += SetDetails;
     }
+
+    void Searchlibrary(string search)
+    {
+        ItemType[] results = lib.SearchForItemsWithStringInName(search);
+        if(results != null)
+        {
+            searchParent.Setup(results);
+        }
+    }
+
 
     void CreateCatagories(ItemsLibrary library)
     {

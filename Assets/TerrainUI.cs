@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TerrainUI : MonoBehaviour
 {
-    public TerrainMouseDetect mouseDetect;
+    public MouseDetect mouseDetect;
 
     public GameObject mouseGrabber;
 

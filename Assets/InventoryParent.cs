@@ -49,6 +49,7 @@ public class InventoryParent : MonoBehaviour, IHoverUi, IPointerClickHandler, IP
 
     public void Setup(ItemType[] types)
     {
+
         itemTypes = types;
         CreateChildren();
         DirectoryName.text = types[0].Catagory;

@@ -21,6 +21,9 @@ public class ItemPlacer : MonoBehaviour, ISpawnRequester
 
     List<GameObject> previousGameObjects = new List<GameObject>();
 
+    bool snapping;
+    float gridSize;
+
     private void Awake()
     {
         spawner = FindObjectOfType<ItemSpawner>();
@@ -29,12 +32,7 @@ public class ItemPlacer : MonoBehaviour, ISpawnRequester
         gameObject.GetComponent<ItemHandler>().OnItemPassed += SetPlacementObject;
 
 
-        //gameObject.R
-
-
-        //SetColors(Color.green);
-
-        TerrainMouseDetect.OnTerrainLeftClickDetected += PlaceObject;
+        MouseDetect.OnLeftClickDetected += PlaceObject;
     }
 
     void DestroyPreviousList()
@@ -46,18 +44,31 @@ public class ItemPlacer : MonoBehaviour, ISpawnRequester
         previousGameObjects = new List<GameObject>();
     }
 
-    public void SetPlacementObject(ISpawnable objectToAdd)
+    public void SetPlacementObject(ISpawnable objectToAdd, bool snap = false, float grSize = 1)
     {
-
+        snapping = snap;
+        gridSize = grSize;
         currentSpawnable = objectToAdd;
         GameObject go = Instantiate(Resources.Load(objectToAdd.ResourcePath())) as GameObject;
 
         go.SetActive(true);
         go.transform.SetParent(gameObject.transform);
+        go.transform.localRotation = Quaternion.identity;
         go.transform.localPosition = Vector3.zero;
         //DestroyPreviousList();
 
 
+
+
+        Bounds bounds = ColliderAdder.AddMeshCollidersInChildren(gameObject);
+        transform.GetChild(0).Translate((transform.position - bounds.min) - new Vector3(bounds.size.x, 0, bounds.size.z));
+
+        //go.transform.position = bounds.min;
+        //transform.GetChild(0).localPosition = - new Vector3(bounds.size.x, 0, bounds.size.z);
+
+        //transform.GetChild(0).Translate(- new Vector3(bounds.max.x, 0, bounds.max.z));
+
+        //go.transform.localPosition = go.transform.localPosition - bounds.center;
 
         Material placementMaterial = Resources.Load("Materials/PlacementMaterial") as Material;
         SetMaterial(go, placementMaterial);
@@ -97,6 +108,10 @@ public class ItemPlacer : MonoBehaviour, ISpawnRequester
 
     void PlaceObject(Vector3 position, Transform parent)
     {
+        if (snapping)
+        {
+            position = VectorHelper.RoundToInt(transform.position, gridSize);
+        }
         DestroyPreviousList();
         //spawner.Spawn(currentSpawnable, position);
 
