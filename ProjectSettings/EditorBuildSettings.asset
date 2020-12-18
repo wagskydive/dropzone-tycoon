@@ -15,6 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SystemsScene.unity
     guid: 19d3b97c8074b8740a6512cebc59ec6f
   - enabled: 1
-    path: Assets/Scenes/StateMachines.unity
+    path: Assets/Scenes/[GAME MECHANICS].unity
     guid: d4fe738f4aece2945bbbafec67a2ec82
   m_configObjects: {}

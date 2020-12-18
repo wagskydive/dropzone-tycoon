@@ -1,0 +1,568 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8273481971299253736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: Item two
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -984, y: -72}
+  ports:
+    keys:
+    - ResourceOutput
+    - AmountNeeded
+    - recipe
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: -8273481971299253736}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: ItemNode
+        node: {fileID: -6167971299455409505}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: -8273481971299253736}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: -8273481971299253736}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: -8273481971299253736}
+  AmountNeeded: 0
+  recipe: {fileID: 0}
+--- !u!114 &-8110906559208195176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -120, y: -264}
+  ports:
+    keys:
+    - ResourceOutput
+    - recipe
+    - AmountNeeded
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: -8110906559208195176}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: -8110906559208195176}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: RecipeOutput
+        node: {fileID: 633599118749068236}
+        reroutePoints: []
+      - fieldName: RecipeOutput
+        node: {fileID: 5242347384038393153}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: -8110906559208195176}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: -8110906559208195176}
+  AmountNeeded: 12
+  recipe: {fileID: 0}
+--- !u!114 &-6167971299455409505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Item Amount
+  m_EditorClassIdentifier: Assembly-CSharp::ItemAmountNode
+  graph: {fileID: 11400000}
+  position: {x: -616, y: -232}
+  ports:
+    keys:
+    - ItemNode
+    - amountNode
+    values:
+    - _fieldName: ItemNode
+      _node: {fileID: -6167971299455409505}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: ResourceOutput
+        node: {fileID: -8273481971299253736}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: amountNode
+      _node: {fileID: -6167971299455409505}
+      _typeQualifiedName: ItemAmountNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: NeedsResourceOf 0
+        node: {fileID: 633599118749068236}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Amount: 4
+  ItemNode: {fileID: 0}
+  amountNode: {fileID: 0}
+--- !u!114 &-4471657658860570479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 344, y: 24}
+  ports:
+    keys:
+    - ResourceOutput
+    - recipe
+    - AmountNeeded
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: -4471657658860570479}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: -4471657658860570479}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: -4471657658860570479}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: -4471657658860570479}
+  AmountNeeded: 0
+  recipe: {fileID: 0}
+--- !u!114 &-3579606149510259808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: item one
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -936, y: -312}
+  ports:
+    keys:
+    - ResourceOutput
+    - AmountNeeded
+    - recipe
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: -3579606149510259808}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: -3579606149510259808}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: -3579606149510259808}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: -3579606149510259808}
+  AmountNeeded: 0
+  recipe: {fileID: 0}
+--- !u!114 &-27462099234669485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: qwdqwd
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -440, y: 248}
+  ports:
+    keys:
+    - ResourceOutput
+    - AmountNeeded
+    - recipe
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: -27462099234669485}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: -27462099234669485}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: -27462099234669485}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: RecipeOutput
+        node: {fileID: 368967648482207886}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: 0}
+  AmountNeeded: 0
+  recipe: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4ae8454a3170ac4092488e4beb41e6e, type: 3}
+  m_Name: New Item Graph
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -4471657658860570479}
+  - {fileID: -8110906559208195176}
+  - {fileID: 5354252183517206624}
+  - {fileID: -3579606149510259808}
+  - {fileID: -8273481971299253736}
+  - {fileID: 633599118749068236}
+  - {fileID: 5242347384038393153}
+  - {fileID: 368967648482207886}
+  - {fileID: -6167971299455409505}
+  - {fileID: -27462099234669485}
+--- !u!114 &368967648482207886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab9fb3ce6b1e064eb790eb8a9d51d13, type: 3}
+  m_Name: Recipe
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -728, y: 248}
+  ports:
+    keys:
+    - RecipeOutput
+    - NeedsResourceOf
+    - NeedsResourceOf 0
+    values:
+    - _fieldName: RecipeOutput
+      _node: {fileID: 368967648482207886}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: recipe
+        node: {fileID: -27462099234669485}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: NeedsResourceOf
+      _node: {fileID: 368967648482207886}
+      _typeQualifiedName: ItemAmountNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: NeedsResourceOf 0
+      _node: {fileID: 368967648482207886}
+      _typeQualifiedName: ItemAmountNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 1
+  RecipeOutput: {fileID: 0}
+  NeedsResourceOf:
+  - {fileID: 0}
+--- !u!114 &633599118749068236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab9fb3ce6b1e064eb790eb8a9d51d13, type: 3}
+  m_Name: Recipe
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -360, y: -264}
+  ports:
+    keys:
+    - RecipeOutput
+    - NeedsResourceOf
+    - NeedsResourceOf 0
+    - NeedsResourceOf 1
+    - NeedsResourceOf 2
+    values:
+    - _fieldName: RecipeOutput
+      _node: {fileID: 633599118749068236}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: recipe
+        node: {fileID: -8110906559208195176}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: NeedsResourceOf
+      _node: {fileID: 633599118749068236}
+      _typeQualifiedName: ItemAmountNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: NeedsResourceOf 0
+      _node: {fileID: 633599118749068236}
+      _typeQualifiedName: ItemAmountNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: amountNode
+        node: {fileID: -6167971299455409505}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 1
+    - _fieldName: NeedsResourceOf 1
+      _node: {fileID: 633599118749068236}
+      _typeQualifiedName: ItemAmountNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 1
+    - _fieldName: NeedsResourceOf 2
+      _node: {fileID: 633599118749068236}
+      _typeQualifiedName: ItemAmountNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 1
+  RecipeOutput: {fileID: 0}
+  NeedsResourceOf:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &5242347384038393153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab9fb3ce6b1e064eb790eb8a9d51d13, type: 3}
+  m_Name: Recipe
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -328, y: -40}
+  ports:
+    keys:
+    - RecipeOutput
+    - NeedsResourceOf
+    values:
+    - _fieldName: RecipeOutput
+      _node: {fileID: 5242347384038393153}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: recipe
+        node: {fileID: -8110906559208195176}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: NeedsResourceOf
+      _node: {fileID: 5242347384038393153}
+      _typeQualifiedName: ItemAmountNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  RecipeOutput: {fileID: 0}
+  NeedsResourceOf: []
+--- !u!114 &5354252183517206624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cee26c62716674bababd3247fc8b28, type: 3}
+  m_Name: Hello
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -984, y: 168}
+  ports:
+    keys:
+    - ResourceOutput
+    - recipe
+    - AmountNeeded
+    values:
+    - _fieldName: ResourceOutput
+      _node: {fileID: 5354252183517206624}
+      _typeQualifiedName: ItemNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: recipe
+      _node: {fileID: 5354252183517206624}
+      _typeQualifiedName: RecipeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: AmountNeeded
+      _node: {fileID: 5354252183517206624}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Catagory: 
+  Description: 
+  ResourceOutput: {fileID: 5354252183517206624}
+  AmountNeeded: 0
+  recipe: {fileID: 0}

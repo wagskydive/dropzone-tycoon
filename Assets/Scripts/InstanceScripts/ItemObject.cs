@@ -7,17 +7,18 @@ public class ItemObject : SelectableObject
 {
     public event Action<ItemObject> OnItemObjectSelected;
     public event Action<ItemObject> OnItemObjectDestroy;
-
+    
     public Item item;
 
     private void Awake()
     {
-        AddSnapCollider();
+        SetupItemInstance();
     }
 
-    private void AddSnapCollider()
+    private void SetupItemInstance()
     {
         BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+
 
        
         Bounds bounds =  ColliderAdder.AddMeshCollidersInChildren(gameObject);
@@ -31,7 +32,9 @@ public class ItemObject : SelectableObject
         navMeshObstacle.carving = true;
         navMeshObstacle.center = boxCollider.center;
         navMeshObstacle.size = boxCollider.size;
-        gameObject.AddComponent <Rigidbody>();
+        
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
 
     }
 

@@ -26,7 +26,11 @@ namespace InventoryLogic
                 {
                     resourcePath += name;
                 }
-                ResourcePath = "Items/" + resourcePath;
+                if (!resourcePath.StartsWith("Items/"))
+                {
+                    resourcePath = "Items/" + resourcePath;
+                }
+                ResourcePath = resourcePath;
             }
             Catagory = catagory;
             Description = description;

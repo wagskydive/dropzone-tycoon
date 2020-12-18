@@ -11,6 +11,8 @@ using InventoryLogic;
 
 namespace ManagementScripts
 {
+
+
     public class GameManager : MonoBehaviour
     {
         public event Action<SkillTree> OnOldSkillWillBeDestroyed;
@@ -30,7 +32,12 @@ namespace ManagementScripts
         public CharacterDataHolder Characters;
 
         internal List<int> ActiveCharacters = new List<int>();
-        internal ItemsLibrary Library;
+        internal ItemsLibrary Library = new ItemsLibrary("fallback");
+
+
+
+        MaterialManager materialManager;
+
 
         private void Awake()
         {
@@ -44,13 +51,26 @@ namespace ManagementScripts
                 Destroy(gameObject);
                 return;
             }
+
             bank = new Bank();
             Characters = new CharacterDataHolder(StatTypes);
-
+            materialManager = gameObject.AddComponent<MaterialManager>();
             gameObject.AddComponent<ItemLibraryLoader>().LoadLibraryFromJsonButtonPress(this, Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary");
+
+            ItemSpawner.OnItemSpawnerStart += SubscribeToItemSpawner;
 
             //ItemsLibrary lib = 
             //LoadNewItemLibrary(FileSaver.JsonToItemLibrary(Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary"));
+        }
+
+        void SubscribeToItemSpawner(ItemSpawner itemSpawner)
+        {
+            itemSpawner.OnItemSpawned += HandleSpawnedObject;
+        }
+
+        void HandleSpawnedObject(ItemObject itemObject)
+        {
+            materialManager.HandleObjectMaterials(itemObject.gameObject);
         }
 
         private void Update()
