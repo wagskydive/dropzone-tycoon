@@ -3,9 +3,10 @@ using SpawnLogic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SpawnAndGrabButton : MonoBehaviour
+public class SpawnAndGrabButton : MonoBehaviour, IPointerUpHandler
 {
 
     [SerializeField]
@@ -19,9 +20,10 @@ public class SpawnAndGrabButton : MonoBehaviour
 
     }
 
-    public void OnButtonPress()
+
+
+    public void OnPointerUp(PointerEventData eventData)
     {
         mouseGrabber.AddObjectItemPlacer(currentSpawnable);
-
     }
 }

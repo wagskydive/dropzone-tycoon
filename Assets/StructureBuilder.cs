@@ -39,14 +39,19 @@ public class StructureBuilder : MonoBehaviour
     private void Awake()
     {
         go = new GameObject();
-        Invoke("SetNewStructure", 3);
+        //Invoke("SetNewStructure", 3);
     }
 
-    public void SetNewStructure()
+    public void AddWall(GridPosition start,GridPosition end, Item item)
+    {
+
+    }
+
+    public void SetNewStructure(Structure structure)
     {
         int wallItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway");
         Item item = new Item(gameManager.Library.allItems[wallItemTypeIndex]);
-        currentBuild.SetNewStructure(DummyStructureBuilder.AllWalls(5, 5, item));
+        currentBuild.SetNewStructure(structure);
         Rebuild(currentBuild.structure);
     }
 

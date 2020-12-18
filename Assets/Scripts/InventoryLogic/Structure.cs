@@ -2,7 +2,7 @@
 
 namespace InventoryLogic
 {
-    public struct GridPosition
+    public class GridPosition
     {
         public GridPosition(int x, int y)
         {
@@ -11,6 +11,16 @@ namespace InventoryLogic
         }
         public int X { get; private set; }
         public int Y { get; private set; }
+
+
+        public int[] GridDistance(GridPosition target)
+        {
+            int[] result = new int[2];
+            result[0] = target.X - X;
+            result[1] = target.Y - Y;
+            return result;
+
+        }
     }
 
     public class WallPlacement
@@ -111,6 +121,13 @@ namespace InventoryLogic
             WallPlacement wall = new WallPlacement(item, start, end, floor);
             walls.Add(wall);
             AddPart(item);
+        }
+
+
+
+        public void AddWallRange(GridPosition start, GridPosition end, Item item, int floor, bool overWrite = true)
+        {
+
         }
 
         public void AddPartAsFloor(GridPosition gridPosition, Item item, int floor)

@@ -35,6 +35,13 @@ namespace ManagementScripts
             defaultMaterials = materials;
         }
 
+        public static void ChangeMaterialInstanceColor(Renderer renderer, int index, Color color)
+        {
+            renderer.materials[index].color = color;
+        }
+
+        bool firstChange = false;
+
         public void HandleObjectMaterials(GameObject gameObject)
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -56,11 +63,15 @@ namespace ManagementScripts
                     }
                     else
                     {
+                        renderer.materials[i].name = RemoveEnd(renderer.materials[i].name, " (Instance)");
                         AddMaterialToDefaults(renderer.materials[i]);
                     }
                 }
                 renderer.sharedMaterials = shared.ToArray();
                 renderer.materials = shared.ToArray();
+
+
+                
                 //renderer.GetSharedMaterials(shared);//.sharedMaterials[i] = defaultMat;
             }
 
@@ -80,20 +91,27 @@ namespace ManagementScripts
         public Material CheckForMaterial(string materialName)
         {
             string instance = " (Instance)";
-            if (materialName.EndsWith(instance))
-            {
-                string result = materialName.Substring(0, materialName.Length - instance.Length);
-                materialName = result;
-            }
+            materialName = RemoveEnd(materialName, instance);
 
             for (int i = 0; i < defaultMaterials.Count; i++)
             {
-                if (defaultMaterials[i].name+" (Instance)" == materialName || defaultMaterials[i].name == materialName)
+                if (defaultMaterials[i].name + " (Instance)" == materialName || defaultMaterials[i].name == materialName)
                 {
                     return defaultMaterials[i];
                 }
             }
             return null;
+        }
+
+        private static string RemoveEnd(string source, string end)
+        {
+            if (source.EndsWith(end))
+            {
+                string result = source.Substring(0, source.Length - end.Length);
+                source = result;
+            }
+
+            return source;
         }
 
         public void AddMaterialToDefaults(Material material)
