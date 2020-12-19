@@ -3,15 +3,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-[RequireComponent(typeof(Collider))]
-public class MouseDetect : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
+
+public class MouseDetect : MonoBehaviour
 {
-    public static event Action<Vector3, Transform> OnLeftClickDetected;
-    public static event Action<Vector3, Transform> OnRightClickDetected;
-    public static event Action<Vector3, Transform> OnMiddleClickDetected;
-    public static event Action<Vector3, Transform> OnLeftUpClickDetected;
-    public static event Action<Vector3, Transform> OnRightUpClickDetected;
-    public static event Action<Vector3, Transform> OnMiddleUpClickDetected;
+    public static event Action<Vector3> OnLeftClickDetected;
+    public static event Action<Vector3> OnRightClickDetected;
+    public static event Action<Vector3> OnMiddleClickDetected;
+    public static event Action<Vector3> OnLeftUpClickDetected;
+    public static event Action<Vector3> OnRightUpClickDetected;
+    public static event Action<Vector3> OnMiddleUpClickDetected;
     public static event Action<Vector3> OnOverDetected;
 
 
@@ -32,12 +32,12 @@ public class MouseDetect : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         ActiveMousePositionDetector = active;
     }
 
-    Vector3 TerrainHit()
+    Vector3 NonTriggerColliderHit()
     {
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit[] hits = Physics.RaycastAll(ray);
-        
+
 
 
         if (hits != null && hits.Length > 0)
@@ -51,90 +51,77 @@ public class MouseDetect : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 return hits[0].point;
             }
 
-
-
-            if (hits[hits.Length - 1].collider.isTrigger)
-            {
-                return Vector3.zero;
-            }
-            for (int i = 0; i < hits.Length; i++)
-            {
-                if (hits[i].collider == gameObject.GetComponent<Collider>())
-                {
-
-                    return hits[i].point;
-                }
-            }
-
         }
         return Vector3.zero;
     }
 
     private void Update()
     {
-        if(ActiveMousePositionDetector)
+        if (ActiveMousePositionDetector)
         {
-            Vector3 hit = TerrainHit();
-            if(hit != Vector3.zero)
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
             {
                 OnOverDetected?.Invoke(hit);
             }
 
         }
 
-        else if(ActiveMousePositionDetector)
+        //else if(ActiveMousePositionDetector)
+        //{
+        //    Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        //    Physics.Raycast(ray);
+        //    OnOverDetected?.Invoke(ray.origin+ray.direction*25);
+        //}
+        if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray);
-            OnOverDetected?.Invoke(ray.origin+ray.direction*25);
-        }
-    }
-
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        mouseIsOver = false;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        
-        if (mouseIsOver)
-        {
-            if (eventData.button == PointerEventData.InputButton.Left)
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
             {
-                OnLeftClickDetected?.Invoke(TerrainHit(), transform);
+                OnLeftClickDetected?.Invoke(hit);
             }
-            if (eventData.button == PointerEventData.InputButton.Right)
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
             {
-                OnRightClickDetected?.Invoke(TerrainHit(), transform);
+                OnRightClickDetected?.Invoke(hit);
             }
-            if (eventData.button == PointerEventData.InputButton.Middle)
+        }
+        if (Input.GetMouseButtonDown(2))
+        {
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
             {
-                OnMiddleClickDetected?.Invoke(TerrainHit(), transform);
+                OnMiddleClickDetected?.Invoke(hit);
             }
-
         }
+        if (Input.GetMouseButtonUp(0))
+        {
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
+            {
+                OnLeftUpClickDetected?.Invoke(hit);
+            }
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
+            {
+                OnRightUpClickDetected?.Invoke(hit);
+            }
+        }
+        if (Input.GetMouseButtonUp(2))
+        {
+            Vector3 hit = NonTriggerColliderHit();
+            if (hit != Vector3.zero)
+            {
+                OnMiddleUpClickDetected?.Invoke(hit);
+            }
+        }
+
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        mouseIsOver = true;
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            OnLeftUpClickDetected?.Invoke(TerrainHit(), transform);
-        }
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            OnRightUpClickDetected?.Invoke(TerrainHit(), transform);
-        }
-        if (eventData.button == PointerEventData.InputButton.Middle)
-        {
-            OnMiddleUpClickDetected?.Invoke(TerrainHit(), transform);
-        }
-    }
 }

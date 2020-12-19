@@ -85,36 +85,7 @@ public class FileSaver
         return treeObject.ToString();
     }
 
-    public static JSONObject ItemTypeToJson(ItemType itemType)
-    {
-        JSONObject itemObject = new JSONObject();
-        itemObject.Add("Name", itemType.TypeName);
-        itemObject.Add("ResourcePath", itemType.ResourcePath);
-        itemObject.Add("Catagory", itemType.Catagory);
 
-        itemObject.Add("Description", itemType.Description);
-
-
-        if (!itemType.IsRoot())
-        {
-            JSONObject ingredientsObject = new JSONObject();
-            ItemAmount[] ingredients = itemType.recipe.Ingredients;
-
-
-            for (int j = 0; j < ingredients.Length; j++)
-            {
-                JSONObject ingredient = new JSONObject();
-                ingredient.Add(ingredients[j].itemType.TypeName, ingredients[j].Amount);
-                ingredientsObject.Add(ingredient);
-            }
-            Debug.Log(ingredientsObject.ToString());
-
-            itemObject.Add("Ingredients", ingredientsObject);
-            itemObject.Add("OutputAmount", new JSONNumber(itemType.recipe.OutputAmount));
-        }
-
-        return itemObject;
-    }
 
     internal static ItemType JsonToItemTypeNoIngredients(JSONObject jsonObject)
     {
@@ -127,12 +98,10 @@ public class FileSaver
 
 
 
-        ItemType itemType = new ItemType(nameString, resourcePath,catagoryString,descriptionString);
+        ItemType itemType = new ItemType(nameString, resourcePath, catagoryString, descriptionString);
 
         return itemType;
     }
-
-
 
     internal static ItemsLibrary JsonToItemLibrary(string path, string libraryName)
     {
@@ -150,7 +119,7 @@ public class FileSaver
 
             library.AddNewItemType(type);
         }
-        
+
         //Set Recipe References
         for (int i = 0; i < itemsRead.Count; i++)
         {
@@ -182,7 +151,6 @@ public class FileSaver
             library.SetOutputAmount(outputAmount, i);
         }
     }
-
 
     public static Skill[] JsonToSkillTree(string path)
     {
@@ -235,7 +203,6 @@ public class FileSaver
 
     }
 
-
     public static void RenameFile(string oldName, string newName)
     {
         if (oldName != newName)
@@ -245,7 +212,6 @@ public class FileSaver
             //File.Delete(oldName);
         }
     }
-
 
     public static string FormatName(string name)
     {
@@ -284,7 +250,164 @@ public class FileSaver
         }
     }
 
+    public static JSONObject ItemTypeToJson(ItemType itemType)
+    {
+        JSONObject itemObject = new JSONObject();
+        itemObject.Add("Name", itemType.TypeName);
+        itemObject.Add("ResourcePath", itemType.ResourcePath);
+        itemObject.Add("Catagory", itemType.Catagory);
 
+        itemObject.Add("Description", itemType.Description);
+
+
+        if (!itemType.IsRoot())
+        {
+            JSONObject ingredientsObject = new JSONObject();
+            ItemAmount[] ingredients = itemType.recipe.Ingredients;
+
+
+            for (int j = 0; j < ingredients.Length; j++)
+            {
+                JSONObject ingredient = new JSONObject();
+                ingredient.Add(ingredients[j].itemType.TypeName, ingredients[j].Amount);
+                ingredientsObject.Add(ingredient);
+            }
+            Debug.Log(ingredientsObject.ToString());
+
+            itemObject.Add("Ingredients", ingredientsObject);
+            itemObject.Add("OutputAmount", new JSONNumber(itemType.recipe.OutputAmount));
+        }
+
+        return itemObject;
+    }
+
+
+    public static Structure JsonToStructureBluePrint(string path, ItemsLibrary itemsLibrary)
+    {
+        JSONObject structureRead = JSONNode.Parse(File.ReadAllText(path)).AsObject;
+
+        string nameString = structureRead.GetValueOrDefault("Name", structureRead);
+        float gridSize = structureRead.GetValueOrDefault("GridSize", structureRead);
+        float floorSize = structureRead.GetValueOrDefault("FloorSize", structureRead);
+
+        Structure structure = new Structure(nameString, gridSize, floorSize);
+        JSONArray walls = structureRead.GetValueOrDefault("Walls", structureRead).AsArray;
+        for (int i = 0; i < walls.Count; i++)
+        {
+            structure.AddPartAsWall(JsonPlacementToWallPlacement(walls[i].AsObject, itemsLibrary));
+        }
+
+        JSONArray floors = structureRead.GetValueOrDefault("Floors", structureRead).AsArray;
+        for (int i = 0; i < floors.Count; i++)
+        {
+            structure.AddPartAsFloor(JsonToFloorPlacement(floors[i].AsObject, itemsLibrary));
+        }
+
+        return structure;
+    }
+
+
+    public static void SaveStructureBluePrint(string path, Structure structure)
+    {
+        JSONObject structureObject = StructureBlueprintToJson(structure);
+        File.WriteAllText(path, structureObject.ToString());
+        
+    }
+
+
+
+    public static JSONObject StructureBlueprintToJson(Structure structure)
+    {
+        JSONObject structureObject = new JSONObject();
+        structureObject.Add("Name", structure.Name);
+        structureObject.Add("GridSize", structure.GridSize);
+        structureObject.Add("FloorSize", structure.FloorSize);
+        JSONArray walls = new JSONArray();
+        for (int i = 0; i < structure.walls.Count; i++)
+        {
+            JSONObject wall = WallPlacementToJson(structure.walls[i]).AsObject;
+            walls.Add(wall);
+        }
+        structureObject.Add("Walls", walls);
+
+        JSONArray floors = new JSONArray();
+        for (int i = 0; i < structure.floors.Count; i++)
+        {
+            floors.Add(FloorPlacementToJson(structure.floors[i]).AsObject);
+        }
+        structureObject.Add("Floors", floors);
+
+        return structureObject;
+    }
+
+    public static JSONObject WallPlacementToJson(WallPlacement wallPlacement)
+    {
+        JSONObject wallObject = new JSONObject();
+        wallObject.Add("StartPoint", GridPositionToJson(wallPlacement.StartPoint));
+        wallObject.Add("EndPoint", GridPositionToJson(wallPlacement.EndPoint));
+        wallObject.Add("Floor", wallPlacement.Floor);
+        wallObject.Add("Item", wallPlacement.item.itemType.TypeName);
+        return wallObject;
+    }
+
+    public static WallPlacement JsonPlacementToWallPlacement(JSONObject wallJson, ItemsLibrary itemsLibrary)
+    {
+
+        JSONObject startPointObject = wallJson.GetValueOrDefault("StartPoint", wallJson).AsObject;
+        GridPosition startPoint = JsonToGridPosition(startPointObject);
+
+        JSONObject endPointObject = wallJson.GetValueOrDefault("EndPoint", wallJson).AsObject;
+        GridPosition endPoint = JsonToGridPosition(endPointObject);
+
+        int floor = wallJson.GetValueOrDefault("Floor", wallJson);
+
+        ItemType itemType = itemsLibrary.allItems[itemsLibrary.IndexFromTypeName(wallJson.GetValueOrDefault("Item", wallJson))];
+        WallPlacement wallObject = new WallPlacement(new Item(itemType), startPoint, endPoint, floor);
+
+        return wallObject;
+    }
+
+    public static JSONObject FloorPlacementToJson(FloorPlacement floorPlacement)
+    {
+        JSONObject floorObject = new JSONObject();
+        floorObject.Add("GridPostion", GridPositionToJson(floorPlacement.gridPosition));
+        floorObject.Add("Floor", floorPlacement.Floor);
+        floorObject.Add("Item", floorPlacement.item.itemType.TypeName);
+
+        return floorObject;
+    }
+
+    public static FloorPlacement JsonToFloorPlacement(JSONObject floorPlacement, ItemsLibrary itemsLibrary)
+    {
+        JSONObject gridPointObject = floorPlacement.GetValueOrDefault("StartPoint", floorPlacement).AsObject;
+        GridPosition gridPoint = JsonToGridPosition(gridPointObject);
+
+        int floor = floorPlacement.GetValueOrDefault("Floor", floorPlacement);
+
+        ItemType itemType = itemsLibrary.allItems[itemsLibrary.IndexFromTypeName(floorPlacement.GetValueOrDefault("Item", floorPlacement))];
+
+        FloorPlacement floorObject = new FloorPlacement(new Item(itemType), gridPoint, floor);
+
+
+        return floorObject;
+    }
+
+    public static JSONObject GridPositionToJson(GridPosition gridPosition)
+    {
+        JSONObject gridObject = new JSONObject();
+        gridObject.Add("X", gridPosition.X);
+        gridObject.Add("Y", gridPosition.Y);
+        return gridObject;
+    }
+
+    public static GridPosition JsonToGridPosition(JSONObject gridPosition)
+    {
+
+        int X = gridPosition.GetValueOrDefault("X", gridPosition);
+        int Y = gridPosition.GetValueOrDefault("Y", gridPosition);
+
+        return new GridPosition(X, Y);
+    }
 
 }
 

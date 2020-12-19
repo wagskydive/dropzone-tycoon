@@ -47,7 +47,7 @@ public class TerrainClickUI : MonoBehaviour
     }
 
 
-    void ShowUi(Vector3 position, Transform  parent)
+    void ShowUi(Vector3 position)
     {
         if (!isVisable)
         {

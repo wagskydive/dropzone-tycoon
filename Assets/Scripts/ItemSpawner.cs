@@ -18,7 +18,7 @@ public class ItemSpawner : Spawner
     public void SpawnItem(Item item, Transform position)
     {
         ItemObject itemObject = LastSpawn.AddComponent<ItemObject>();
-        itemObject.item = new Item(item.itemType);
+        itemObject.SetupItemInstance(item);
 
         lastSpawnedItem = item;
         OnItemSpawned?.Invoke(itemObject);

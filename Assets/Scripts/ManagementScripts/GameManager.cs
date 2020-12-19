@@ -33,10 +33,14 @@ namespace ManagementScripts
 
         internal List<int> ActiveCharacters = new List<int>();
         internal ItemsLibrary Library = new ItemsLibrary("fallback");
+        [SerializeField]
+        internal List<Structure> allSavedStructures = new List<Structure>();
 
 
 
         MaterialManager materialManager;
+
+
 
 
         private void Awake()
@@ -61,6 +65,12 @@ namespace ManagementScripts
 
             //ItemsLibrary lib = 
             //LoadNewItemLibrary(FileSaver.JsonToItemLibrary(Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary"));
+        }
+
+
+        public void AddStructureToSavedList(Structure structure)
+        {
+            allSavedStructures.Add(structure);
         }
 
         void SubscribeToItemSpawner(ItemSpawner itemSpawner)

@@ -18,7 +18,7 @@ public class TerrainUI : MonoBehaviour
     public void SetMouseGrabberActive(bool active)
     {
         mouseDetect.ActivateMouseOverDetect(active);
-        mouseGrabber.GetComponent<MouseGrabber>().terrainMouseDetect = mouseDetect;
+        mouseGrabber.GetComponent<MouseGrabber>().mouseDetect = mouseDetect;
         mouseGrabber.SetActive(true);
     }
 

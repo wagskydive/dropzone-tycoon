@@ -1,13 +1,82 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
 
 namespace ManagementScripts
 {
+    public class BackupMaterials
+    {
+        public SelectableObject selectableObject { get; private set; }
+
+        public Material[] rootMaterials { get; private set; }
+        public Material[] rootSharedMaterials { get; private set; }
+        public List<Material[]> ChildMaterials { get; private set; }
+        public List<Material[]> ChildSharedMaterials { get; private set; }
+        public BackupMaterials(SelectableObject objectRef)
+        {
+            selectableObject = objectRef;
+            Renderer renderer = objectRef.gameObject.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                rootMaterials = renderer.materials;
+                rootSharedMaterials = renderer.sharedMaterials;
+            }
+            GetChildMaterials();
+        }
+
+        void GetChildMaterials()
+        {
+            List<Material[]> materials = new List<Material[]>();
+            List<Material[]> sharedMaterials = new List<Material[]>();
+            Renderer[] renderers = selectableObject.GetComponentsInChildren<Renderer>();
+            if (renderers != null)
+            {
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    materials.Add(renderers[i].materials);
+                    sharedMaterials.Add(renderers[i].sharedMaterials);
+                }
+            }
+
+            ChildMaterials= materials;
+            ChildSharedMaterials = sharedMaterials;
+        }
+
+        public void ResetMaterials()
+        {
+
+            Renderer renderer = selectableObject.gameObject.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.materials = rootMaterials;
+                renderer.sharedMaterials = rootSharedMaterials;
+            }
+            ResetChildren();
+        }
+        void ResetChildren()
+        {
+            Renderer[] renderers = selectableObject.GetComponentsInChildren<Renderer>();
+            if (renderers != null)
+            {
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    renderers[i].materials = ChildMaterials[i];
+                    renderers[i].sharedMaterials = ChildSharedMaterials[i];
+                }
+            }
+        }
+    }
+
     public class MaterialManager : MonoBehaviour
     {
-        
+
         public List<Material> defaultMaterials { get; private set; }
+
+        BackupMaterials backup;
+
+        Material placementMaterial;
+        Material hightlightMaterial;
 
         private void Awake()
         {
@@ -19,8 +88,6 @@ namespace ManagementScripts
                 string extension = Path.GetExtension(fileInfos[i].Name);
                 if (extension == ".mat")
                 {
-                   
-
                     string result = fileInfos[i].Name.Substring(0, fileInfos[i].Name.Length - extension.Length);
                     string loadString = "Materials/" + result;
 
@@ -33,6 +100,36 @@ namespace ManagementScripts
                 }
             }
             defaultMaterials = materials;
+
+
+            placementMaterial = Resources.Load("Materials/PlacementMaterial") as Material;
+            hightlightMaterial = Resources.Load("Materials/ObjectHighlightMaterial") as Material;
+
+            SelectableObject.OnMouseEnterDetected += SetHighLightMaterials;
+            SelectableObject.OnMouseExitDetected += SetOriginalMaterials;
+
+            ItemPlacer.OnPlaceHolderInstantiated += SetPlacementMaterial;
+        }
+
+        void SetPlacementMaterial(GameObject go)
+        {
+
+            SetMaterialToAllRenderers(go, placementMaterial);
+        }
+
+        void SetHighLightMaterials(SelectableObject selectableObject)
+        {
+            backup = new BackupMaterials(selectableObject);
+
+            SetMaterialToAllRenderers(selectableObject.gameObject, hightlightMaterial);
+        }
+
+        void SetOriginalMaterials(SelectableObject selectableObject)
+        {
+            if(backup != null)
+            {
+                backup.ResetMaterials();
+            }            
         }
 
         public static void ChangeMaterialInstanceColor(Renderer renderer, int index, Color color)
@@ -40,16 +137,118 @@ namespace ManagementScripts
             renderer.materials[index].color = color;
         }
 
+
+        public static void SetMaterialToAllRenderers(GameObject go, Material placementMaterial)
+        {
+            Renderer renderer = go.GetComponent<Renderer>();
+
+            SetAllMaterialsInRenderer(renderer, placementMaterial);
+            Renderer[] childRenderers = go.GetComponentsInChildren<Renderer>();
+            if (childRenderers != null)
+            {
+                for (int i = 0; i < childRenderers.Length; i++)
+                {
+                    SetAllMaterialsInRenderer(childRenderers[i], placementMaterial);
+                    childRenderers[i].material = placementMaterial;
+                }
+            }
+        }
+
+        public static Material[] GetAllMaterialsFromRenderersAndChildren(GameObject go)
+        {
+            List<Material> mats = new List<Material>();
+            Renderer renderer = go.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                mats.AddRange(GetAllMaterialsInRenderer(renderer));
+            }
+
+            Renderer[] childRenderers = go.GetComponentsInChildren<Renderer>();
+            if (childRenderers != null)
+            {
+                for (int i = 0; i < childRenderers.Length; i++)
+                {
+                    mats.AddRange(GetAllMaterialsInRenderer(childRenderers[i]));
+
+                }
+            }
+            return mats.ToArray();
+        }
+
+        private static Material[] GetAllMaterialsInRenderer(Renderer renderer)
+        {
+            List<Material> mats = new List<Material>();
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                mats.Add(renderer.materials[i]);
+            }
+            return mats.ToArray();
+        }
+
+        private static void SetAllMaterialsInRenderer(Material[] materials, Renderer renderer)
+        {
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                renderer.materials[i] = materials[i];
+            }
+
+        }
+
+        private static void SetAllMaterialsInRendererAndChildren(BackupMaterials backupMaterials, GameObject go)
+        {
+
+            Material[] rootMats = backupMaterials.rootMaterials;
+            Renderer renderer = go.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+
+                for (int i = 0; i < renderer.materials.Length; i++)
+                {
+                    SetAllMaterialsInRenderer(renderer, rootMats[i]);
+
+                }
+
+            }
+
+            Renderer[] childRenderers = go.GetComponentsInChildren<Renderer>();
+            if (childRenderers != null)
+            {
+                for (int i = 0; i < childRenderers.Length; i++)
+                {
+                    childRenderers[i].materials = backupMaterials.ChildMaterials[i];
+
+
+
+                }
+            }
+
+
+        }
+
+
+
+        public static void SetAllMaterialsInRenderer(Renderer renderer, Material material)
+        {
+            if (renderer != null)
+            {
+                for (int i = 0; i < renderer.materials.Length; i++)
+                {
+                    renderer.materials[i] = material;
+                }
+            }
+
+        }
+
         bool firstChange = false;
 
         public void HandleObjectMaterials(GameObject gameObject)
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();
-            
+
             if (renderer != null)
             {
                 List<Material> shared = new List<Material>();
-                List<Material> intantiated = new List<Material>();
+                List<Material> instantiated = new List<Material>();
                 for (int i = 0; i < renderer.materials.Length; i++)
                 {
                     Material defaultMat = CheckForMaterial(renderer.materials[i].name);
@@ -59,7 +258,7 @@ namespace ManagementScripts
                         temp.name = "Instance" + temp.name;
                         //renderer.materials[i] = temp;
                         shared.Add(defaultMat);
-                        intantiated.Add(temp);
+                        instantiated.Add(temp);
                     }
                     else
                     {
@@ -71,7 +270,7 @@ namespace ManagementScripts
                 renderer.materials = shared.ToArray();
 
 
-                
+
                 //renderer.GetSharedMaterials(shared);//.sharedMaterials[i] = defaultMat;
             }
 

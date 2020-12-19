@@ -22,6 +22,7 @@ public static class ColliderAdder
             {
                 MeshCollider meshCollider = meshRenderer.gameObject.AddComponent<MeshCollider>();
                 meshCollider.convex = true;
+                meshCollider.isTrigger = true;
                 meshBounds.Encapsulate(AddMeshCollidersInChildren(meshRenderer.gameObject));
             }
         }

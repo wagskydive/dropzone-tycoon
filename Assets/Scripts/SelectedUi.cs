@@ -1,7 +1,9 @@
 ﻿using SpawnLogic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -19,39 +21,52 @@ public class SelectedUi : MonoBehaviour
 
     public CharacterSpawner characterSpawner;
 
-    SelectableObject selected;
+    SelectableObject hover;
 
     private void Awake()
     {
 
         SelectableObject.OnMouseEnterDetected += HoverEnter;
         SelectableObject.OnMouseExitDetected += HoverExit;
+        //SelectableObject.OnObjectSelected += SelectObject;
     }
 
     void HoverEnter(SelectableObject selectableObject)
     {
-        transform.position = selectableObject.transform.position + Vector3.up;
+        transform.position = selectableObject.transform.position + Vector3.up+Vector3.back*.1f;
         if (selectableObject.GetType() == typeof(ItemObject))
         {
-            SelectItemObject((ItemObject)selectableObject);
+            HoverItemObject((ItemObject)selectableObject);
         }
         else if (selectableObject.GetType() == typeof(CharacterObject))
         {
-            SelectCharacterObject((CharacterObject)selectableObject);
+            HoverCharacterObject((CharacterObject)selectableObject);
         }
-        selected = selectableObject;
+        hover = selectableObject;
     }
     void HoverExit(SelectableObject selectableObject)
     {
-        itemParent.gameObject.SetActive(false);
+        //hover = null
+        //itemParent.gameObject.SetActive(false);
         characterParent.gameObject.SetActive(false);
-        selected = null;
+        hover = null;
     }
 
+    void SelectObject(SelectableObject selectableObject)
+    {
+        transform.position = selectableObject.transform.position + Vector3.up + Vector3.back * .1f;
+        SelectableObject.OnMouseEnterDetected -= HoverEnter;
+        SelectableObject.OnMouseExitDetected -= HoverExit;
+        SelectableObject.OnObjectSelected += DeselectObject;
+    }
 
+    private void DeselectObject(SelectableObject obj)
+    {
+        SelectableObject.OnMouseEnterDetected += HoverEnter;
+        SelectableObject.OnMouseExitDetected += HoverExit;
+    }
 
-
-    void SelectItemObject(ItemObject itemObject)
+    void HoverItemObject(ItemObject itemObject)
     {
         if (!itemParent.gameObject.activeSelf)
         {
@@ -64,7 +79,7 @@ public class SelectedUi : MonoBehaviour
         itemInfo.text = itemObject.item.itemType.TypeName;
     }
 
-    void SelectCharacterObject(CharacterObject characterObject)
+    void HoverCharacterObject(CharacterObject characterObject)
     {
         if (!characterParent.gameObject.activeSelf)
         {
@@ -76,10 +91,6 @@ public class SelectedUi : MonoBehaviour
         }
         characterInfo.text = characterObject.name;
     }
-
-
-
-
 
 
 }

@@ -2,24 +2,40 @@
 
 public static class BoundsMagic
 {
-    public static Bounds CreateBoundsFromGameObject(GameObject childTransform)
+    public static Bounds CreateBoundsFromGameObject(GameObject subject, Transform parent = null)
     {
         Bounds bounds = new Bounds();
-        bounds.Encapsulate(childTransform.GetComponent<Renderer>().bounds);
-
-        Renderer[] childRenderers = childTransform.GetComponentsInChildren<Renderer>();
-        if (childRenderers != null)
+        Renderer renderer = subject.GetComponent<Renderer>();
+        if(renderer != null)
         {
-
-            for (int i = 0; i < childRenderers.Length; i++)
+            Bounds rendererBounds = subject.GetComponent<Renderer>().bounds;
+            if (parent != null)
             {
-                bounds.Encapsulate(childRenderers[i].bounds);
+                rendererBounds.center -= parent.position;
             }
-
+            //rendererBounds.center -= subject.transform.parent.position; 
+            bounds.Encapsulate(rendererBounds);
         }
+        
+        if(subject.transform.childCount > 0)
+        {
+            Renderer[] childRenderers = subject.GetComponentsInChildren<Renderer>();
+            if (childRenderers != null)
+            {
+
+                for (int i = 0; i < childRenderers.Length; i++)
+                {
+                    bounds.Encapsulate(CreateBoundsFromGameObject(childRenderers[i].gameObject, subject.transform));
+                }
+
+            }
+        }
+
         return bounds;
 
-    }    public static Bounds CreateBoundsFromGameObjectFiletr(GameObject childTransform)
+    }
+
+    public static Bounds CreateBoundsFromGameObjectFilter(GameObject childTransform)
     {
         Bounds bounds = new Bounds();
         bounds.Encapsulate(childTransform.GetComponent<MeshFilter>().mesh.bounds);

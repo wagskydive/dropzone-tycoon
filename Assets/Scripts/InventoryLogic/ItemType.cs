@@ -5,7 +5,7 @@ namespace InventoryLogic
 {
     public class ItemType
     {
-        public ItemType(string name, string resourcePath = "", string catagory = null, string description = null, CrafterType crafterType = null)
+        public ItemType(string name, string resourcePath = "", string catagory = null, string description = null, CrafterType crafterType = null, bool isObstacle = true)
         {
             if (name.EndsWith(".fbx"))
             {
@@ -35,12 +35,15 @@ namespace InventoryLogic
             Catagory = catagory;
             Description = description;
             SetCrafterType(crafterType);
+            IsObstacle = isObstacle;
         }
         public string TypeName { get; internal set; }
         public string Catagory { get; internal set; }
         public string Description { get; internal set; }
         public string ResourcePath { get; internal set; }
         public Recipe recipe { get; internal set; }
+        public bool IsObstacle { get; internal set; }
+
 
         internal string[] skillsRelated;
 

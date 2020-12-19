@@ -6,13 +6,8 @@ using InventoryLogic;
 
 public class MouseGrabber : ItemHandler
 {
-    public MouseDetect terrainMouseDetect;
+    public MouseDetect mouseDetect;
 
-    [SerializeField]
-    private bool snapping;
-
-    [SerializeField]
-    private float gridSize = 1;
 
     private void Awake()
     {
@@ -27,15 +22,7 @@ public class MouseGrabber : ItemHandler
         }
     }
 
-    public void AddObjectItemPlacer(ISpawnable objectToAdd)
-    {
 
-
-        //go.AddComponent<ItemPlacer>().SetCurrentSpawnable(objectToAdd);
-        //go.GetComponent<ItemPlacer>().OnItemPlaced += DisableGrabbedItem;
-        PassItem(objectToAdd, snapping, gridSize);
-
-    }
 
     void DisableGrabbedItem()
     {

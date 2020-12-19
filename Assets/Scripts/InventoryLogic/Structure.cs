@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using SpawnLogic;
+using System.Collections.Generic;
 
 namespace InventoryLogic
 {
+    [System.Serializable]
     public class GridPosition
     {
+
+
         public GridPosition(int x, int y)
         {
             X = x;
@@ -52,21 +56,24 @@ namespace InventoryLogic
         public GridPosition gridPosition { get; private set; }
         public int Floor { get; private set; }
     }
-
-    public class Structure
+    [System.Serializable]
+    public class Structure : ISpawnable
     {
+        public string Name { get; private set; }
+
         public float GridSize { get; private set; }
-        public float StorySize { get; private set; }
+        public float FloorSize { get; private set; }
 
 
         public List<Item> parts { get; private set; }
         public List<WallPlacement> walls { get; private set; }
         public List<FloorPlacement> floors { get; private set; }
 
-        public Structure(float gridSize, float storySize)
+        public Structure(string name, float gridSize, float floorSize)
         {
+            Name = name;
             GridSize = gridSize;
-            StorySize = storySize;
+            FloorSize = floorSize;
             parts = new List<Item>();
             walls = new List<WallPlacement>();
             floors = new List<FloorPlacement>();
@@ -107,6 +114,9 @@ namespace InventoryLogic
         {
             floors.Remove(floor);
         }
+
+
+
         public void AddPartAsWall(int startX, int startY, int endX, int endY, Item item, int floor)
         {
             GridPosition start = new GridPosition(startX, startY);
@@ -119,22 +129,40 @@ namespace InventoryLogic
         public void AddPartAsWall(GridPosition start, GridPosition end, Item item, int floor)
         {
             WallPlacement wall = new WallPlacement(item, start, end, floor);
-            walls.Add(wall);
-            AddPart(item);
+            AddPartAsWall(wall);
+
         }
 
+        public void AddPartAsWall(WallPlacement wall)
+        {
 
+            walls.Add(wall);
+            AddPart(wall.item);
+        }
 
         public void AddWallRange(GridPosition start, GridPosition end, Item item, int floor, bool overWrite = true)
         {
 
         }
 
+
+        public void AddPartAsFloor(FloorPlacement floorPlacement)
+        {
+            
+            floors.Add(floorPlacement);
+            AddPart(floorPlacement.item);
+        }
+
+
         public void AddPartAsFloor(GridPosition gridPosition, Item item, int floor)
         {
-            FloorPlacement floorPlacement = new FloorPlacement(item, gridPosition, floor);
-            floors.Add(floorPlacement);
-            AddPart(item);
+            AddPartAsFloor(new FloorPlacement(item, gridPosition, floor));
+
+        }
+
+        public string ResourcePath()
+        {
+            return "";
         }
     }
 }
