@@ -113,6 +113,7 @@ public class StructureBuilder : MonoBehaviour
 
     public void AddWindowsAndDoors()
     {
+        
         WallLinePlacer wallLinePlacer = ItemPlacerObject.AddComponent<WallLinePlacer>();
         int wallstartItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway Start");
         Item StartItem = new Item(gameManager.Library.allItems[wallstartItemTypeIndex]);

@@ -37,11 +37,27 @@ namespace InventoryLogic
             Floor = floor;
 
         }
+
         public Item item { get; private set; }
         public int Floor { get; private set; }
         public GridPosition StartPoint { get; private set; }
         public GridPosition EndPoint { get; private set; }
     }
+
+    public class WallSet
+    {
+        public ItemType Single { get; private set; }
+        public ItemType Start { get; private set; }
+        public ItemType End { get; private set; }
+        public ItemType Middle { get; private set; }
+
+        public WallSet(ItemType single, ItemType start, ItemType end, ItemType middle)
+        {
+
+        }
+    }
+
+
 
     public class FloorPlacement
     {
