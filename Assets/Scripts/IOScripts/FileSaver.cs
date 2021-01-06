@@ -347,6 +347,7 @@ public class FileSaver
         wallObject.Add("EndPoint", GridPositionToJson(wallPlacement.EndPoint));
         wallObject.Add("Floor", wallPlacement.Floor);
         wallObject.Add("Item", wallPlacement.item.itemType.TypeName);
+        wallObject.Add("Stretch", wallPlacement.Stretch);
         return wallObject;
     }
 
@@ -362,7 +363,9 @@ public class FileSaver
         int floor = wallJson.GetValueOrDefault("Floor", wallJson);
 
         ItemType itemType = itemsLibrary.allItems[itemsLibrary.IndexFromTypeName(wallJson.GetValueOrDefault("Item", wallJson))];
-        WallPlacement wallObject = new WallPlacement(new Item(itemType), startPoint, endPoint, floor);
+        bool stretch = wallJson.GetValueOrDefault("Stretch", wallJson);
+
+        WallPlacement wallObject = new WallPlacement(new Item(itemType), startPoint, endPoint, floor, stretch);
 
         return wallObject;
     }

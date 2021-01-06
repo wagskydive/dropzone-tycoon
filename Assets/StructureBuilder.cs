@@ -28,7 +28,7 @@ public static class DummyStructureBuilder
     }
 }
 
-
+[RequireComponent(typeof(MeshModifier))]
 public class StructureBuilder : MonoBehaviour
 {
 
@@ -41,26 +41,40 @@ public class StructureBuilder : MonoBehaviour
 
     public ItemHandler itemHandler;
 
+    public StringInputPopup SavePopup;
+
     BoxCollider boxCollider;
 
     public GameManager gameManager;
     GameObject go;
+
+
     private void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         go = new GameObject();
 
-        SelectableObject.OnObjectSelected += HandleSelected;
+        StructureObject.OnStructureSelected += HandleSelected;
 
         itemSpawner.OnItemSpawned += ItemSpawner_OnItemSpawned;
         //Invoke("SetNewStructure", 3);
 
         ItemPlacer.OnPlacementComplete += ItemPlacer_OnPlacementComplete;
+
+        SavePopup.OnInputConfirmed += SaveCurrentStructure;
     }
+
+
 
     private void ItemPlacer_OnPlacementComplete(ItemPlacer obj)
     {
-        Destroy(obj);
+        for (int i = 0; i < obj.ToBeReplaced.Count; i++)
+        {
+            Destroy(obj.ToBeReplaced[i].gameObject);
+        }
+
+        currentBuild.DeselectObject();
     }
 
     private void ItemSpawner_OnItemSpawned(ItemObject obj)
@@ -68,20 +82,14 @@ public class StructureBuilder : MonoBehaviour
         currentBuild.AddItemToStructure(obj);
     }
 
-    private void HandleSelected(SelectableObject selected)
+    private void HandleSelected(StructureObject selected)
     {
-        if (selected.GetType() == typeof(StructureObject))
-        {
-            currentBuild = (StructureObject)selected;
-        }
-        else
-        {
-            currentBuild = null;
-        }
+
+        currentBuild = selected;
     }
 
 
-    public void StartNewStructure()
+    public void StartNewBoxStructure()
     {
 
         WallBoxPlacer wallBoxPlacer = ItemPlacerObject.AddComponent<WallBoxPlacer>();
@@ -106,59 +114,115 @@ public class StructureBuilder : MonoBehaviour
         wallBoxPlacer.OnWallPlaced += WallPlacer_OnWallPlaced;
     }
 
-    private void WallPlacer_OnWallPlaced(WallPlacement wall)
+    public void StartNewLineStructure()
     {
-        currentBuild.structure.AddPartAsWall(wall);
-    }
 
-    public void AddWindowsAndDoors()
-    {
-        
         WallLinePlacer wallLinePlacer = ItemPlacerObject.AddComponent<WallLinePlacer>();
-        int wallstartItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway Start");
-        Item StartItem = new Item(gameManager.Library.allItems[wallstartItemTypeIndex]);
 
-        int wallEndItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway End");
-        Item EndItem = new Item(gameManager.Library.allItems[wallstartItemTypeIndex]);
-        
-        int wallSingleItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway");
-        Item SingleItem = new Item(gameManager.Library.allItems[wallstartItemTypeIndex]);
-        
-        int wallMiddleItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway Middle");
-        Item MiddleItem = new Item(gameManager.Library.allItems[wallstartItemTypeIndex]);
+        string newName = "My New Structure";
+        Structure newStructure = new Structure(newName, 1, 2.4f);
 
-        wallLinePlacer.SetWorkingStructure(itemSpawner, currentBuild, 0);
+        GameObject newStructureObject = new GameObject(newName);
 
+        StructureObject structureObject = newStructureObject.AddComponent<StructureObject>();
+
+        structureObject.SetNewStructure(newStructure);
+
+        currentBuild = structureObject;
+
+
+        wallLinePlacer.SetWorkingStructure(itemSpawner, structureObject, 0);
+        int wallItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall");
+        Item item = new Item(gameManager.Library.allItems[wallItemTypeIndex]);
+        //itemHandler.AddObjectItemPlacer(item);
         itemHandler.gameObject.SetActive(true);
-        wallLinePlacer.SetFirstPlacementObject(MiddleItem, true, StartItem, EndItem, SingleItem);
 
+        wallLinePlacer.SetFirstPlacementObject(item, true, 1);
         wallLinePlacer.OnWallPlaced += WallPlacer_OnWallPlaced;
     }
 
+    private void WallPlacer_OnWallPlaced(WallPlacement wall)
+    {
+
+        currentBuild.structure.AddPartAsWall(wall, wall.Stretch);
+        currentBuild.SelectObject();
+    }
+
+    public void AddWindowsButtonclick()
+    {
+        currentBuild.OnStructurePartSelected += StartWindowPlacement;
+    }
+
+
+    void StartWindowPlacement(GridPosition startPoint)
+    {
+        currentBuild.OnStructurePartSelected -= StartWindowPlacement;
+
+        WallLinePlacer wallLinePlacer = ItemPlacerObject.AddComponent<WallLinePlacer>();
+
+        wallLinePlacer.SetWorkingStructure(itemSpawner, currentBuild, 0);
+        int wallItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Window Slide");
+        Item item = new Item(gameManager.Library.allItems[wallItemTypeIndex]);
+        //itemHandler.AddObjectItemPlacer(item);
+        itemHandler.gameObject.SetActive(true);
+
+        GameObject[] outObjects;
+        gameManager.StretchObjects.TryGetValue("Wall Window Slide", out outObjects);
+        wallLinePlacer.SetFirstPlacementObject(item, true, outObjects);
+        wallLinePlacer.OnWallPlaced += WallPlacer_OnWallPlaced;
+        wallLinePlacer.stretch = true;
+        wallLinePlacer.FirstClick(currentBuild.PositionFromGridPosition(startPoint, 0));
+    }
+
+
+    public void AddDoorButtonclick()
+    {
+        currentBuild.OnStructurePartSelected += StartDoorPlacement;
+    }
+
+
+    void StartDoorPlacement(GridPosition startPoint)
+    {
+        currentBuild.OnStructurePartSelected -= StartWindowPlacement;
+
+        WallLinePlacer wallLinePlacer = ItemPlacerObject.AddComponent<WallLinePlacer>();
+
+        wallLinePlacer.SetWorkingStructure(itemSpawner, currentBuild, 0);
+        int wallItemTypeIndex = gameManager.Library.IndexFromTypeName("Wall Doorway");
+        Item item = new Item(gameManager.Library.allItems[wallItemTypeIndex]);
+        //itemHandler.AddObjectItemPlacer(item);
+        itemHandler.gameObject.SetActive(true);
+
+        GameObject[] outObjects;
+        gameManager.StretchObjects.TryGetValue("Wall Doorway", out outObjects);
+        wallLinePlacer.SetFirstPlacementObject(item, true, outObjects);
+        wallLinePlacer.OnWallPlaced += WallPlacer_OnWallPlaced;
+        wallLinePlacer.stretch = true;
+        wallLinePlacer.FirstClick(currentBuild.PositionFromGridPosition(startPoint, 0));
+    }
 
     public void SetExistingStructure(Structure structure)
     {
         currentBuild.SetNewStructure(structure);
         Rebuild(currentBuild.structure);
     }
-    int saveAmounts = 0;
 
-    public void SaveCurrentStructure()
+
+    public void SaveCurrentStructure(string path)
     {
         gameManager.AddStructureToSavedList(currentBuild.structure);
-        FileSaver.SaveStructureBluePrint(Application.dataPath + "/Resources/Structures/" + currentBuild.structure.Name + saveAmounts.ToString() + ".json", currentBuild.structure);
+        FileSaver.SaveStructureBluePrint(Application.dataPath + "/Resources/Structures/" + path + ".json", currentBuild.structure);
         currentBuild.DeselectObject();
-        saveAmounts++;
+
     }
 
 
-    public void LoadButtonPress()
+    public void LoadStructure(string path)
     {
-        Structure structure = FileSaver.JsonToStructureBluePrint(Application.dataPath + "/Resources/Structures/" + "My New Structure" + "0.json", gameManager.Library);
+        Structure structure = FileSaver.JsonToStructureBluePrint(Application.dataPath + "/Resources/Structures/" + path, gameManager.Library);
         StructurePlacer structurePlacer = ItemPlacerObject.AddComponent<StructurePlacer>();
         structurePlacer.SetPlacementStructureObject(Rebuild(structure).GetComponent<StructureObject>());
     }
-
 
 
     GameObject Rebuild(Structure structure)
@@ -185,9 +249,11 @@ public class StructureBuilder : MonoBehaviour
             }
         }
         GameObject go = new GameObject();
-
+        bool stretching = false;
         for (int i = 0; i < structure.walls.Count; i++)
         {
+
+
             float xPos = structure.walls[i].StartPoint.X * structure.GridSize;
             float zPos = structure.walls[i].StartPoint.Y * structure.GridSize;
             float floor = structure.walls[i].Floor * structure.FloorSize;
@@ -198,10 +264,30 @@ public class StructureBuilder : MonoBehaviour
             }
             go.transform.position = position;
 
-            itemSpawner.Spawn(structure.walls[i].item, go.transform, currentBuild.transform);
+
+            if (structure.walls[i].Stretch || lastStretching)
+            {
+                stretching = true;
+                GameObject goA = HandleObjectSwap(stretching, structure.walls[i].item.itemType.TypeName);
+                goA.transform.SetParent(currentBuild.transform);
+                goA.transform.position = go.transform.position;
+                goA.transform.rotation = go.transform.rotation;
+            }
+
+            else
+            {
+                stretching = false;
+                itemSpawner.Spawn(structure.walls[i].item, go.transform, currentBuild.transform);
+            }
+
+
+
+
+
             go.transform.position = Vector3.zero;
             go.transform.rotation = Quaternion.identity;
             go.transform.SetParent(newStructureObject.transform);
+            lastStretching = stretching;
         }
 
 
@@ -215,4 +301,42 @@ public class StructureBuilder : MonoBehaviour
 
         return newStructureObject;
     }
+
+    List<WallPlacement> stretchParts = new List<WallPlacement>();
+
+
+    GameObject[] currentStretchObjects;
+    bool lastStretching;
+    private GameObject HandleObjectSwap(bool stretch, string baseTypeName)
+    {
+
+        if (!lastStretching)
+        {
+            gameManager.StretchObjects.TryGetValue(baseTypeName, out currentStretchObjects);
+            GameObject go = Instantiate(currentStretchObjects[1]);
+            go.SetActive(true);
+
+            return go;
+        }
+        else if (stretch)
+        {
+            GameObject go = Instantiate(currentStretchObjects[2]);
+            go.SetActive(true);
+
+            return go;
+        }
+        else
+        {
+            GameObject go = Instantiate(currentStretchObjects[3]);
+            go.SetActive(true);
+
+            return go;
+        }
+    }
+
+
+
+
+
+
 }

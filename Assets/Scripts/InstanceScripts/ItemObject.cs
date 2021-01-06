@@ -8,6 +8,7 @@ public class ItemObject : SelectableObject
     public event Action<ItemObject> OnItemObjectSelected;
     public event Action<ItemObject> OnItemObjectDestroy;
     
+    [SerializeField]
     public Item item;
 
 

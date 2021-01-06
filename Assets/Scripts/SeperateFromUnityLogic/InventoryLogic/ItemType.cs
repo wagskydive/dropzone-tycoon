@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace InventoryLogic
 {
+    [System.Serializable]
     public class ItemType
     {
-        public ItemType(string name, string resourcePath = "", string catagory = null, string description = null, CrafterType crafterType = null, bool isObstacle = true)
+        public ItemType(string name, string resourcePath = "", string catagory = null, string description = null, CrafterType crafterType = null, bool isObstacle = true, bool stretchItem = false)
         {
             if (name.EndsWith(".fbx"))
             {
@@ -36,14 +37,16 @@ namespace InventoryLogic
             Description = description;
             SetCrafterType(crafterType);
             IsObstacle = isObstacle;
+            IsStretchItem = stretchItem;
         }
+
         public string TypeName { get; internal set; }
         public string Catagory { get; internal set; }
         public string Description { get; internal set; }
         public string ResourcePath { get; internal set; }
         public Recipe recipe { get; internal set; }
         public bool IsObstacle { get; internal set; }
-
+        public bool IsStretchItem { get; internal set; }
 
         internal string[] skillsRelated;
 

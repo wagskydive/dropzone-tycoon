@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.IO;
 using System;
+using System.Linq;
 
 namespace ManagementScripts
 {
@@ -59,10 +60,17 @@ namespace ManagementScripts
             Renderer[] renderers = selectableObject.GetComponentsInChildren<Renderer>();
             if (renderers != null)
             {
+                
                 for (int i = 0; i < renderers.Length; i++)
                 {
-                    renderers[i].materials = ChildMaterials[i];
-                    renderers[i].sharedMaterials = ChildSharedMaterials[i];
+                    if (ChildMaterials.Any() && ChildMaterials[i] != null)
+                    {
+                        renderers[i].materials = ChildMaterials[i];
+                    }
+                    if (ChildSharedMaterials.Any() && ChildSharedMaterials[i] != null)
+                    {
+                        renderers[i].sharedMaterials = ChildSharedMaterials[i];
+                    }                                           
                 }
             }
         }
@@ -107,7 +115,7 @@ namespace ManagementScripts
 
             SelectableObject.OnMouseEnterDetected += SetHighLightMaterials;
             SelectableObject.OnMouseExitDetected += SetOriginalMaterials;
-
+            SelectableObject.OnObjectSelected += SetOriginalMaterials;
             ItemPlacer.OnPlaceHolderInstantiated += SetPlacementMaterial;
         }
 

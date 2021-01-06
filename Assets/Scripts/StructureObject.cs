@@ -1,19 +1,18 @@
 ﻿using InventoryLogic;
+using System;
 using UnityEngine;
 
 public class StructureObject : SelectableObject
 {
+    public static event Action<StructureObject> OnStructureSelected;
+    public event Action<GridPosition > OnStructurePartSelected;
+
     [SerializeField]
     public Structure structure { get; private set; }
 
     ItemSpawner currentItemSpawner;
 
     BoxCollider boxCollider;
-    private void Awake()
-    {
-
-
-    }
 
     void SetColliderToChildrenBounds()
     {
@@ -25,29 +24,86 @@ public class StructureObject : SelectableObject
     public void SetNewStructure(Structure str)
     {
         structure = str;
-        
 
+        SetChildrenSelectable(false);
+        if (boxCollider == null)
+        {
+            boxCollider = gameObject.GetComponent<BoxCollider>();
+            if (boxCollider == null)
+            {
+                boxCollider = gameObject.AddComponent<BoxCollider>();
+            }
+            boxCollider.isTrigger = true;
+        }
+    }
+
+    bool partsSubscribed;
+
+    void SubscriberToPartSelection()
+    {
+        SelectableObject[] selectableObjects = GetComponentsInChildren<SelectableObject>();
+
+        if (selectableObjects != null)
+        {
+            for (int i = 0; i < selectableObjects.Length; i++)
+            {
+                if (selectableObjects[i] != this)
+                {
+                    selectableObjects[i].OnClicked += StructurePartSelected;
+
+                }
+            }
+        }
+
+        partsSubscribed = true;
+
+    }
+
+    public ItemObject ItemObjectFromWallPlacement(WallPlacement wallPlacement)
+    {
+        ItemObject[] itemObjects = GetComponentsInChildren<ItemObject>();
+        Item item = structure.ItemFromWallPlacement(wallPlacement);
+        if (item != null)
+        {
+            for (int i = 0; i < itemObjects.Length; i++)
+            {
+                if(itemObjects[i].item ==item)
+                {
+                    return itemObjects[i];
+                }
+            }
+        }
+        return null;
     }
 
     public void AddItemToStructure(ItemObject itemObject)
     {
         itemObject.transform.SetParent(transform);
-        //structure.AddPart(itemObject.item);
+        //structure.AddPart(itemObject.item);        
         
-        if (boxCollider == null)
-        {
-            boxCollider = gameObject.GetComponent<BoxCollider>();
-            if(boxCollider == null)
-            {
-                boxCollider = gameObject.AddComponent<BoxCollider>();
-            }
+        SetColliderToChildrenBounds();
+    }
 
-            boxCollider.isTrigger = true;
+    Item selectedPart;
+
+    public Vector3 PositionFromGridPosition(GridPosition gridPosition, int floor)
+    {
+        return transform.position + new Vector3(gridPosition.X, (float)floor, gridPosition.Y);
+    }
+
+    void StructurePartSelected(SelectableObject selectableObject)
+    {
+        if (selectableObject.GetType() == typeof(ItemObject))
+        {
+            ItemObject itemObject = (ItemObject)selectableObject;
+            selectedPart = itemObject.item;
+            GridPosition gridPosition = structure.FindPartPosition(itemObject.item);
+            if (gridPosition != null)
+            {
+                OnStructurePartSelected?.Invoke(gridPosition);
+            }
         }
 
-
-        SetColliderToChildrenBounds();
-        
     }
 
     public void AssignSpawner(ItemSpawner spawner)
@@ -56,20 +112,51 @@ public class StructureObject : SelectableObject
         spawner.OnItemSpawned += AddItemToStructure;
     }
 
-    //public override void OnMouseEnter()
-    //{
-    //    //boxCollider.enabled = false;
-    //    //OnMouseEnterDetected?.Invoke(this);
-    //}
+    public void SetChildrenSelectable(bool selectable)
+    {
+        SelectableObject[] selectableObjects = GetComponentsInChildren<SelectableObject>();
+
+        for (int i = 0; i < selectableObjects.Length; i++)
+        {
+            if (selectableObjects[i] != this)
+            {
+                selectableObjects[i].SetSelectable(selectable);
+
+            }
+        }
+        if (boxCollider != null)
+        {
+
+            boxCollider.enabled = !selectable;
+        }
+    }
+
+
+
 
     public override void SelectObject()
     {
+        if (!partsSubscribed)
+        {
+            SubscriberToPartSelection();
+        }
         base.SelectObject();
+        isCurrentlySelectable = false;
+        SetChildrenSelectable(true);
+
+
+        OnStructureSelected?.Invoke(this);
     }
     public override void DeselectObject()
     {
         base.DeselectObject();
-        currentItemSpawner.OnItemSpawned -= AddItemToStructure;
+        if (currentItemSpawner != null)
+        {
+            currentItemSpawner.OnItemSpawned -= AddItemToStructure;
+        }
+        SetSelectable(true);
+        SetChildrenSelectable(false);
+
     }
 
 }

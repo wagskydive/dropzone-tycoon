@@ -29,33 +29,28 @@ namespace InventoryLogic
 
     public class WallPlacement
     {
-        public WallPlacement(Item it, GridPosition start, GridPosition end, int floor)
+        public WallPlacement(Item it, GridPosition start, GridPosition end, int floor, bool stretch = false)
         {
             item = it;
             StartPoint = start;
             EndPoint = end;
             Floor = floor;
-
+            Stretch = stretch;
         }
 
         public Item item { get; private set; }
         public int Floor { get; private set; }
         public GridPosition StartPoint { get; private set; }
         public GridPosition EndPoint { get; private set; }
-    }
+        public bool Stretch { get; private set; }
 
-    public class WallSet
-    {
-        public ItemType Single { get; private set; }
-        public ItemType Start { get; private set; }
-        public ItemType End { get; private set; }
-        public ItemType Middle { get; private set; }
-
-        public WallSet(ItemType single, ItemType start, ItemType end, ItemType middle)
+        public void SetAsStretch(bool stretch)
         {
-
+            Stretch = stretch;
         }
     }
+
+
 
 
 
@@ -72,6 +67,8 @@ namespace InventoryLogic
         public GridPosition gridPosition { get; private set; }
         public int Floor { get; private set; }
     }
+
+
     [System.Serializable]
     public class Structure : ISpawnable
     {
@@ -94,6 +91,8 @@ namespace InventoryLogic
             walls = new List<WallPlacement>();
             floors = new List<FloorPlacement>();
         }
+
+
 
         public void AddPart(Item item)
         {
@@ -119,7 +118,41 @@ namespace InventoryLogic
             }
         }
 
+        public GridPosition FindPartPosition(Item part)
+        {
+            for (int i = 0; i < walls.Count; i++)
+            {
+                if(walls[i].item == part)
+                {
+                    return walls[i].StartPoint;
+                }
+            }
+            return null;
+        }
 
+        public Item ItemFromWallPlacement(WallPlacement wallPlacement)
+        {
+            for (int i = 0; i < walls.Count; i++)
+            {
+                if(walls[i].StartPoint.X == wallPlacement.StartPoint.X && walls[i].StartPoint.Y == wallPlacement.StartPoint.Y && walls[i].EndPoint.X == wallPlacement.EndPoint.X && walls[i].EndPoint.Y == wallPlacement.EndPoint.Y)
+                {
+                    return walls[i].item;
+                }
+            }
+            return null;
+        }
+
+        public WallPlacement WallOnPosition(GridPosition startPosition, GridPosition endPosition)
+        {
+            for (int i = 0; i < walls.Count; i++)
+            {
+                if(walls[i].StartPoint == startPosition && walls[i].EndPoint == endPosition)
+                {
+                    return walls[i];
+                }
+            }
+            return null;
+        }
 
         public void RemoveWall(WallPlacement wall)
         {
@@ -133,7 +166,7 @@ namespace InventoryLogic
 
 
 
-        public void AddPartAsWall(int startX, int startY, int endX, int endY, Item item, int floor)
+        public void AddPartAsWall(int startX, int startY, int endX, int endY, Item item, int floor, bool stretch = false)
         {
             GridPosition start = new GridPosition(startX, startY);
             GridPosition end = new GridPosition(endX, endY);
@@ -142,16 +175,16 @@ namespace InventoryLogic
         }
 
 
-        public void AddPartAsWall(GridPosition start, GridPosition end, Item item, int floor)
+        public void AddPartAsWall(GridPosition start, GridPosition end, Item item, int floor, bool stretch = false)
         {
             WallPlacement wall = new WallPlacement(item, start, end, floor);
             AddPartAsWall(wall);
 
         }
 
-        public void AddPartAsWall(WallPlacement wall)
+        public void AddPartAsWall(WallPlacement wall, bool stretch = false)
         {
-
+            wall.SetAsStretch(stretch);
             walls.Add(wall);
             AddPart(wall.item);
         }

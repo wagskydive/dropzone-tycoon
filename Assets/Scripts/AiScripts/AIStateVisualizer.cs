@@ -33,18 +33,18 @@ public class AIStateVisualizer : MonoBehaviour
                 {
                     if (characterBrain.currentState != null)
                     {
-                        UnityEditor.Handles.Label(characterBrain.transform.position + (Vector3.up * 1.5f), characterBrain.currentState.ToString(), style);
+                        UnityEditor.Handles.Label(characterBrain.transform.position + (Vector3.up * 1.5f), characterBrain.currentState.GetCurrentStateString(), style);
                     }
                     else
                     {
                         UnityEditor.Handles.Label(characterBrain.transform.position + (Vector3.up * 1.5f), "No Current State", style);
 
                     }
-                    float percLeft = characterBrain.GetCurrentJobLeft();
+                    float percLeft = characterBrain.GetCurrentStateFactor();
                     if (percLeft != 0)
                     {
                         Vector3 basePos = characterBrain.transform.position + Vector3.up;
-                        UnityEditor.Handles.Label(basePos, (percLeft * 100).ToString() + "'%' Done", style);
+                        UnityEditor.Handles.Label(basePos, ((int)(percLeft * 100)).ToString() + "'%' Done", style);
 
                     }
                 }

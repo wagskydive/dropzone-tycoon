@@ -7,14 +7,15 @@ using Cinemachine;
 [RequireComponent(typeof(CinemachineTargetGroup))]
 public class CinemachineTargetHandler : MonoBehaviour
 {
-    
-
+    [SerializeField]
+    private Transform freecam;
     //public IconObject target;
     CinemachineTargetGroup targetGroup;
     private void Start()
     {
         targetGroup = GetComponent<CinemachineTargetGroup>();
         SelectableObject.OnObjectSelected += HandleSelectedObject;
+        SelectableObject.OnObjectDeselected += HandleDeselectedObject;
     }
 
     void HandleSelectedObject(SelectableObject selectableObject)
@@ -25,6 +26,14 @@ public class CinemachineTargetHandler : MonoBehaviour
         targets[0] = target;
         targetGroup.m_Targets = targets ;
         SetTargetGroupTargetsAndRadius(selectableObject.OuterBounds());
+    }
+
+    void HandleDeselectedObject(SelectableObject selectableObject)
+    {
+        if( targetGroup.m_Targets[0].target.transform == selectableObject)
+        {
+            targetGroup.m_Targets = null;
+        }
     }
 
     public void SetTargetGroupTargetsAndRadius(Bounds bounds)

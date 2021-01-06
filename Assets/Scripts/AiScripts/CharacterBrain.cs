@@ -9,38 +9,65 @@ using System.Linq;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterBrain : MonoBehaviour
 {
+    [SerializeField]
     Queue<AIState> stateQueue = new Queue<AIState>();
-
+    [SerializeField]
     Queue<AIState> failedStateQueue = new Queue<AIState>();
 
-    
+    [SerializeField]
     public Character character;
+    CharacterObject characterObject;
 
-    NavMeshAgent navMeshAgent;
+    public NavMeshAgent navMeshAgent;
 
     public event Action<AIState> OnStateSet;
-
+    [SerializeField]
     public AIState currentState;
 
-    bool isActive;
+    bool isActive = true;
 
     bool retryFailedStates = false;
 
+    bool isSeated;
+
+    bool isOperatingItem;
 
 
-
-
-
-    private void Awake()
+    private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        Character character = DummyObjects.ProvideDummyCharacter("Dummy 1");
+        SetCharacter(character);
+        characterObject = GetComponent<CharacterObject>();
+        characterObject.character = character;
+        currentState = new STATE_Idle(character);
 
-        if(character == null)
+    }
+
+    public void TakeSeat(SelectableObject seatObject, int seatIndex = 0)
+    {
+        isSeated = true;
+        characterObject.SetAllSelectable();
+        characterObject.isCurrentlySelectable = false;
+        if (characterObject.isSelected)
         {
-            SetCharacter(DummyObjects.ProvideDummyCharacter());
+            characterObject.DeselectObject();
+            seatObject.SelectObject();
+        }
+        OperatableObject operatableObject = (OperatableObject)seatObject;
+        if (operatableObject != null&& seatIndex == 0)
+        {
+            operatableObject = (OperatableObject)seatObject;
+            operatableObject.SetOperator(this);
         }
 
     }
+
+    public void OperateItem(SelectableObject operatingItem)
+    {
+        isOperatingItem = true;
+    }
+
 
     public void SetCharacter(Character _character)
     {
@@ -55,7 +82,8 @@ public class CharacterBrain : MonoBehaviour
 
     internal void SetTarget(Vector3 position)
     {
-        navMeshAgent.SetDestination(position);        
+        navMeshAgent.SetDestination(position);
+        
     }
 
 
@@ -66,7 +94,9 @@ public class CharacterBrain : MonoBehaviour
             currentState.LeaveState();
         }
         currentState = state;
+        currentState.EnterState();
         currentState.OnStateFinished += StateFinished;
+        currentState.OnStateFailed += StateFailed;
 
         OnStateSet?.Invoke(state);
     }
@@ -74,19 +104,14 @@ public class CharacterBrain : MonoBehaviour
     private void StateFinished()
     {
         currentState.OnStateFinished -= StateFinished;
-        if (stateQueue.Any())
-        {
-            SetState(stateQueue.Dequeue());
-        }
+        currentState = new STATE_Idle(character);
+
     }
     
     private void StateFailed(AIState state)
     {
         EnqueueFailedState(state);
-        if (retryFailedStates && failedStateQueue.Any())
-        {
-            SetState(failedStateQueue.Dequeue());
-        }
+        currentState = new STATE_Idle(character);
     }
 
     public override string ToString()
@@ -94,12 +119,14 @@ public class CharacterBrain : MonoBehaviour
         return currentState != null ? currentState.ToString() : "None";
     }
 
-    public float GetCurrentJobLeft()
+    public float GetCurrentStateFactor()
     {
 
-        if (currentState != null &&currentState.jobTime != null)
+        if (currentState != null)
         {
-            return currentState.jobTime.CompletionFactor();
+
+            return currentState.GetCompletionFactor();
+
         }
         else
         {
@@ -107,29 +134,31 @@ public class CharacterBrain : MonoBehaviour
         }       
     }
 
-    public string GetCurrentCompletionString()
-    {
-        return currentState.GetCompletionInfo();
-    }
 
 
     private void Update()
     {
         if (isActive)
         {
-            if(currentState.GetType() == typeof(Idle))
+            if(currentState != null)
             {
-                if (retryFailedStates && failedStateQueue.Any())
-                {
-                    SetState(failedStateQueue.Dequeue());
-                }
-
-                else if (stateQueue.Any())
+                if (currentState.GetType() == typeof(STATE_Idle))
                 {
 
-                    SetState(stateQueue.Dequeue());
+                    if (retryFailedStates && failedStateQueue.Any())
+                    {
+                        SetState(failedStateQueue.Dequeue());
+                    }
+
+                    else if (stateQueue.Any())
+                    {
+
+                        SetState(stateQueue.Dequeue());
+                    }
                 }
+                currentState.GetCompletionFactor();
             }
+
 
 
         }

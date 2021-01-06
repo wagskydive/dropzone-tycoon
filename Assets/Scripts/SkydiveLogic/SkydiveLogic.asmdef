@@ -1,0 +1,15 @@
+{
+    "name": "SkydiveLogic",
+    "references": [
+        "GUID:1ccc976c4109bfc44b8ef39fb1553d4d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

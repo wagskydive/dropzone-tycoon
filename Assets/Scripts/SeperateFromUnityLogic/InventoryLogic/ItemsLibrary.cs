@@ -22,6 +22,8 @@ namespace InventoryLogic
 
         public ItemType[][] allItemsByCatagory { get; private set; }
 
+
+
         public ItemsLibrary(string libraryName)
         {
             LibraryName = libraryName;
@@ -47,6 +49,7 @@ namespace InventoryLogic
             allItems.Add(itemType);
             OnLibraryModified?.Invoke(this);
         }
+
 
         public void AddItemsFromStringArray(string[] names)
         {

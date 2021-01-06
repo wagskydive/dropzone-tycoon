@@ -19,6 +19,7 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
     public virtual event Action<ISpawnable, Transform, Transform> OnSpawnRequest;
     public static event Action<ItemPlacer> OnPlacementComplete;
 
+    public List<GameObject> ToBeReplaced = new List<GameObject>();
 
     protected Material[] BackupMaterials;
 
@@ -145,11 +146,11 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
 
     protected void HandlePlaceHolderActivations(int longestDist)
     {
-        longestDist = Math.Abs(longestDist);
+        int longestDistAbs = Math.Abs(longestDist);
         for (int i = 0; i < placeholderGameObjects.Count; i++)
         {
-
-            placeholderGameObjects[i].SetActive(i < longestDist);
+            
+            placeholderGameObjects[i].SetActive(i < longestDistAbs);
 
         }
     }

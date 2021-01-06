@@ -15,6 +15,8 @@ namespace ManagementScripts
 
     public class GameManager : MonoBehaviour
     {
+
+
         public event Action<SkillTree> OnOldSkillWillBeDestroyed;
         public event Action<SkillTree> OnNewSkillTreeCreated;
 
@@ -39,9 +41,10 @@ namespace ManagementScripts
 
 
         MaterialManager materialManager;
+     
+        public Dictionary<string, GameObject[]> StretchObjects = new Dictionary<string, GameObject[]>();
 
-
-
+        SelectableObject currentlySelected;
 
         private void Awake()
         {
@@ -63,8 +66,39 @@ namespace ManagementScripts
 
             ItemSpawner.OnItemSpawnerStart += SubscribeToItemSpawner;
 
+            SelectableObject.OnObjectSelected += HandleSelection;
+
             //ItemsLibrary lib = 
             //LoadNewItemLibrary(FileSaver.JsonToItemLibrary(Application.dataPath + "/Resources/Items/", "DefaultItemsLibrary"));
+        }
+
+
+        private void HandleSelection(SelectableObject obj)
+        {
+            if(currentlySelected != null)
+            {
+                currentlySelected.DeselectObject();
+            }
+            currentlySelected = obj;
+        }
+
+        void CreateStretchGameObjects(ItemType baseItemType)
+        {
+
+
+            GameObject go = Instantiate(Resources.Load(baseItemType.ResourcePath)) as GameObject;
+
+
+            GameObject[] stretchObjects = MeshModifier.WallObjects(go);
+            int itemIndex = Library.IndexFromTypeName(baseItemType.TypeName);
+            for (int i = 0; i < stretchObjects.Length; i++)
+            {
+                //str
+            }
+            
+
+            StretchObjects.Add(baseItemType.TypeName, stretchObjects);
+            //stretchObjects[0] = 
         }
 
 
@@ -111,6 +145,10 @@ namespace ManagementScripts
         public void LoadNewItemLibrary(ItemsLibrary newLibrary)
         {
             Library = newLibrary;
+            CreateStretchGameObjects(Library.allItems[Library.IndexFromTypeName("Wall Window Slide")]);
+            CreateStretchGameObjects(Library.allItems[Library.IndexFromTypeName("Wall Doorway")]);
+            //newLibrary.
+            //CreateStretchGameObjects(Library.allItems[Library.IndexFromTypeName("Wall Doorway")]);
             OnNewLibraryCreated?.Invoke(Library);
         }
 

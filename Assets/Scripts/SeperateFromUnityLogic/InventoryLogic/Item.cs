@@ -2,6 +2,7 @@
 
 namespace InventoryLogic
 {
+    [System.Serializable]
     public class Item : ISpawnable
     {
         public ItemType itemType;

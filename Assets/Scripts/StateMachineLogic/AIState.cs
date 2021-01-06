@@ -5,7 +5,7 @@ using System;
 namespace StateMachineLogic
 {
    
-
+    [Serializable]
     public abstract class AIState
     {
         public virtual event Action OnStateFinished;
@@ -18,7 +18,11 @@ namespace StateMachineLogic
         protected Transform transform;       
         protected Character character;
 
-        AIState preReqState;
+        public bool preReqAreMet = true;
+
+        public AIState preReqState { get; private set; }
+
+        private bool isPreReq;
 
         public AIState(Character _character)
         {
@@ -37,9 +41,25 @@ namespace StateMachineLogic
             StateFalied();
         }
 
-        public void SetPreReq(AIState state)
+        public void SetPreReq(AIState _preReqState)
         {
-            preReqState = state;
+            preReqState = _preReqState;
+            preReqState.isPreReq = true;
+            preReqState.OnStateFinished += PreReqMet;
+            preReqState.OnStateFailed += PreReqFailed;
+            preReqAreMet = false;
+        }
+
+        public string GetCurrentStateString()
+        {
+            if(preReqState != null)
+            {
+                return preReqState.ToString();
+            }
+            else
+            {
+                return this.ToString();
+            }
         }
 
         void PreReqMet()
@@ -47,36 +67,54 @@ namespace StateMachineLogic
             preReqState.OnStateFinished -= PreReqMet;
             preReqState.OnStateFailed -= PreReqFailed;
             preReqState = null;
+            preReqAreMet = true;
         }
 
         public virtual void Tick(float tickTime)
         {
-            if(preReqState != null)
+            if(!preReqAreMet)
             {
                 preReqState.Tick(tickTime);
-                preReqState.OnStateFinished += PreReqMet;
-                preReqState.OnStateFailed += PreReqFailed;
+
             }
             else if(jobTime != null)
             {
                 jobTime.DoWork(tickTime);
             }
         }
+
         public virtual void LeaveState()
         {
             OnStateFinished?.Invoke();
         }
+        
+        public virtual void EnterState()
+        {
+            if (!preReqAreMet)
+            {
+                preReqState.EnterState();
+            }
+        }
 
         public virtual float GetCompletionFactor()
         {
-            if(jobTime != null)
+            if(!preReqAreMet)
             {
-                return jobTime.CompletionFactor();
+                return preReqState.GetCompletionFactor();
             }
             else
             {
-                return 1;
+                if (jobTime != null)
+                {
+                    return jobTime.CompletionFactor();
+                }
+                else
+                {
+                    
+                    return 0;
+                }
             }
+
         }
 
 
@@ -84,17 +122,6 @@ namespace StateMachineLogic
         {
             jobTime = jt;
             jobTime.OnJobComplete += LeaveState;
-        }
-
-        public string GetCompletionInfo()
-        {
-            string info = (GetCompletionFactor()*100).ToString()+" '%' complete";
-            if(preReqState != null)
-            {
-                string preReq = "Pre Req: " + preReqState.ToString() + " not met, " + preReqState.GetCompletionInfo();
-                info = info + "\n"+preReq;
-            }
-            return info;
         }
     }
 }

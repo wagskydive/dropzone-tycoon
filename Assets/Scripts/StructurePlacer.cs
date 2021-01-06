@@ -1,6 +1,7 @@
 ﻿using InventoryLogic;
 using SpawnLogic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class StructurePlacer : ItemPlacer
 {
@@ -36,8 +37,12 @@ public class StructurePlacer : ItemPlacer
 
     public override void ConfirmPlacementRequest(Vector3 pointerPos)
     {
-        GameObject go = Instantiate(placeholderGameObjects[0]);
+        GameObject go = placeholderGameObjects[0];
+        go.transform.SetParent(null);
+        go.name = "Placed Structure";
         go.GetComponent<StructureObject>().SetNewStructure((Structure)currentSpawnable);
+        go.GetComponent<StructureObject>().SetSelectable(true);
+        placeholderGameObjects = new List<GameObject>();
         base.ConfirmPlacementRequest(pointerPos);
     }
 

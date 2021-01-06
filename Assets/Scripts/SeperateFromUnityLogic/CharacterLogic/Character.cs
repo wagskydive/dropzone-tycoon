@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using InventoryLogic;
@@ -9,14 +10,19 @@ using SpawnLogic;
 
 namespace CharacterLogic
 {
+    [Serializable]
     public class Character : ISpawnable
     {
+        [SerializeField]
         public string CharacterName { get; private set; }
         public string FinancialAccountID { get; private set; }
 
         public Stat[] stats { get; private set; }
 
         internal Inventory inventory;
+
+
+
 
         public Character(string name, string[] statNames)
         {

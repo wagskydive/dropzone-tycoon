@@ -11,7 +11,9 @@ public static class DummyObjects
         string[] stats = new string[2];
         stats[0] = "Health";
         stats[1] = "isDummy";
-        return new Character("DummyCharacter_"+name, stats);        
+        Character dummy = new Character("DummyCharacter_" + name, stats);
+        
+        return dummy;
     }
 
     public static ItemType ProvideDummeyItemType(string name = "")
@@ -24,7 +26,7 @@ public static class DummyObjects
 
         ItemAmount resourceOne = new ItemAmount(library.allItems[1], 10);
         library.AddItemsToRecipe(resourceOne, 0);
-       
+
 
         ItemAmount resourceTwo = new ItemAmount(library.allItems[2], 20);
         library.AddItemsToRecipe(resourceTwo, 0);
