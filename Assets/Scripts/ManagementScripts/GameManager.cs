@@ -123,6 +123,7 @@ namespace ManagementScripts
             {
                 CharacterTicker.TickCharacterList(Characters, ActiveCharacters, Time.time);
             }
+
         }
 
         public void NewTree(string tName)

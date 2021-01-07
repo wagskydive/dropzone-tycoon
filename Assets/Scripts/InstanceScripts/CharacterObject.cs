@@ -34,10 +34,12 @@ public class CharacterObject : SelectableObject
         SelectableObject.OnMouseExitDetected +=HideUseObjectOptions;
         
     }
+
     public override void DeselectObject()
     {
         base.DeselectObject();
-        
+        SelectableObject.OnMouseEnterDetected -= ShowUseObjectOptions;
+        SelectableObject.OnMouseExitDetected -= HideUseObjectOptions;
     }
 
     void ShowUseObjectOptions(SelectableObject selectableObject)

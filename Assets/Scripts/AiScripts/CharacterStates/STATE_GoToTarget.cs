@@ -7,19 +7,19 @@ using UnityEngine;
 public class STATE_GoToTarget : AIState
 {
 
-    Vector3 targetPosition;
+    Transform target;
     float startDistance;
     float reachedDistance;
 
     CharacterBrain characterBrain;
 
-    public STATE_GoToTarget(CharacterBrain brain, Vector3 _position, float _reachedDistance) : base(brain.character)
+    public STATE_GoToTarget(CharacterBrain brain, Transform _target, float _reachedDistance) : base(brain.character)
     {
-        targetPosition = _position;
+        target = _target;
         characterBrain = brain;
 
         reachedDistance = _reachedDistance;
-        startDistance = Vector3.Distance(characterBrain.transform.position, targetPosition);
+        startDistance = Vector3.Distance(characterBrain.transform.position, target.position);
     }
 
     bool TargetReached(float distanceLeft)
@@ -27,10 +27,15 @@ public class STATE_GoToTarget : AIState
         return distanceLeft < reachedDistance;
     }
 
+    Vector3 lastTargetPosition;
     public override float GetCompletionFactor()
     {
         float baseFactor = base.GetCompletionFactor();
-        float distance = Vector3.Distance(characterBrain.transform.position, targetPosition);
+        if(lastTargetPosition != target.position)
+        {
+            characterBrain.SetTarget(target.position);
+        }
+        float distance = Vector3.Distance(characterBrain.transform.position, target.position);
         if (TargetReached(distance))
         {
             LeaveState();
@@ -53,7 +58,8 @@ public class STATE_GoToTarget : AIState
 
     public override void EnterState()
     {
-        characterBrain.SetTarget(targetPosition);
+        lastTargetPosition = target.position;
+        characterBrain.SetTarget(target.position);
         base.EnterState();
         
     }

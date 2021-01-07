@@ -80,6 +80,8 @@ public class CharacterDetailsPanel : MonoBehaviour
     {
         if(selectedCharacterBrain != null)
         {
+            
+
             goToTaskUi.gameObject.SetActive(true);
             goToTaskUi.OnClick += MovementTask;
             goToTaskUi.OnRightClick += CancelMovementTask ;
@@ -90,12 +92,8 @@ public class CharacterDetailsPanel : MonoBehaviour
     {
         goToTaskUi.OnClick -= MovementTask;
         goToTaskUi.OnRightClick -= CancelMovementTask;
-
         goToTaskUi.gameObject.SetActive(false);
-
-
-        STATE_GoToTarget goToTarget = new STATE_GoToTarget(selectedCharacterBrain, position, 1);
-        selectedCharacterBrain.EnqueueState(goToTarget);
+        selectedCharacterBrain.GoTo(position);
     }
 
     

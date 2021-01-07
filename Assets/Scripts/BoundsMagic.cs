@@ -6,7 +6,7 @@ public static class BoundsMagic
     {
         Bounds bounds = new Bounds();
         Renderer renderer = subject.GetComponent<Renderer>();
-        if(renderer != null)
+        if (renderer != null)
         {
             Bounds rendererBounds = subject.GetComponent<Renderer>().bounds;
             if (parent != null)
@@ -16,8 +16,8 @@ public static class BoundsMagic
             //rendererBounds.center -= subject.transform.parent.position; 
             bounds.Encapsulate(rendererBounds);
         }
-        
-        if(subject.transform.childCount > 0)
+
+        if (subject.transform.childCount > 0)
         {
             Renderer[] childRenderers = subject.GetComponentsInChildren<Renderer>();
             if (childRenderers != null)
@@ -25,7 +25,11 @@ public static class BoundsMagic
 
                 for (int i = 0; i < childRenderers.Length; i++)
                 {
-                    bounds.Encapsulate(CreateBoundsFromGameObject(childRenderers[i].gameObject, subject.transform));
+                    if (childRenderers[i] != renderer)
+                    {
+                        bounds.Encapsulate(CreateBoundsFromGameObject(childRenderers[i].gameObject, subject.transform));
+
+                    }
                 }
 
             }

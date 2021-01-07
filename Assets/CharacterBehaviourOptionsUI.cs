@@ -82,8 +82,7 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         CharacterBrain characterBrain = selectedCharacter.characterBrain;
         STATE_TakeSeat takeSeat = new STATE_TakeSeat(characterBrain, selectableObject, 0);
         characterBrain.EnqueueState(takeSeat);
-        STATE_DriveGoToTarget driveGoToTarget = new STATE_DriveGoToTarget(selectedCharacter.characterBrain, (VehicleObject)hoverObj, testTarget, 10);
-        characterBrain.EnqueueState(driveGoToTarget);
+
     }
 
 

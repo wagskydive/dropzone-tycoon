@@ -15,7 +15,7 @@ public class ItemSpawner : Spawner
         OnItemSpawnerStart?.Invoke(this);
     }
 
-    public void SpawnItem(Item item, Transform position)
+    public void SpawnItem(Item item, Transform spawnTransformData)
     {
         ItemObject itemObject = LastSpawn.AddComponent<ItemObject>();
         itemObject.SetupItemInstance(item);
@@ -24,9 +24,9 @@ public class ItemSpawner : Spawner
         OnItemSpawned?.Invoke(itemObject);
     }
 
-    public override void Spawn(ISpawnable spawnable, Transform position, Transform parent = null)
+    public override void Spawn(ISpawnable spawnable, Transform spawnTransformData, Transform parent = null)
     {
-        base.Spawn(spawnable, position, parent);
-        SpawnItem((Item)spawnable, position);
+        base.Spawn(spawnable, spawnTransformData, parent);
+        SpawnItem((Item)spawnable, spawnTransformData);
     }
 }

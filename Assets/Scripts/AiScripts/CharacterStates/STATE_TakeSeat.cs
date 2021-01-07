@@ -44,7 +44,7 @@ public class STATE_TakeSeat : AIState
 
         if (Vector3.Distance(seatTransform.position, brain.transform.position) > 2)
         {
-            STATE_GoToTarget goToTarget = new STATE_GoToTarget(brain, seatTransform.position, 2);
+            STATE_GoToTarget goToTarget = new STATE_GoToTarget(brain, seatTransform, 2);
             goToTarget.OnStateFinished += SitDown;
             SetPreReq(goToTarget);
         }

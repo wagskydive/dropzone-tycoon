@@ -24,8 +24,17 @@ public abstract class SelectableObject : MonoBehaviour
     {
         OnSetAllSelectable += SetSelectableTrue;
         OnSetAllNonSelectable += SetSelectableFalse;
+        MouseDetect.OnRightClickDetected += MouseDetect_OnRightClickDetected;
     }
 
+    private void MouseDetect_OnRightClickDetected(Vector3 obj)
+    {
+        if (isSelected)
+        {
+            DeselectObject();
+        }
+        isCurrentlySelectable = true;
+    }
 
     public virtual void OnMouseDown()
     {
@@ -37,6 +46,7 @@ public abstract class SelectableObject : MonoBehaviour
             }
             OnClicked?.Invoke(this);
         }
+
     }
 
 

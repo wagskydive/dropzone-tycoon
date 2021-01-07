@@ -12,7 +12,7 @@ public class STATE_DoWork : AIState
         SetJobTime(new JobTime(defaultCompletionTime));
         if(Vector3.Distance(target.position, brain.transform.position) > .5f)
         {
-            SetPreReq(new STATE_GoToTarget(brain, target.position, .5f));
+            SetPreReq(new STATE_GoToTarget(brain, target, .5f));
         }
     }
 

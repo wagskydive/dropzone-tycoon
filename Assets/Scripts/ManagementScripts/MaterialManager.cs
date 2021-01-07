@@ -8,16 +8,16 @@ namespace ManagementScripts
 {
     public class BackupMaterials
     {
-        public SelectableObject selectableObject { get; private set; }
+        public GameObject backupObject { get; private set; }
 
         public Material[] rootMaterials { get; private set; }
         public Material[] rootSharedMaterials { get; private set; }
         public List<Material[]> ChildMaterials { get; private set; }
         public List<Material[]> ChildSharedMaterials { get; private set; }
-        public BackupMaterials(SelectableObject objectRef)
+        public BackupMaterials(GameObject objectRef)
         {
-            selectableObject = objectRef;
-            Renderer renderer = objectRef.gameObject.GetComponent<Renderer>();
+            backupObject = objectRef;
+            Renderer renderer = objectRef.GetComponent<Renderer>();
             if (renderer != null)
             {
                 rootMaterials = renderer.materials;
@@ -30,7 +30,7 @@ namespace ManagementScripts
         {
             List<Material[]> materials = new List<Material[]>();
             List<Material[]> sharedMaterials = new List<Material[]>();
-            Renderer[] renderers = selectableObject.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = backupObject.GetComponentsInChildren<Renderer>();
             if (renderers != null)
             {
                 for (int i = 0; i < renderers.Length; i++)
@@ -47,7 +47,7 @@ namespace ManagementScripts
         public void ResetMaterials()
         {
 
-            Renderer renderer = selectableObject.gameObject.GetComponent<Renderer>();
+            Renderer renderer = backupObject.GetComponent<Renderer>();
             if (renderer != null)
             {
                 renderer.materials = rootMaterials;
@@ -57,7 +57,7 @@ namespace ManagementScripts
         }
         void ResetChildren()
         {
-            Renderer[] renderers = selectableObject.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = backupObject.GetComponentsInChildren<Renderer>();
             if (renderers != null)
             {
                 
@@ -121,13 +121,13 @@ namespace ManagementScripts
 
         void SetPlacementMaterial(GameObject go)
         {
-
+            backup = new BackupMaterials(go);
             SetMaterialToAllRenderers(go, placementMaterial);
         }
 
         void SetHighLightMaterials(SelectableObject selectableObject)
         {
-            backup = new BackupMaterials(selectableObject);
+            backup = new BackupMaterials(selectableObject.gameObject);
 
             SetMaterialToAllRenderers(selectableObject.gameObject, hightlightMaterial);
         }

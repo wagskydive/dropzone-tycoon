@@ -12,7 +12,7 @@ public class StructurePlacer : ItemPlacer
         SetFirstPlacementObject(structureObject.structure, true, 1);
         structureObject.transform.SetParent(transform);
         structureObject.transform.localPosition = Vector3.zero;
-        placeholderGameObjects.Add(structureObject.gameObject);
+        //placeholderGameObjects.Add(structureObject.gameObject);
         gameObject.SetActive(true);
     }
 

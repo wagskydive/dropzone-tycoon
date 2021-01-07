@@ -31,7 +31,9 @@ public class CharacterBrain : MonoBehaviour
     bool isSeated;
 
     bool isOperatingItem;
+    SelectableObject seatObject;
 
+    Transform fakeTarget;
 
     private void Start()
     {
@@ -44,23 +46,48 @@ public class CharacterBrain : MonoBehaviour
 
     }
 
-    public void TakeSeat(SelectableObject seatObject, int seatIndex = 0)
+    public void TakeSeat(SelectableObject _seatObject, int seatIndex = 0)
     {
         isSeated = true;
-        characterObject.SetAllSelectable();
-        characterObject.isCurrentlySelectable = false;
-        if (characterObject.isSelected)
-        {
-            characterObject.DeselectObject();
-            seatObject.SelectObject();
-        }
+        seatObject = _seatObject;
+        //characterObject.SetAllSelectable();
+        //characterObject.isCurrentlySelectable = false;
+
         OperatableObject operatableObject = (OperatableObject)seatObject;
-        if (operatableObject != null&& seatIndex == 0)
+        if (operatableObject != null && seatIndex == 0)
         {
+            isOperatingItem = true;
             operatableObject = (OperatableObject)seatObject;
-            operatableObject.SetOperator(this);
+            operatableObject.SetOperator(characterObject);
         }
 
+    }
+    public void GoTo(Vector3 position)
+    {
+        if(fakeTarget == null)
+        {
+            fakeTarget = new GameObject(character.CharacterName + "target").transform;
+        }
+        fakeTarget.position = position;
+        GoTo(fakeTarget);
+    }
+
+    public void GoTo(Transform target)
+    {
+        if (isOperatingItem && seatObject != null)
+        {
+            if (seatObject.GetType() == typeof(VehicleObject))
+            {
+                STATE_DriveGoToTarget driveGoToTarget = new STATE_DriveGoToTarget(this, (VehicleObject)seatObject, target, 10);
+                EnqueueState(driveGoToTarget);
+            }
+
+        }
+        else
+        {
+            STATE_GoToTarget goToTarget = new STATE_GoToTarget(this, target, 2);
+            EnqueueState(goToTarget);
+        }
     }
 
     public void OperateItem(SelectableObject operatingItem)
@@ -83,13 +110,13 @@ public class CharacterBrain : MonoBehaviour
     internal void SetTarget(Vector3 position)
     {
         navMeshAgent.SetDestination(position);
-        
+
     }
 
 
     private void SetState(AIState state)
     {
-        if(currentState != null)
+        if (currentState != null)
         {
             currentState.LeaveState();
         }
@@ -107,7 +134,7 @@ public class CharacterBrain : MonoBehaviour
         currentState = new STATE_Idle(character);
 
     }
-    
+
     private void StateFailed(AIState state)
     {
         EnqueueFailedState(state);
@@ -131,7 +158,7 @@ public class CharacterBrain : MonoBehaviour
         else
         {
             return 0;
-        }       
+        }
     }
 
 
@@ -140,7 +167,7 @@ public class CharacterBrain : MonoBehaviour
     {
         if (isActive)
         {
-            if(currentState != null)
+            if (currentState != null)
             {
                 if (currentState.GetType() == typeof(STATE_Idle))
                 {

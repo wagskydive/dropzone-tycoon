@@ -35,7 +35,7 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
     protected bool snapping;
     protected float gridSize;
 
-
+    Renderer indicator;
 
     public virtual void Awake()
     {
@@ -43,7 +43,8 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
         spawner.AddSpawnRequester(this);
 
         gameObject.GetComponent<ItemHandler>().OnItemPassed += SetFirstPlacementObject;
-
+        indicator = GetComponent<Renderer>();
+        indicator.enabled = false;
         //MouseDetect.OnLeftClickDetected += PlaceObject;
 
         //MouseDetect.OnMiddleClickDetected += RotateObject;
@@ -97,13 +98,16 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
         snapping = snap;
         gridSize = grSize;
         currentSpawnable = objectToAdd;
+        placeholderGameObjects = new List<GameObject>();
+        placeholderGameObjects.Add(InstantiatePlaceHolder(objectToAdd, transform, Vector3.zero));
+        indicator.enabled = true;
     }
 
     public virtual void FirstClick(Vector3 pos)
     {
         MouseDetect.OnLeftClickDetected -= FirstClick;
         placeholderGameObjects[0].transform.position = pos;
-
+        indicator.enabled = false;
     }
 
     public virtual void CancelPlacement(Vector3 pointerPos)
@@ -114,7 +118,7 @@ public abstract class ItemPlacer : MonoBehaviour, ISpawnRequester
     public virtual void ConfirmPlacementRequest(Vector3 pointerPos)
     {
         DestroyListComplete();
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         OnPlacementComplete?.Invoke(this);
     }
 
