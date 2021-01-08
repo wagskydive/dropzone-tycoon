@@ -14,24 +14,57 @@ public class STATE_TakeSeat : AIState
     Transform seatTransform;
     int seatIndex = 0;
 
-    public STATE_TakeSeat(CharacterBrain _brain, SelectableObject _seatObject, int _seatIndex = 0) : base(_brain.character)
+    public STATE_TakeSeat(CharacterBrain _brain, SelectableObject _seatObject, int _seatIndex = 0, bool needToOperate = false) : base(_brain.character)
     {
         brain = _brain;
         seatObject = _seatObject;
-
+        seatIndex = _seatIndex;
+        if (!needToOperate && seatObject.GetType() == typeof(OperatableObject))
+        {
+            seatIndex = 1;
+        }
         if (seatObject.seats.Any())
         {
-            if (_seatIndex == 0)
+            if (seatIndex == 0)
             {
-                seatTransform = seatObject.seats[0];
+                if (seatObject.IsSeatFree(seatIndex))
+                {
+                    seatTransform = seatObject.seats[0];
+                }
+                else if (!needToOperate)
+                {
+                    seatIndex = seatObject.FindFreeSeat();
+                    if (seatIndex != -1)
+                    {
+                        seatTransform = seatObject.seats[seatIndex];
+                    }
+                }
+                else
+                {
+                    seatTransform = _seatObject.transform;
+                }
+
             }
-            else if (seatObject.seats[_seatIndex] == null)
-            {
-                seatTransform = _seatObject.transform;
-            }
+
             else
             {
-                seatTransform = seatObject.seats[_seatIndex];
+                if (seatObject.IsSeatFree(seatIndex))
+                {
+                    seatTransform = seatObject.seats[seatIndex];
+                }
+                else
+                {
+                    seatIndex = seatObject.FindFreeSeat(true);
+                    if (seatIndex != -1)
+                    {
+                        seatTransform = seatObject.seats[seatIndex];
+                    }
+                    else
+                    {
+                        seatTransform = _seatObject.transform;
+                    }
+                }
+
             }
         }
         else
@@ -39,7 +72,7 @@ public class STATE_TakeSeat : AIState
             seatTransform = _seatObject.transform;
         }
 
-        seatIndex = _seatIndex;
+
 
 
         if (Vector3.Distance(seatTransform.position, brain.transform.position) > 2)
@@ -48,9 +81,9 @@ public class STATE_TakeSeat : AIState
             goToTarget.OnStateFinished += SitDown;
             SetPreReq(goToTarget);
         }
-        
+
         SetJobTime(new JobTime(.2f));
-        
+
     }
 
 
@@ -61,9 +94,9 @@ public class STATE_TakeSeat : AIState
         brain.navMeshAgent.enabled = false;
         brain.transform.SetParent(seatObject.transform);
         brain.transform.position = seatTransform.position;
-        
-        brain.TakeSeat(seatObject, seatIndex);
 
+        brain.TakeSeat(seatObject, seatIndex);
+        seatObject.SeatOccupationBinaryNumber += (int)Mathf.Pow(seatIndex + 1, seatObject.seats.Length);
         LeaveState();
     }
 

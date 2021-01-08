@@ -21,6 +21,7 @@ public class CharacterBrain : MonoBehaviour
     public NavMeshAgent navMeshAgent;
 
     public event Action<AIState> OnStateSet;
+    public event Action<AIState> OnStateQueued;
     [SerializeField]
     public AIState currentState;
 
@@ -43,8 +44,9 @@ public class CharacterBrain : MonoBehaviour
         characterObject = GetComponent<CharacterObject>();
         characterObject.character = character;
         currentState = new STATE_Idle(character);
-
+        
     }
+
 
     public void TakeSeat(SelectableObject _seatObject, int seatIndex = 0)
     {
@@ -53,26 +55,46 @@ public class CharacterBrain : MonoBehaviour
         //characterObject.SetAllSelectable();
         //characterObject.isCurrentlySelectable = false;
 
-        OperatableObject operatableObject = (OperatableObject)seatObject;
-        if (operatableObject != null && seatIndex == 0)
+        if(seatObject.GetType() == typeof(OperatableObject))
         {
-            isOperatingItem = true;
-            operatableObject = (OperatableObject)seatObject;
-            operatableObject.SetOperator(characterObject);
+
+            OperatableObject operatableObject = (OperatableObject)seatObject;
+            if (operatableObject != null && seatIndex == 0)
+            {
+                isOperatingItem = true;
+                operatableObject = (OperatableObject)seatObject;
+                operatableObject.SetOperator(characterObject);
+            }
         }
 
     }
-    public void GoTo(Vector3 position)
+
+    public void TriggerEnterFinishedOverride(Collider collider, AIState state)
+    {
+        state.overrideCollider = collider;
+    }
+
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (currentState.overrideCollider != null && other == currentState.overrideCollider)
+        {
+            currentState.LeaveState();
+        }
+    }
+
+    public AIState GoTo(Vector3 position)
     {
         if(fakeTarget == null)
         {
             fakeTarget = new GameObject(character.CharacterName + "target").transform;
         }
         fakeTarget.position = position;
-        GoTo(fakeTarget);
+        return GoTo(fakeTarget);
     }
 
-    public void GoTo(Transform target)
+    public AIState GoTo(Transform target)
     {
         if (isOperatingItem && seatObject != null)
         {
@@ -80,13 +102,16 @@ public class CharacterBrain : MonoBehaviour
             {
                 STATE_DriveGoToTarget driveGoToTarget = new STATE_DriveGoToTarget(this, (VehicleObject)seatObject, target, 10);
                 EnqueueState(driveGoToTarget);
+                return driveGoToTarget;
             }
+            return null;
 
         }
         else
         {
             STATE_GoToTarget goToTarget = new STATE_GoToTarget(this, target, 2);
             EnqueueState(goToTarget);
+            return goToTarget;
         }
     }
 
@@ -185,8 +210,29 @@ public class CharacterBrain : MonoBehaviour
                 }
                 currentState.GetCompletionFactor();
             }
+            else
+            {
 
+                if (retryFailedStates && failedStateQueue.Any())
+                {
+                    SetState(failedStateQueue.Dequeue());
+                }
 
+                else if (stateQueue.Any())
+                {
+
+                    SetState(stateQueue.Dequeue());
+                }
+                else
+                {
+                    currentState = currentState = new STATE_Idle(character);
+                }
+            }
+
+            if(currentState.jobTime != null)
+            {
+                currentState.Tick(Time.deltaTime);
+            }
 
         }
     }
@@ -194,6 +240,7 @@ public class CharacterBrain : MonoBehaviour
     public void EnqueueState(AIState state)
     {
         stateQueue.Enqueue(state);
+        OnStateQueued?.Invoke(state);
     }
     public void EnqueueFailedState(AIState state)
     {

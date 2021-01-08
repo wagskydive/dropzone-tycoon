@@ -1,5 +1,7 @@
 ﻿using InventoryLogic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StructureObject : SelectableObject
@@ -13,6 +15,29 @@ public class StructureObject : SelectableObject
     ItemSpawner currentItemSpawner;
 
     BoxCollider boxCollider;
+
+    public override void Awake()
+    {
+        base.Awake();
+        FindSeats();
+    }
+
+    void FindSeats()
+    {
+        SelectableObject[] childObjects = GetComponentsInChildren<SelectableObject>();
+        List<Transform> seatList = new List<Transform>();
+        for (int i = 0; i < childObjects.Length; i++)
+        {
+            if (childObjects[i].seats.Any())
+            {
+                foreach (var seat in childObjects[i].seats)
+                {
+                    seatList.Add(seat);
+                }
+            }
+        }
+        seats = seatList.ToArray();
+    }
 
     void SetColliderToChildrenBounds()
     {

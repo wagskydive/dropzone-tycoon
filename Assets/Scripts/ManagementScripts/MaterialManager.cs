@@ -18,12 +18,12 @@ namespace ManagementScripts
         {
             backupObject = objectRef;
             Renderer renderer = objectRef.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                rootMaterials = renderer.materials;
-                rootSharedMaterials = renderer.sharedMaterials;
-            }
-            GetChildMaterials();
+            //if (renderer != null)
+            //{
+            //    rootMaterials = renderer.materials;
+            //    rootSharedMaterials = renderer.sharedMaterials;
+            //}
+            //GetChildMaterials();
         }
 
         void GetChildMaterials()
@@ -35,42 +35,50 @@ namespace ManagementScripts
             {
                 for (int i = 0; i < renderers.Length; i++)
                 {
-                    materials.Add(renderers[i].materials);
-                    sharedMaterials.Add(renderers[i].sharedMaterials);
+                    if (renderers[i] != backupObject.GetComponent<Renderer>())
+                    {
+                        materials.Add(renderers[i].materials);
+                        sharedMaterials.Add(renderers[i].sharedMaterials);
+                    }
                 }
             }
 
-            ChildMaterials= materials;
+            ChildMaterials = materials;
             ChildSharedMaterials = sharedMaterials;
         }
 
-        public void ResetMaterials()
+        public void ResetMaterials(GameObject realObject)
         {
 
-            Renderer renderer = backupObject.GetComponent<Renderer>();
-            if (renderer != null)
+            Renderer backupRenderer = backupObject.GetComponent<Renderer>();
+            Renderer realRenderer = realObject.GetComponent<Renderer>();
+            if (realRenderer != null)
             {
-                renderer.materials = rootMaterials;
-                renderer.sharedMaterials = rootSharedMaterials;
+                realRenderer.materials = backupRenderer.materials;
+                realRenderer.sharedMaterials = backupRenderer.sharedMaterials;
             }
-            ResetChildren();
+            ResetChildren(realObject);
         }
-        void ResetChildren()
+
+
+        void ResetChildren(GameObject realObject)
         {
-            Renderer[] renderers = backupObject.GetComponentsInChildren<Renderer>();
-            if (renderers != null)
+            Renderer[] backupRenderers = backupObject.GetComponentsInChildren<Renderer>();
+            Renderer[] realRenderers = realObject.GetComponentsInChildren<Renderer>();
+
+
+            //Renderer[] renderers = backupObject.GetComponentsInChildren<Renderer>();
+            if (realRenderers != null)
             {
-                
-                for (int i = 0; i < renderers.Length; i++)
+
+                for (int i = 0; i < realRenderers.Length; i++)
                 {
-                    if (ChildMaterials.Any() && ChildMaterials[i] != null)
+                    if (realRenderers[i] != realObject.GetComponent<Renderer>())
                     {
-                        renderers[i].materials = ChildMaterials[i];
+                        realRenderers[i].materials = backupRenderers[i].materials;
+                        realRenderers[i].sharedMaterials = backupRenderers[i].sharedMaterials;
+
                     }
-                    if (ChildSharedMaterials.Any() && ChildSharedMaterials[i] != null)
-                    {
-                        renderers[i].sharedMaterials = ChildSharedMaterials[i];
-                    }                                           
                 }
             }
         }
@@ -121,23 +129,30 @@ namespace ManagementScripts
 
         void SetPlacementMaterial(GameObject go)
         {
-            backup = new BackupMaterials(go);
             SetMaterialToAllRenderers(go, placementMaterial);
         }
 
         void SetHighLightMaterials(SelectableObject selectableObject)
         {
-            backup = new BackupMaterials(selectableObject.gameObject);
+            if(backup == null)
+            {
+                GameObject backupObject = Instantiate(selectableObject.gameObject);
+                backupObject.SetActive(false);
+                backup = new BackupMaterials(backupObject);
 
-            SetMaterialToAllRenderers(selectableObject.gameObject, hightlightMaterial);
+                SetMaterialToAllRenderers(selectableObject.gameObject, hightlightMaterial);
+            }
+
         }
 
         void SetOriginalMaterials(SelectableObject selectableObject)
         {
-            if(backup != null)
+            if (backup != null)
             {
-                backup.ResetMaterials();
-            }            
+                backup.ResetMaterials(selectableObject.gameObject);
+                Destroy(backup.backupObject);
+                backup = null;
+            }
         }
 
         public static void ChangeMaterialInstanceColor(Renderer renderer, int index, Color color)
@@ -154,10 +169,15 @@ namespace ManagementScripts
             Renderer[] childRenderers = go.GetComponentsInChildren<Renderer>();
             if (childRenderers != null)
             {
+
                 for (int i = 0; i < childRenderers.Length; i++)
                 {
-                    SetAllMaterialsInRenderer(childRenderers[i], placementMaterial);
-                    childRenderers[i].material = placementMaterial;
+                    if (childRenderers[i] != renderer)
+                    {
+
+                        SetAllMaterialsInRenderer(childRenderers[i], placementMaterial);
+                        childRenderers[i].material = placementMaterial;
+                    }
                 }
             }
         }
@@ -174,10 +194,15 @@ namespace ManagementScripts
             Renderer[] childRenderers = go.GetComponentsInChildren<Renderer>();
             if (childRenderers != null)
             {
+
+
                 for (int i = 0; i < childRenderers.Length; i++)
                 {
-                    mats.AddRange(GetAllMaterialsInRenderer(childRenderers[i]));
+                    if (childRenderers[i] != renderer)
+                    {
+                        mats.AddRange(GetAllMaterialsInRenderer(childRenderers[i]));
 
+                    }
                 }
             }
             return mats.ToArray();
@@ -223,8 +248,11 @@ namespace ManagementScripts
             {
                 for (int i = 0; i < childRenderers.Length; i++)
                 {
-                    childRenderers[i].materials = backupMaterials.ChildMaterials[i];
+                    if (childRenderers[i] != renderer)
+                    {
 
+                        childRenderers[i].materials = backupMaterials.ChildMaterials[i];
+                    }
 
 
                 }

@@ -41,7 +41,7 @@ public class CarAiController : MonoBehaviour, IGiveInput
         //navMeshAgent = _characterBrain.gameObject.GetComponent<NavMeshAgent>();
         //characterNavMeshAgentTypeID = navMeshAgent.agentTypeID;
         navMeshAgent.enabled = true;
-        navMeshAgent.agentTypeID = vehicleNavMeshAgentTypeID;
+        //navMeshAgent.agentTypeID = vehicleNavMeshAgentTypeID;
         //characterNavMeshAgentTypeID = navMeshAgent.agentTypeID;
         //navMeshAgent.agentTypeID = 1;
         hasDriver = vehicle.hasOperator;

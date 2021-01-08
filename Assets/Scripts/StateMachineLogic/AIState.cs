@@ -11,6 +11,7 @@ namespace StateMachineLogic
         public virtual event Action OnStateFinished;
         public virtual event Action<AIState> OnStateFailed;
 
+
         public JobTime jobTime { get; private set; }
         public int HasFailedBefore { get; private set; }
 
@@ -23,6 +24,8 @@ namespace StateMachineLogic
         public AIState preReqState { get; private set; }
 
         private bool isPreReq;
+
+        public Collider overrideCollider;
 
         public AIState(Character _character)
         {

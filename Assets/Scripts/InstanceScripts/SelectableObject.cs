@@ -14,13 +14,16 @@ public abstract class SelectableObject : MonoBehaviour
     public static event Action OnSetAllSelectable;
     public static event Action OnSetAllNonSelectable;
 
+    [SerializeField]
     public Transform[] seats;
+
+    public int SeatOccupationBinaryNumber = 0;
 
     public bool isSelected { get; private set; }
 
     public bool isCurrentlySelectable = false;
 
-    private void Awake()
+    public virtual void Awake()
     {
         OnSetAllSelectable += SetSelectableTrue;
         OnSetAllNonSelectable += SetSelectableFalse;
@@ -47,6 +50,37 @@ public abstract class SelectableObject : MonoBehaviour
             OnClicked?.Invoke(this);
         }
 
+    }
+
+    public bool IsSeatFree(int seatIndex)
+    {
+        int check = SeatOccupationBinaryNumber / ((seatIndex + 1) * (seatIndex + 1));
+        if (check % 2 == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public int FindFreeSeat(bool nonDriver = false)
+    {
+        int startInt = 0;
+        if (nonDriver)
+        {
+            startInt = 1;
+        }
+        for (int i = startInt; i < seats.Length; i++)
+        {
+            if (IsSeatFree(i))
+            {
+                return i;
+            }
+             
+        }
+        return -1;
     }
 
 

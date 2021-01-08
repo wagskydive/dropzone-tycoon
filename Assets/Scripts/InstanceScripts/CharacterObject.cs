@@ -4,12 +4,6 @@ using System;
 using UnityEngine.EventSystems;
 
 
-public enum CharacterVehicleOptions
-{
-    Drive = 0,
-    Passenger = 1,
-    Mechanics = 2
-}
 
 
 public class CharacterObject : SelectableObject
@@ -19,6 +13,7 @@ public class CharacterObject : SelectableObject
 
     public static event Action<CharacterObject,VehicleObject> OnShowVehicleOptions; 
     public static event Action<CharacterObject,AircraftObject> OnShowAircraftOptions; 
+    public static event Action<CharacterObject,StructureObject> OnShowStructureOptions; 
     public static event Action OnHideVehicleOptions; 
 
     public Character character;
@@ -54,6 +49,11 @@ public class CharacterObject : SelectableObject
         {
             AircraftObject aircraftObject = (AircraftObject)selectableObject;
             OnShowAircraftOptions?.Invoke(this, aircraftObject);
+        }
+        if (selectableObject.GetType() == typeof(StructureObject))
+        {
+            StructureObject structureObject = (StructureObject)selectableObject;
+            OnShowStructureOptions?.Invoke(this, structureObject);
         }
     }
         

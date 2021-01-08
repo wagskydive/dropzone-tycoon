@@ -4,17 +4,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+public enum CharacterVehicleOptions
+{
+    Drive = 0,
+    Passenger = 1,
+    Mechanics = 2
+}
+
+
+public enum CharacterStructureOptions
+{
+    GoInside = 0,
+    ReDesign = 1,
+    Paint = 2
+}
+
+
 public class CharacterBehaviourOptionsUI : MonoBehaviour
 {
     [SerializeField]
     private GameObject optionButton;
     private GameObject[] vehicleOptionButtons;
+    private GameObject[] structureOptionButtons;
 
     [SerializeField]
     Transform testTarget;
 
     CharacterVehicleOptions vehicleOptions = new CharacterVehicleOptions();
-
+    CharacterStructureOptions structureOptions = new CharacterStructureOptions();
 
     SelectableObject hoverObj;
     bool willHide;
@@ -25,9 +43,13 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
     {
         CharacterObject.OnShowVehicleOptions += ShowVehicleOptions;
         CharacterObject.OnShowAircraftOptions += ShowAircraftOptions;
+        CharacterObject.OnShowStructureOptions += ShowStructureOptions;
         CharacterObject.OnHideVehicleOptions += ExitDetect;
         CreateVehicleOptions();
+        CreateStructureOptions();
     }
+
+
 
     void ExitDetect()
     {
@@ -59,7 +81,7 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         hoverObj = obj;
         obj.SetAllNonSelectable();
     }
-    
+
     private void ShowVehicleOptions(CharacterObject _characterObject, VehicleObject obj)
     {
         selectedCharacter = _characterObject;
@@ -76,13 +98,52 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         obj.SetAllNonSelectable();
     }
 
+    private void ShowStructureOptions(CharacterObject _characterObject, StructureObject obj)
+    {
+        selectedCharacter = _characterObject;
+        transform.position = obj.transform.position;
+        for (int i = 0; i < structureOptionButtons.Length; i++)
+        {
+            structureOptionButtons[i].SetActive(true);
+        }
+        hoverObj = obj;
+        obj.SetAllNonSelectable();
+    }
+
+
+
     void UseObjectTask(SelectableObject selectableObject)
     {
 
         CharacterBrain characterBrain = selectedCharacter.characterBrain;
-        STATE_TakeSeat takeSeat = new STATE_TakeSeat(characterBrain, selectableObject, 0);
+        STATE_TakeSeat takeSeat = new STATE_TakeSeat(characterBrain, selectableObject, 0, true);
         characterBrain.EnqueueState(takeSeat);
 
+    }
+
+    void SitAsPassenger(SelectableObject selectableObject)
+    {
+
+        CharacterBrain characterBrain = selectedCharacter.characterBrain;
+        STATE_TakeSeat takeSeat = new STATE_TakeSeat(characterBrain, selectableObject, 1);
+        characterBrain.EnqueueState(takeSeat);
+
+    }
+    
+    void GoToStructureTask(SelectableObject selectableObject)
+    {
+
+        CharacterBrain characterBrain = selectedCharacter.characterBrain;
+        Vector3 centerGroundFloor = selectableObject.transform.position+selectableObject.GetComponent<BoxCollider>().center;
+        centerGroundFloor = new Vector3(centerGroundFloor.x, 0, centerGroundFloor.z);
+
+        characterBrain.GoTo(centerGroundFloor);
+        characterBrain.TriggerEnterFinishedOverride(selectableObject.GetComponent<BoxCollider>(), characterBrain.GoTo(centerGroundFloor));
+        STATE_WaitSeconds waitState = new STATE_WaitSeconds(characterBrain.character, 4);
+        characterBrain.EnqueueState(waitState);
+        
+        STATE_TakeSeat takeSeat = new STATE_TakeSeat(characterBrain, selectableObject, 0);
+        characterBrain.EnqueueState(takeSeat);
     }
 
 
@@ -93,9 +154,25 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         {
             UseObjectTask(hoverObj);
         }
+
+        if (option == CharacterVehicleOptions.Passenger)
+        {
+            UseObjectTask(hoverObj);
+        }
         hoverObj.SetAllSelectable();
 
     }
+
+    private void StructureOptionClicked(CharacterStructureOptions option)
+    {
+        if (option == CharacterStructureOptions.GoInside)
+        {
+            GoToStructureTask(hoverObj);
+        }
+        hoverObj.SetAllSelectable();
+
+    }
+
 
     void CreateVehicleOptions()
     {
@@ -113,12 +190,35 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         }
     }
 
-    private void OptionClicked(Enum arg1, int arg2)
+    void CreateStructureOptions()
     {
-        if(arg1.GetType() == typeof(CharacterVehicleOptions))
+
+        var values = Enum.GetValues(typeof(CharacterStructureOptions));
+        structureOptionButtons = new GameObject[values.Length];
+
+        for (int i = 0; i < values.Length; i++)
         {
-            CharacterVehicleOptions op = (CharacterVehicleOptions)arg2;
-            VehicleOptionClicked(op);
+            CharacterStructureOptions option = (CharacterStructureOptions)i;
+            structureOptionButtons[i] = Instantiate(optionButton, transform);
+            structureOptionButtons[i].GetComponent<OptionButton>().OnOptionClick += OptionClicked;
+
+            structureOptionButtons[i].GetComponent<OptionButton>().SetupButton(structureOptions, i);
         }
     }
+
+    private void OptionClicked(Enum options, int index)
+    {
+        if (options.GetType() == typeof(CharacterVehicleOptions))
+        {
+            CharacterVehicleOptions op = (CharacterVehicleOptions)index;
+            VehicleOptionClicked(op);
+        }
+        if (options.GetType() == typeof(CharacterStructureOptions))
+        {
+            CharacterStructureOptions op = (CharacterStructureOptions)index;
+            StructureOptionClicked(op);
+        }
+    }
+
+
 }

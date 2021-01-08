@@ -33,7 +33,7 @@ namespace ManagementScripts
 
         public CharacterDataHolder Characters;
 
-        internal List<int> ActiveCharacters = new List<int>();
+        //internal List<int> ActiveCharacters = new List<int>();
         internal ItemsLibrary Library = new ItemsLibrary("fallback");
         [SerializeField]
         internal List<Structure> allSavedStructures = new List<Structure>();
@@ -117,14 +117,14 @@ namespace ManagementScripts
             materialManager.HandleObjectMaterials(itemObject.gameObject);
         }
 
-        private void Update()
-        {
-            if (ActiveCharacters.Count > 0)
-            {
-                CharacterTicker.TickCharacterList(Characters, ActiveCharacters, Time.time);
-            }
-
-        }
+        //private void Update()
+        //{
+        //    if (ActiveCharacters.Count > 0)
+        //    {
+        //        CharacterTicker.TickCharacterList(Characters, ActiveCharacters, Time.deltaTime);
+        //    }
+        //
+        //}
 
         public void NewTree(string tName)
         {
@@ -153,42 +153,42 @@ namespace ManagementScripts
             OnNewLibraryCreated?.Invoke(Library);
         }
 
-        public bool ActivateCharacterReturnWasActive(string characterName)
-        {
-            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
-            if (!ActiveCharacters.Contains(characterIndex))
-            {
-                ActiveCharacters.Add(characterIndex);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public bool DeactivateCharacterReturnWasAcrive(string characterName)
-        {
-            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
-            if (ActiveCharacters.Contains(characterIndex))
-            {
-                ActiveCharacters.Remove(characterIndex);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool CheckIfCharacterIsActive(string characterName)
-        {
-
-            int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
-            return ActiveCharacters.Contains(characterIndex);
-
-
-        }
+        //public bool ActivateCharacterReturnWasActive(string characterName)
+        //{
+        //    int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+        //    if (!ActiveCharacters.Contains(characterIndex))
+        //    {
+        //        ActiveCharacters.Add(characterIndex);
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
+        //}
+        //
+        //public bool DeactivateCharacterReturnWasAcrive(string characterName)
+        //{
+        //    int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+        //    if (ActiveCharacters.Contains(characterIndex))
+        //    {
+        //        ActiveCharacters.Remove(characterIndex);
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+        //
+        //public bool CheckIfCharacterIsActive(string characterName)
+        //{
+        //
+        //    int characterIndex = CharacterDataSupplier.GetIndexFromName(Characters, characterName);
+        //    return ActiveCharacters.Contains(characterIndex);
+        //
+        //
+        //}
 
 
     }
