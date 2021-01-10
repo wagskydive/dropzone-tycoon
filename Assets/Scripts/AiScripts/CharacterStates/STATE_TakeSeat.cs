@@ -92,12 +92,17 @@ public class STATE_TakeSeat : AIState
     {
         brain.gameObject.GetComponent<Collider>().enabled = false;
         brain.navMeshAgent.enabled = false;
-        brain.transform.SetParent(seatObject.transform);
         brain.transform.position = seatTransform.position;
+        brain.transform.SetPositionAndRotation(seatTransform.position, seatTransform.parent.rotation); //eulerAngles = seatTransform.parent.rotation.eulerAngles;
+        //brain.transform.RotateAround(Vector3.up, 180);
+        brain.transform.SetParent(seatTransform);
 
-        brain.TakeSeat(seatObject, seatIndex);
+        
         seatObject.SeatOccupationBinaryNumber += (int)Mathf.Pow(seatIndex + 1, seatObject.seats.Length);
+        brain.TakeSeat(seatObject, seatIndex);
         LeaveState();
+        
+
     }
 
 

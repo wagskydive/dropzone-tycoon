@@ -9,6 +9,8 @@ using System.Linq;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterBrain : MonoBehaviour
 {
+    public event Action OnSitDown;
+
     [SerializeField]
     Queue<AIState> stateQueue = new Queue<AIState>();
     [SerializeField]
@@ -66,6 +68,7 @@ public class CharacterBrain : MonoBehaviour
                 operatableObject.SetOperator(characterObject);
             }
         }
+        OnSitDown?.Invoke();
 
     }
 

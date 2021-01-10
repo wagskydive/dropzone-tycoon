@@ -44,7 +44,7 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
         CharacterObject.OnShowVehicleOptions += ShowVehicleOptions;
         CharacterObject.OnShowAircraftOptions += ShowAircraftOptions;
         CharacterObject.OnShowStructureOptions += ShowStructureOptions;
-        CharacterObject.OnHideVehicleOptions += ExitDetect;
+        CharacterObject.OnHideOptions += ExitDetect;
         CreateVehicleOptions();
         CreateStructureOptions();
     }
@@ -53,15 +53,17 @@ public class CharacterBehaviourOptionsUI : MonoBehaviour
 
     void ExitDetect()
     {
-        Invoke("HideVehicleOptions", .7f);
+        Invoke("HideOptions", .7f);
         willHide = true;
     }
 
-    private void HideVehicleOptions()
+    private void HideOptions()
     {
-        for (int i = 0; i < vehicleOptionButtons.Length; i++)
+        
+        for (int i = 0; i < transform.childCount; i++)
         {
-            vehicleOptionButtons[i].SetActive(false);
+            transform.GetChild(i).gameObject.SetActive(false);
+
         }
         willHide = false;
     }

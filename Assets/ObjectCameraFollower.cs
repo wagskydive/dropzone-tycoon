@@ -101,7 +101,7 @@ public class ObjectCameraFollower : MonoBehaviour
     {
         float screenWidth = Screen.width;
         float mousePos = Input.mousePosition.x;
-        Debug.Log(mousePos);
+        //Debug.Log(mousePos);
         if (mousePos < screenWidth * .1f && mousePos > 0)
         {
             float offset = ((mousePos / screenWidth) - .1f)* orbitSpeed;

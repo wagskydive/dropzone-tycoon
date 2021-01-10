@@ -14,7 +14,7 @@ public class CharacterObject : SelectableObject
     public static event Action<CharacterObject,VehicleObject> OnShowVehicleOptions; 
     public static event Action<CharacterObject,AircraftObject> OnShowAircraftOptions; 
     public static event Action<CharacterObject,StructureObject> OnShowStructureOptions; 
-    public static event Action OnHideVehicleOptions; 
+    public static event Action OnHideOptions; 
 
     public Character character;
     public CharacterBrain characterBrain;
@@ -62,7 +62,7 @@ public class CharacterObject : SelectableObject
         if(currentHover ==  selectableObject)
         {
 
-            OnHideVehicleOptions?.Invoke();
+            OnHideOptions?.Invoke();
         }
     }
 
